@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
+import MainLayout from './layouts/MainLayout.vue'
 
 Vue.use(Router)
 
@@ -8,8 +8,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
+      name: 'Landing Page',
+      component: MainLayout,
+      children: [{
+        path: '',
+        name: 'Home',
+        component: () => import('./views/landing/Home.vue')
+      }]
     },
     {
       path: '/about',
