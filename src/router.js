@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import MainLayout from './layouts/MainLayout.vue'
+import SecuredLayout from './layouts/SecuredLayout.vue'
 
 Vue.use(Router)
 
@@ -14,6 +15,16 @@ export default new Router({
         path: '',
         name: 'Home',
         component: () => import('./views/landing/Home.vue')
+      }]
+    },
+    {
+      path: '/app',
+      name: 'Secured Layout',
+      component: SecuredLayout,
+      children: [{
+        path: '',
+        name: 'Main Page',
+        component: () => import('./views/app/MainPage.vue')
       }]
     },
     {
