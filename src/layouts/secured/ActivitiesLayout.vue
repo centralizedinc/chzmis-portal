@@ -1,6 +1,6 @@
 <template>
   <a-card class="activities-card">
-    <a-card-grid class="activities-card-grid">grid1</a-card-grid>
+    <a-card-grid class="activities-card-grid">ACTIVITIES</a-card-grid>
     <a-card-grid class="activities-card-grid">
       <a-list size="small" :dataSource="friends">
         <a-list-item slot="renderItem" slot-scope="item, index">{{item}} ({{index}})</a-list-item>
