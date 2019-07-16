@@ -28,6 +28,26 @@ export default new Router({
       }]
     },
     {
+      path: '/signUp',
+      name: 'Sign up',
+      component: MainLayout,
+      children: [{
+        path: '',
+        name: 'Main Page',
+        component: () => import('./views/landing/SignUp.vue')
+      }]
+    },
+    {
+      path: '/registration',
+      name: 'Registration',
+      component: MainLayout,
+      children: [{
+        path: '',
+        name: 'Main Page',
+        component: () => import('./views/landing/RegForm.vue')
+      }]
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
