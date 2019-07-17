@@ -2,7 +2,7 @@
     <a-layout>
       <div class="card-container">
       <a-row type="flex" align="middle">
-        <a-col class="height: 500px" :span="6" :offset="9">
+        <a-col class="height: 500px" :span="16" :offset="2">
             <a-form
     :form="form"
     @submit="handleSubmit"
