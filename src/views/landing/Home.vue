@@ -68,6 +68,8 @@
       Or <a @click="signUp()">
         register now!
       </a>
+      <br>
+      <a href="http://localhost:4000/auth/google">Sign up using Google</a>
     </a-form-item>
   </a-form>
             

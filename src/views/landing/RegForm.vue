@@ -272,6 +272,11 @@ export default {
   beforeCreate () {
     this.form = this.$form.createForm(this);
   },
+  created() {
+    console.log('this.$route.query.data :', this.$route.query.data);
+    var data = new Buffer(this.$route.query.data, 'base64').toString();
+    console.log('data :', data);
+  },
   methods: {
     handleSubmit  (e) {
       e.preventDefault();
