@@ -15,6 +15,18 @@ export default new Router({
         path: '',
         name: 'Home',
         component: () => import('./views/landing/Home.vue')
+      },{
+        path: 'signUp',
+        name: 'Sign Up',
+        component: () => import('./views/landing/SignUp.vue')
+      },{
+        path: 'googleSignUp',
+        name: 'Google Sign up',
+        component: () => import('./views/landing/GoogleSignupSuccess.vue')
+      },{
+        path: 'registration',
+        name: 'Registration',
+        component: () => import('./views/landing/RegForm.vue')
       }]
     },
     {
@@ -25,26 +37,6 @@ export default new Router({
         path: '',
         name: 'Main Page',
         component: () => import('./views/app/MainPage.vue')
-      }]
-    },
-    {
-      path: '/signUp',
-      name: 'Sign up',
-      component: MainLayout,
-      children: [{
-        path: '',
-        name: 'Main Page',
-        component: () => import('./views/landing/SignUp.vue')
-      }]
-    },
-    {
-      path: '/registration',
-      name: 'Registration',
-      component: MainLayout,
-      children: [{
-        path: '',
-        name: 'Main Page',
-        component: () => import('./views/landing/RegForm.vue')
       }]
     },
     {

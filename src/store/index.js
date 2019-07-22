@@ -13,12 +13,12 @@ export default new Vuex.Store({
   // plugins: [createPersistedState()]
   plugins: [
     createPersistedState({
-      key: 'fda-client-reference',
-      paths: ['breadcrumbs', 'case', 'certificate', 'foodCertificate', 'licenses', 'notifications', 'payments', 'places', 'products', '', 'references', 'tasks']
+      key: 'chzmis-reference',
+      paths: ['third_party_libraries']
     }),
     //store user session in cookiess
     createPersistedState({
-      key: 'fda-client-session',
+      key: 'chzmis-session',
       paths: ['user_session'],
       storage: {
         getItem: key => Cookies.get(key),
