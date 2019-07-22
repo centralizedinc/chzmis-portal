@@ -73,7 +73,7 @@ export default {
   methods: {
     googleSignUp() {
       var googleWindow = window.open(
-        "http://localhost:4000/auth/google",
+        process.env.VUE_APP_API_BASE_URL + "auth/google",
         "Google Sign Up",
         "width=500,height=500"
       );
