@@ -47,6 +47,7 @@
               <a @click="signUp()">register now!</a>
               <br />
               <a-button type="primary" @click="googleSignUp">Sign up using Google</a-button>
+              <a-button type="primary" @click="facebookSignUp">Sign up using Facebook</a-button>
             </a-form-item>
           </a-form>
         </a-col>
@@ -75,6 +76,13 @@ export default {
       var googleWindow = window.open(
         process.env.VUE_APP_API_BASE_URL + "auth/google",
         "Google Sign Up",
+        "width=500,height=500"
+      );
+    },
+    facebookSignUp() {
+      var googleWindow = window.open(
+        process.env.VUE_APP_API_BASE_URL + "auth/facebook",
+        "Facebook Sign Up",
         "width=500,height=500"
       );
     },
