@@ -40,6 +40,16 @@ export default new Router({
       }]
     },
     {
+      path: '/main',
+      name: 'Secured Layout',
+      component: SecuredLayout,
+      children: [{
+        path: '',
+        name: 'Main Page',
+        component: () => import('./views/main/MainPage.vue')
+      }]
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
