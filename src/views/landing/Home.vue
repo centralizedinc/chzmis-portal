@@ -1,6 +1,6 @@
 <template>
   <a-layout>
-    <div class="card-container">
+    <div class="card-container bg_landing">
       <a-row type="flex" align="middle">
         <a-col class="height: 500px" :span="4" :offset="10">
           <a-form
@@ -103,7 +103,7 @@ export default {
 
 <style>
 .card-container {
-  background: #f5f5f5;
+  /* background: #f5f5f5; */
   overflow: hidden;
   padding: 24px;
   text-align: center !important;

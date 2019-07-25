@@ -1,0 +1,36 @@
+@import 'colors';
+
+.ant-layout-header {
+    background: #FFF6E2 !important;
+    padding: 0 0px !important;
+    box-shadow: 0 2px 8px #1b1b1b23 !important;
+    z-index: 10
+}
+
+.bg_landing {
+    // background: #000000 !important;
+    /* image background*/
+    background-image: url("https://i.postimg.cc/WzTZ82Gx/bg.png") !important;
+    background-color: #ffffff;
+    opacity: 0.8;
+
+    /* Full height */
+    height: 100%;
+
+    /* Center and scale the image nicely */
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
+.ant-layout-footer {
+    background: #313131 !important;
+    font-size: 18px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: white;
+    text-align: center;
+}
