@@ -5,8 +5,8 @@
         <header-layout class="secured-header-layout"></header-layout>
       </a-affix>
     </a-layout-header>
-    <a-layout style="height: 525px;">
-      <a-layout-sider class="secured-sider-layout" style="width: 220px">
+    <a-layout>
+      <a-layout-sider class="secured-sider-layout">
         <profile></profile>
       </a-layout-sider>
       <a-layout-content>
@@ -16,14 +16,14 @@
         <acquaintance></acquaintance>
       </a-layout-sider>
     </a-layout>
-    <a-layout-footer class="secured-taskbar">
-      <a-affix :offsetBottom="10">
+    <a-layout-footer style="background: transparent; padding: 0px">
+      <a-affix :offsetBottom="33">
         <taskbar></taskbar>
       </a-affix>
     </a-layout-footer>
-    <a-layout-footer class="secured-footer-layout">
-      <a-affix :offsetBottom="1">
-        <footer-layout></footer-layout>
+    <a-layout-footer style="background: transparent; padding: 0px">
+      <a-affix :offsetBottom="0">
+        <div class="secured-footer-layout">Copyright @ 2019 Chzmis</div>
       </a-affix>
     </a-layout-footer>
   </a-layout>
@@ -51,13 +51,18 @@ export default {
 .secured-sider-layout,
 .secured-sider-layout ul {
   background: none !important;
-  border: none !important;
+  flex: 0 0 300px !important;
+  max-width: 300px !important;
+  min-width: 300px !important;
+  width: 300px !important;
 }
 
 .secured-footer-layout {
   background: #3c3c3c !important;
   color: #ffffff !important;
-  height: 50px !important;
+  width: 100% !important;
+  padding: 5px !important;
+  font-weight: bold !important;
 }
 
 .secured-taskbar {

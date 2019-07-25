@@ -1,122 +1,89 @@
 <template>
-  <a-menu
-      @click="redirect"
-      :defaultSelectedKeys="['1']"
-      mode="inline"
-      class="secured-sider-layout menu-layout">
-      <template v-for="(item, index) in items">
-        <a-sub-menu
-          v-if="item.submenus"
-          @click="item.action"
-          :title="!item.icon ? item.title : undefined"
-          :key="item.key || `s${index}`"
-          class="secured-sider-layout"
-        >
-          <span v-if="item.icon" slot="title">
-            <a-icon :type="item.icon" />
-            {{item.title}}
-          </span>
-          <template v-for="(sub_item, sub_index) in item.submenus">
-            <a-menu-item-group
-              v-if="sub_item.groups"
-              :title="!sub_item.icon ? sub_item.title : undefined"
-              :key="sub_item.key || `g${sub_index}`"
-            >
-              <span v-if="sub_item.icon" slot="title">
-                <a-icon :type="sub_item.icon" />
-                {{sub_item.title}}
-              </span>
-              <template v-for="group_item in sub_item.groups">
-                <a-menu-item :key="group_item.key" class="secured-sider-layout">
-                  <a-icon v-if="group_item.icon" :type="group_item.icon" />
-                  {{group_item.title}}
-                </a-menu-item>
-              </template>
-            </a-menu-item-group>
-            <a-menu-item v-else :key="sub_item.key" class="secured-sider-layout">
-              <a-icon v-if="sub_item.icon" :type="sub_item.icon" />
-              {{sub_item.title}}
-            </a-menu-item>
-          </template>
-        </a-sub-menu>
-        <a-menu-item v-else :key="item.key" class="secured-sider-layout">
-          <a-icon v-if="item.icon" :type="item.icon" />
-          {{item.title}}
-        </a-menu-item>
-      </template>
-    </a-menu>
+  <a-card style="margin: 10px; border-radius: 25px;">
+    <p>
+      <a-avatar :size="100" shape="circle" :src="user.avatar"></a-avatar>
+      <br />
+      <span class="profile-name">{{user.full_name}}</span>
+      <br />
+      <span>{{subscribers_count}} subscribers</span>
+      <br />
+      <span>{{active_channels_count}} active channels</span>
+      <br />
+      <span>{{connections_count}} connections</span>
+    </p>
+    <p v-for="(item, index) in items" :key="index" class="profile-items">
+      <a-icon :type="item.icon" />
+      {{item.title}}
+    </p>
+  </a-card>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      menu: 1,
-      //   Required: title, key
+      user: {
+        avatar:
+          "https://www.birthdaymessagesstatus.com/wp-content/uploads/2018/08/Stylish-Attitude-Girl-Images-for-FB-Profile-Pic-300x291.jpg",
+        full_name: "Cheka Khan"
+      },
       items: [
         {
-          title: "Menu 1",
-          key: "1",
+          title: "Profile",
+          icon: "user"
+        },
+        {
+          title: "Groups",
+          icon: "team"
+        },
+        {
+          title: "Subscribers",
+          icon: "heart"
+        },
+        {
+          title: "Photos",
+          icon: "picture"
+        },
+        {
+          title: "Videos",
+          icon: "video-camera"
+        },
+        {
+          title: "Channels",
           icon: "desktop"
-        },
-        {
-          title: "Menu 2",
-          key: "2",
-          icon: "desktop",
-          submenus: [
-            {
-              title: "Menu 3",
-              key: "3"
-            },
-            {
-              title: "Menu 4",
-              key: "4",
-              icon: "desktop"
-            }
-          ]
-        },
-        {
-          title: "Menu 5",
-          key: "5",
-          icon: "desktop",
-          submenus: [
-            {
-              title: "Menu 6",
-              key: "6",
-              icon: "desktop"
-            },
-            {
-              title: "Menu 7",
-              key: "7",
-              icon: "desktop",
-              groups: [
-                {
-                  title: "Menu 8",
-                  key: "8"
-                },
-                {
-                  title: "Menu 9",
-                  key: "9",
-                  icon: "desktop"
-                }
-              ]
-            }
-          ]
         }
       ]
     };
   },
-  methods: {
-    redirect(e) {
-      console.log('Redirect to :', e.key);
+  computed: {
+    subscribers_count() {
+      return 10000;
+    },
+    active_channels_count() {
+      return 2;
+    },
+    connections_count() {
+      return 20;
     }
   }
 };
 </script>
 
 <style>
-.menu-layout {
-  text-align: left !important;
-  width: 100% !important;
+.profile-items {
+  font-weight: bold;
+  text-align: left;
+  font-size: 16px;
+}
+
+.profile-items i {
+  padding-right: 5px;
+
+}
+
+.profile-name {
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 </style>
