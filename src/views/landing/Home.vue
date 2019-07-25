@@ -1,6 +1,6 @@
 <template>
   <a-layout>
-    <div class="card-container">
+    <div class="card-container bg_landing">
       <a-row type="flex" align="middle">
         <a-col class="height: 500px" :span="4" :offset="10">
           <a-form
@@ -47,6 +47,7 @@
               <a @click="signUp()">register now!</a>
               <br />
               <a-button type="primary" @click="googleSignUp">Sign up using Google</a-button>
+              <a-button type="primary" @click="facebookSignUp">Sign up using Facebook</a-button>
             </a-form-item>
           </a-form>
         </a-col>
@@ -78,6 +79,13 @@ export default {
         "width=500,height=500"
       );
     },
+    facebookSignUp() {
+      var googleWindow = window.open(
+        process.env.VUE_APP_API_BASE_URL + "auth/facebook",
+        "Facebook Sign Up",
+        "width=500,height=500"
+      );
+    },
     signUp() {
       this.$router.push("/signUp");
     },
@@ -95,7 +103,7 @@ export default {
 
 <style>
 .card-container {
-  background: #f5f5f5;
+  /* background: #f5f5f5; */
   overflow: hidden;
   padding: 24px;
   text-align: center !important;

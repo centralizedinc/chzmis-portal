@@ -1,15 +1,14 @@
 <template>
-    <a-row>
-      <a-col></a-col>
-    </a-row>
+  <a-row>
+    <a-col>
+      <span style="text-align: center">Copyright © 2019 Chzmis</span>
+    </a-col>
+  </a-row>
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
 <style>
-
 </style>

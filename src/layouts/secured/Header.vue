@@ -1,6 +1,10 @@
 <template>
   <a-row type="flex" align="middle">
-    <a-col :md="3" :xs="12" class="header-title">CCCI</a-col>
+    <a-col :md="3" :xs="12" class="header-title">
+      <a href="/" class="router-link-active" id="logo">
+        <img alt="logo" height="60" src="https://i.postimg.cc/SRH6VQ37/Chzmis.png" />
+      </a>
+    </a-col>
     <a-col :md="{ span: 4, offset: 15}" :xs="0">
       <a-input placeholder="Search"></a-input>
     </a-col>
@@ -39,5 +43,6 @@ export default {
   font-size: 48px;
   font-weight: bold;
   text-shadow: 2px 2px #000000;
+  background-color: #fff6e2;
 }
 </style>

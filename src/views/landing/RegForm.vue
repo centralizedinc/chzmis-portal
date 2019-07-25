@@ -248,6 +248,7 @@ export default {
         this.$store.state.third_party_libraries.signup_method === "facebook"
       ) {
         console.log("Sign up using facebook account.");
+        console.log('facebook_details :', JSON.stringify(this.facebook_details));
       } else {
         console.log("Sign up locally");
       }

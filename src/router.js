@@ -23,6 +23,11 @@ export default new Router({
         path: 'googleSignUp',
         name: 'Google Sign up',
         component: () => import('./views/landing/GoogleSignupSuccess.vue')
+      },
+      {
+        path: 'facebookSignUp',
+        name: 'Facebook Sign up',
+        component: () => import('./views/landing/FacebookSignupSuccess.vue')
       },{
         path: 'registration',
         name: 'Registration',
