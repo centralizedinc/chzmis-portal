@@ -2,7 +2,7 @@
   <a-row type="flex" align="middle">
     <a-col :md="3" :xs="12" class="header-title">
       <a href="/" class="router-link-active" id="logo">
-        <img alt="logo" height="60" :src="headerIcon" />
+        <img alt="logo" height="50" :src="headerIcon" />
       </a>
     </a-col>
     <a-col :md="{ span: 4, offset: 13}" :xs="0">

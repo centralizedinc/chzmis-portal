@@ -1,15 +1,15 @@
 <template>
-  <a-card style="margin: 10px; border-radius: 25px;">
+  <a-card style="border-radius: 25px;">
     <p>
-      <a-avatar :size="100" shape="circle" :src="user.avatar"></a-avatar>
+      <a-avatar :size="80" shape="circle" :src="user.avatar"></a-avatar>
       <br />
       <span class="profile-name">{{user.full_name}}</span>
       <br />
-      <span>{{subscribers_count}} subscribers</span>
+      <span style="font-size: 12px">{{subscribers_count}} subscribers</span>
       <br />
-      <span>{{active_channels_count}} active channels</span>
+      <span style="font-size: 12px">{{active_channels_count}} active channels</span>
       <br />
-      <span>{{connections_count}} connections</span>
+      <span style="font-size: 12px">{{connections_count}} connections</span>
     </p>
     <p v-for="(item, index) in items" :key="index" class="profile-items">
       <a-icon :type="item.icon" />
@@ -73,7 +73,7 @@ export default {
 .profile-items {
   font-weight: bold;
   text-align: left;
-  font-size: 16px;
+  /* font-size: 12px; */
 }
 
 .profile-items i {
@@ -82,7 +82,7 @@ export default {
 }
 
 .profile-name {
-  font-size: 24px;
+  font-size: 16px;
   font-weight: bold;
   text-transform: uppercase;
 }

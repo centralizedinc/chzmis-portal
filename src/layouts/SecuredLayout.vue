@@ -9,19 +9,23 @@
       <a-layout-sider class="secured-sider-layout">
         <profile></profile>
       </a-layout-sider>
-      <a-layout-content>
+      <a-layout-content style="padding: 5px 0;">
         <router-view />
       </a-layout-content>
-      <a-layout-sider class="secured-activities-layout">
+      <a-layout-sider class="secured-acquaintance-layout">
         <acquaintance></acquaintance>
       </a-layout-sider>
     </a-layout>
-    <a-layout-footer style="background: transparent; padding: 0px">
+    <a-layout-footer style="background: transparent; padding: 0px; margin-bottom: 2px;">
       <a-affix :offsetBottom="33">
-        <taskbar></taskbar>
+        <a-row>
+          <a-col :span="22" :offset="1">
+            <taskbar></taskbar>
+          </a-col>
+        </a-row>
       </a-affix>
     </a-layout-footer>
-    <a-layout-footer style="background: transparent; padding: 0px">
+    <a-layout-footer class="ant-layout-footer">
       <a-affix :offsetBottom="0">
         <div class="secured-footer-layout">Copyright @ 2019 Chzmis</div>
       </a-affix>
@@ -47,14 +51,17 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style>
+.secured-sider-layout {
+  padding: 5px !important;
+}
+
 .secured-sider-layout,
 .secured-sider-layout ul {
   background: none !important;
-  flex: 0 0 300px !important;
-  max-width: 300px !important;
-  min-width: 300px !important;
-  width: 300px !important;
+  flex: 0 0 250px !important;
+  max-width: 250px !important;
+  min-width: 250px !important;
 }
 
 .secured-footer-layout {
@@ -67,15 +74,15 @@ export default {
 
 .secured-taskbar {
   background-color: #023b75;
-  // opacity: 0.6;
-  // filter: alpha(opacity=60);
 }
 
-.secured-activities-layout {
-  flex: 0 0 250px !important;
-  max-width: 250px !important;
-  width: 200px !important;
+.secured-acquaintance-layout {
   background: none !important;
+  flex: 0 0 75px !important;
+  max-width: 75px !important;
+  min-width: 75px !important;
+  width: 75px !important;
+  margin: 5px 0px 5px 5px !important;
 }
 
 .secured-header-layout {
