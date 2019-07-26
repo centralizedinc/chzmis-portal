@@ -241,6 +241,7 @@ export default {
   },
   methods: {
     init() {
+      console.log(this.$store.state.third_party_libraries.google_details);
       if (this.$store.state.third_party_libraries.signup_method === "google") {
         console.log("Sign up using google account.");
       } else if (

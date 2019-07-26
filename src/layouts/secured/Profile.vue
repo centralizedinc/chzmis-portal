@@ -1,0 +1,89 @@
+<template>
+  <a-card style="border-radius: 25px;">
+    <p>
+      <a-avatar :size="80" shape="circle" :src="user.avatar"></a-avatar>
+      <br />
+      <span class="profile-name">{{user.full_name}}</span>
+      <br />
+      <span style="font-size: 12px">{{subscribers_count}} subscribers</span>
+      <br />
+      <span style="font-size: 12px">{{active_channels_count}} active channels</span>
+      <br />
+      <span style="font-size: 12px">{{connections_count}} connections</span>
+    </p>
+    <p v-for="(item, index) in items" :key="index" class="profile-items">
+      <a-icon :type="item.icon" />
+      {{item.title}}
+    </p>
+  </a-card>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      user: {
+        avatar:
+          "https://www.birthdaymessagesstatus.com/wp-content/uploads/2018/08/Stylish-Attitude-Girl-Images-for-FB-Profile-Pic-300x291.jpg",
+        full_name: "Cheka Khan"
+      },
+      items: [
+        {
+          title: "Profile",
+          icon: "user"
+        },
+        {
+          title: "Groups",
+          icon: "team"
+        },
+        {
+          title: "Subscribers",
+          icon: "heart"
+        },
+        {
+          title: "Photos",
+          icon: "picture"
+        },
+        {
+          title: "Videos",
+          icon: "video-camera"
+        },
+        {
+          title: "Channels",
+          icon: "desktop"
+        }
+      ]
+    };
+  },
+  computed: {
+    subscribers_count() {
+      return 10000;
+    },
+    active_channels_count() {
+      return 2;
+    },
+    connections_count() {
+      return 20;
+    }
+  }
+};
+</script>
+
+<style>
+.profile-items {
+  font-weight: bold;
+  text-align: left;
+  /* font-size: 12px; */
+}
+
+.profile-items i {
+  padding-right: 5px;
+
+}
+
+.profile-name {
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+</style>

@@ -217,6 +217,7 @@ export default {
   overflow: hidden;
   padding: 24px;
   text-align: left !important;
+  border-radius: 25px !important;
 }
 .card-container > .ant-tabs-card > .ant-tabs-content {
   /* height: 120px; */

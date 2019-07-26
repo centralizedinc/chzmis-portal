@@ -1,21 +1,34 @@
 <template>
   <a-layout>
-    <a-layout-header>
-      <header-layout></header-layout>
+    <a-layout-header style="background: transparent; padding: 0px">
+      <a-affix :offsetTop="0">
+        <header-layout class="secured-header-layout"></header-layout>
+      </a-affix>
     </a-layout-header>
-    <a-layout style="height: 525px;">
-      <a-layout-sider class="secured-sider-layout" style="width: 220px">
-        <menu-layout></menu-layout>
+    <a-layout>
+      <a-layout-sider class="secured-sider-layout">
+        <profile></profile>
       </a-layout-sider>
-      <a-layout-content>
+      <a-layout-content style="padding: 5px 0;">
         <router-view />
       </a-layout-content>
-      <a-layout-sider class="secured-activities-layout">
-        <activities-layout></activities-layout>
+      <a-layout-sider class="secured-acquaintance-layout">
+        <acquaintance></acquaintance>
       </a-layout-sider>
     </a-layout>
-    <a-layout-footer>
-      <footer-layout></footer-layout>
+    <a-layout-footer style="background: transparent; padding: 0px; margin-bottom: 2px;">
+      <a-affix :offsetBottom="33">
+        <a-row>
+          <a-col :span="22" :offset="1">
+            <taskbar></taskbar>
+          </a-col>
+        </a-row>
+      </a-affix>
+    </a-layout-footer>
+    <a-layout-footer class="ant-layout-footer">
+      <a-affix :offsetBottom="0">
+        <div class="secured-footer-layout">Copyright @ 2019 Chzmis</div>
+      </a-affix>
     </a-layout-footer>
   </a-layout>
 </template>
@@ -23,35 +36,58 @@
 <script>
 import HeaderLayout from "./secured/Header";
 import FooterLayout from "./secured/Footer";
-import MenuLayout from "./secured/MenuLayout";
-import ActivitiesLayout from "./secured/ActivitiesLayout";
+import Profile from "./secured/Profile";
+import Acquaintance from "./secured/Acquaintance";
+import Taskbar from "./secured/Taskbar";
 
 export default {
   components: {
     HeaderLayout,
     FooterLayout,
-    MenuLayout,
-    ActivitiesLayout
+    Profile,
+    Acquaintance,
+    Taskbar
   }
 };
 </script>
 
-<style lang="less">
+<style>
+.secured-sider-layout {
+  padding: 5px !important;
+}
+
 .secured-sider-layout,
 .secured-sider-layout ul {
   background: none !important;
-  border: none !important;
-}
-
-.ant-layout-footer {
-  background: #3c3c3c !important;
-  color: #ffffff !important;
-}
-
-.secured-activities-layout {
   flex: 0 0 250px !important;
   max-width: 250px !important;
-  width: 200px !important;
+  min-width: 250px !important;
+}
+
+.secured-footer-layout {
+  background: #3c3c3c !important;
+  color: #ffffff !important;
+  width: 100% !important;
+  padding: 5px !important;
+  font-weight: bold !important;
+}
+
+.secured-taskbar {
+  background-color: #023b75;
+}
+
+.secured-acquaintance-layout {
   background: none !important;
+  flex: 0 0 75px !important;
+  max-width: 75px !important;
+  min-width: 75px !important;
+  width: 75px !important;
+  margin: 5px 0px 5px 5px !important;
+}
+
+.secured-header-layout {
+  background: #fff6e2 !important;
+  color: #000000 !important;
+  width: 100% !important;
 }
 </style>

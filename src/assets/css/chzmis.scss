@@ -24,20 +24,20 @@
 
 }
 
+.rounded-corners-transparent {
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.575);
+    opacity: 0.8;
+
+}
+
 .ant-layout-footer {
     background: #313131 !important;
-    // font-size: 18px;
+    font-size: 18px;
     // position: absolute;
     // left: 0;
     // bottom: 0;
     // width: 100%;
     // color: white;
     // text-align: center;
-}
-
-.rounded-corners-transparent {
-    border-radius: 15px;
-    background: rgba(255, 255, 255, 0.575);
-    opacity: 0.8;
-
 }
