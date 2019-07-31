@@ -5,7 +5,7 @@
         <header-layout class="secured-header-layout"></header-layout>
       </a-affix>
     </a-layout-header>
-    <a-layout>
+    <a-layout style="height: 100%">
       <a-layout-sider class="secured-sider-layout">
         <profile></profile>
       </a-layout-sider>
@@ -16,7 +16,7 @@
         <acquaintance></acquaintance>
       </a-layout-sider>
     </a-layout>
-    <a-layout-footer style="background: transparent; padding: 0px; margin-bottom: 2px;">
+    <a-layout-footer class="secured-taskbar-layout">
       <a-affix :offsetBottom="33">
         <a-row>
           <a-col :span="22" :offset="1">
@@ -72,8 +72,20 @@ export default {
   font-weight: bold !important;
 }
 
-.secured-taskbar {
-  background-color: #023b75;
+.ant-layout-footer {
+  position: fixed !important;
+  left: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+}
+
+.secured-taskbar-layout {
+  background: transparent !important;
+  padding: 0px !important;
+  position: fixed !important;
+  left: 0 !important;
+  bottom: 33px !important;
+  width: 100% !important;
 }
 
 .secured-acquaintance-layout {
