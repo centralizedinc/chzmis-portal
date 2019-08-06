@@ -1,23 +1,21 @@
 <template>
-    <div>
-    <a-card 
-        title="Connections" 
-        headStyle="padding-left: 15px; font-weight: bold; text-align: left; background: #3c3c3c" 
-        bodyStyle="max-height: 500px;" 
-        style="border-radius: 0px 0px 25px 25px;">
-        test
-    </a-card>
-    </div>
+  <div>
+    <connections style="margin-bottom: 5px;"/>
+    <channels/>
+  </div>
 </template>
 
 <script>
-export default {
+import Connections from './Connections';
+import Channels from './Channels';
 
-}
+export default {
+  components: {
+    Connections,
+    Channels
+  }
+};
 </script>
 
 <style>
-.ant-card-head-title {
-    padding: 5px !important;
-}
 </style>
