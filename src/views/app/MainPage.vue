@@ -1,5 +1,5 @@
 <template>
-  <div class="card-container">
+  <div class="container-style">
     <a-card :bodyStyle="{'padding-bottom': '0px'}" style="margin-bottom: 10px;">
       <a-row>
         <a-col :span="2">
@@ -212,7 +212,7 @@ export default {
 </script>
 
 <style>
-.card-container {
+.container-style {
   background: #f5f5f5;
   overflow: hidden;
   padding: 24px;

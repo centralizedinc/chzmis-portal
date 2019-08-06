@@ -36,11 +36,12 @@
                   >
                     <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
                   </a-input>
-                </a-form-item>
-                <a-form-item>
                   <a-checkbox
+                    style="align: left"
                     v-decorator="['remember', { valuePropName: 'checked', initialValue: true }]"
                   >Remember me</a-checkbox>
+                </a-form-item>
+                <a-form-item>
                   <a class="login-form-forgot" href>Forgot password</a>
                   <br />
                   <a-button type="primary" block html-type="submit" class="login-form-button">Log in</a-button>
