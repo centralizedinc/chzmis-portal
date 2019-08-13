@@ -38,7 +38,7 @@
                     <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
                   </a-input>
                 </a-form-item>
-                <div>
+                <div style="text-align: left;">
                   <a-checkbox style="color: white">Remember me</a-checkbox>
                   <a href="#" style="float: right">Forgot password ?</a>
                 </div>
@@ -69,13 +69,12 @@ export default {};
   /* position: absolute; */
   border-radius: 15px;
   top: 0px;
-  height: 330px;
-  width: 500px;
   background: transparent;
 }
+.overlay-form,
 .custom-size {
   width: 500px;
-  height: 330px;
+  height: 300px;
 }
 /* .header-style {
   font-weight: 800;
