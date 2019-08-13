@@ -11,11 +11,7 @@
         <div class="rounded-corners-transparent custom-size"></div>
         <a-card
           class="overlay-form"
-<<<<<<< HEAD
-          :headStyle="{'font-weight': 'bold', 'font-size':'20px','text-align': 'left', 'color': 'black;', 'border-bottom':'1px solid black', color: 'black'}"
-=======
           :headStyle="{'font-weight': 'bold', 'font-size':'20px','text-align': 'left', color: 'black', 'border-bottom':'1px solid black'}"
->>>>>>> 80fd65b82b054411f58bde82eb94167d562acb08
           title="Login to Chzmis"
           :bordered="false"
         >
