@@ -6,7 +6,7 @@
     <a-layout-content>
       <router-view />
     </a-layout-content>
-    <a-layout-footer style="background: #313131 !important; color: white;">
+    <a-layout-footer style="background: #313131 !important; color: white;     text-align: center;">
       <footer-layout></footer-layout>
     </a-layout-footer>
   </a-layout>
