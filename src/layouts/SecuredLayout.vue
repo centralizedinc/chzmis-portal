@@ -25,7 +25,7 @@
         </a-row>
       </a-affix>
     </a-layout-footer>
-    <a-layout-footer class="ant-layout-footer">
+    <a-layout-footer class="secured-layout-footer">
       <a-affix :offsetBottom="0">
         <div class="secured-footer-layout">Copyright @ 2019 Chzmis</div>
       </a-affix>
@@ -72,11 +72,14 @@ export default {
   font-weight: bold !important;
 }
 
-.ant-layout-footer {
+.secured-layout-footer {
   position: fixed !important;
+  background: transparent !important;
   left: 0 !important;
   bottom: 0 !important;
   width: 100% !important;
+  padding: 0 !important;
+  text-align: center;
 }
 
 .secured-taskbar-layout {

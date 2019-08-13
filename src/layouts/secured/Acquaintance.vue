@@ -1,5 +1,5 @@
 <template>
-  <a-card class="activities-card" bodyStyle="padding: 24px 10px;">
+  <a-card class="activities-card" bodyStyle="padding: 24px 10px;text-align: center;">
     <p v-for="(friend, index) in friends" :key="index">
       <a-tooltip placement="left">
         <template slot="title">
