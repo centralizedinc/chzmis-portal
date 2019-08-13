@@ -1,66 +1,68 @@
 <template>
   <a-card
     title="Connections"
-    headStyle="padding-left: 10px; 
+    headStyle="padding: 0px; padding-left: 10px; 
         font-weight: bold; text-align: left; min-height: 0px;
         background: #3c3c3c; font-size: 18px; color: white;"
-    bodyStyle="max-height: 500px; text-align: left !important;"
+    bodyStyle="max-height: 350px; text-align: left !important;"
     style="border-radius: 0px 0px 25px 25px;"
   >
     <a-row>
       <a-col :span="12">
-        <a-tabs type="card" style="max-height: 400px: overflow-y: scroll" tabPosition="top">
-          <a-tab-pane v-for="(item, index) in groups" :key="index">
-            <span slot="tab">
-              {{item.title}}
-              <a-tooltip placement="topLeft">
-                <template slot="title">
-                  <span>{{item.favorite ? 'Remove from favorites' : 'Add to favorites'}}</span>
-                </template>
-                <a-button class="btn-icon-only" @click="setFavorite(index)">
-                  <a-icon
-                    type="star"
-                    :theme="item.favorite ? 'filled' : 'outlined'"
-                    :class="item.favorite && 'favorite-tab'"
-                  />
-                </a-button>
-              </a-tooltip>
-            </span>
-            <comment-section
-              v-for="(item, index) in getPostMessages(item.id)"
-              :key="index"
-              :author="item.author"
-              :avatar="item.avatar"
-              :content="item.content"
-              :likes="item.likes.length"
-              :dislikes="item.dislikes.length"
-              @like="like(item.id)"
-              @dislike="dislike(item.id)"
-              @comment="comment"
-              :action="getUserAction(item)"
-              :datetime="item.datetime"
-              :postid="item.id"
-              :groupid="item.group"
-              show-comment
-            >
+        <div style="border: 1px solid">
+          <a-tabs type="card" tabPosition="top">
+            <a-tab-pane class="messages-content" v-for="(item, index) in groups" :key="index">
+              <span slot="tab">
+                {{item.title}}
+                <a-tooltip placement="topLeft">
+                  <template slot="title">
+                    <span>{{item.favorite ? 'Remove from favorites' : 'Add to favorites'}}</span>
+                  </template>
+                  <a-button class="btn-icon-only" @click="setFavorite(index)">
+                    <a-icon
+                      type="star"
+                      :theme="item.favorite ? 'filled' : 'outlined'"
+                      :class="item.favorite && 'favorite-tab'"
+                    />
+                  </a-button>
+                </a-tooltip>
+              </span>
               <comment-section
-                slot="comment"
-                v-for="(comment_item, comment_index) in item.comments"
-                :key="comment_index"
-                :author="comment_item.author"
-                :avatar="comment_item.avatar"
-                :content="comment_item.content"
-                :likes="comment_item.likes.length"
-                :dislikes="comment_item.dislikes.length"
-                @like="like(comment_item.id)"
-                @dislike="dislike(comment_item.id)"
+                v-for="(item, index) in getPostMessages(item.id)"
+                :key="index"
+                :author="item.author"
+                :avatar="item.avatar"
+                :content="item.content"
+                :likes="item.likes.length"
+                :dislikes="item.dislikes.length"
+                @like="like(item.id)"
+                @dislike="dislike(item.id)"
+                @comment="comment"
+                :action="getUserAction(item)"
+                :datetime="item.datetime"
                 :postid="item.id"
-                :action="getUserAction(comment_item)"
-                :datetime="comment_item.datetime"
-              ></comment-section>
-            </comment-section>
-          </a-tab-pane>
-        </a-tabs>
+                :groupid="item.group"
+                show-comment
+              >
+                <comment-section
+                  slot="comment"
+                  v-for="(comment_item, comment_index) in item.comments"
+                  :key="comment_index"
+                  :author="comment_item.author"
+                  :avatar="comment_item.avatar"
+                  :content="comment_item.content"
+                  :likes="comment_item.likes.length"
+                  :dislikes="comment_item.dislikes.length"
+                  @like="like(comment_item.id)"
+                  @dislike="dislike(comment_item.id)"
+                  :postid="item.id"
+                  :action="getUserAction(comment_item)"
+                  :datetime="comment_item.datetime"
+                ></comment-section>
+              </comment-section>
+            </a-tab-pane>
+          </a-tabs>
+        </div>
       </a-col>
       <a-col :span="12">
         <a-row>
@@ -218,8 +220,15 @@ export default {
 </script>
 
 <style>
-.ant-card-head-title {
-  padding: 0px !important;
+.messages-content {
+  max-height: 230px;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.messages-content::-webkit-scrollbar {
+  display: none;
 }
 
 .btn-icon-only {

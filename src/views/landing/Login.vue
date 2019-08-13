@@ -11,7 +11,7 @@
         <div class="rounded-corners-transparent custom-size"></div>
         <a-card
           class="overlay-form"
-          :headStyle="{'font-weight': 'bold', 'font-size':'20px','text-align': 'left', 'color': 'black;', 'border-bottom':'1px solid black', color: 'white'}"
+          :headStyle="{'font-weight': 'bold', 'font-size':'20px','text-align': 'left', color: 'black', 'border-bottom':'1px solid black'}"
           title="Login to Chzmis"
           :bordered="false"
         >
@@ -39,7 +39,7 @@
                   </a-input>
                 </a-form-item>
                 <div style="text-align: left;">
-                  <a-checkbox style="color: white">Remember me</a-checkbox>
+                  <a-checkbox style="color: black">Remember me</a-checkbox>
                   <a href="#" style="float: right">Forgot password ?</a>
                 </div>
                 <a-form-item>
