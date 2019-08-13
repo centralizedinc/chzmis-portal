@@ -14,11 +14,23 @@ export default new Router({
           path: '',
           name: 'Home',
           component: () => import('./views/landing/Home.vue')
-        }, {
+        }, 
+        {
           path: 'signUp',
           name: 'Sign Up',
-          component: () => import('./views/landing/SignUp.vue')
-        }, {
+          component: () => import('./views/landing/SignUpNew.vue')
+        }, 
+        {
+          path: 'signUp2',
+          name: 'Sign Up',
+          component: () => import('./views/landing/SignUp2.vue')
+        },
+        {
+          path: 'signUp3',
+          name: 'Sign Up',
+          component: () => import('./views/landing/SignUp3.vue')
+        },
+        {
           path: 'googleSignUp',
           name: 'Google Sign up',
           component: () => import('./views/landing/GoogleSignupSuccess.vue')
@@ -31,7 +43,8 @@ export default new Router({
           path: 'registration',
           name: 'Registration',
           component: () => import('./views/landing/RegForm.vue')
-        }, {
+        }, 
+        {
           path: 'login',
           name: 'Login',
           component: () => import('./views/landing/Login.vue')
