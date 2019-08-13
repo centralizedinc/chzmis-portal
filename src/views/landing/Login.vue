@@ -44,7 +44,13 @@
                 <a-form-item>
                   <a class="login-form-forgot" href>Forgot password</a>
                   <br />
-                  <a-button type="primary" block html-type="submit" class="login-form-button">Log in</a-button>
+                  <a-button
+                    type="primary"
+                    block
+                    html-type="submit"
+                    class="login-form-button"
+                    style="margin:10px"
+                  >Log in</a-button>
                 </a-form-item>
               </a-form>
             </a-col>
