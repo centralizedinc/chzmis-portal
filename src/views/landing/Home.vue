@@ -13,7 +13,7 @@
           <a-row :gutter="24">
             <a-col :span="12">
               <a-card
-                style="background: transparent !important ; border: none !important ; padding-top: 20px !important"
+                style="background: transparent !important ; border: none !important ; padding-top: 80px !important"
               >
                 <img alt="logo" src="../../assets/Chzmis.png" slot="cover" />
               </a-card>
@@ -76,18 +76,12 @@
                       <a-checkbox style="color: black">Remember me</a-checkbox>
                       <a href="#" style="float: right">Forgot password ?</a>
                     </div>
-                    <a-form-item>
+                    <a-form-item style="padding-top: 10px">
                       <a-button type="primary" block html-type="submit">Log in</a-button>
                     </a-form-item>
                   </a-form>
                 </a-col>
               </a-row>
-            </a-col>
-          </a-row>
-
-          <a-row type="flex" align="middle">
-            <a-col :span="24">
-              <!-- username -->
             </a-col>
           </a-row>
         </a-card>
@@ -105,6 +99,7 @@ export default {};
   /* background: #f5f5f5; */
   overflow: hidden;
   padding: 24px;
+  border: none !important;
   /* text-align: center !important; */
 }
 .overlay-form {
@@ -116,7 +111,7 @@ export default {};
 .overlay-form,
 .custom-size {
   width: 800px;
-  height: 380px;
+  height: 400px;
 }
 .rounded-corners-transparent {
   background: white !important;
