@@ -20,36 +20,9 @@
             </a-col>
 
             <!-- RIGHT -->
-            <span style="text-align: center">Sign up using your existing social media accounts</span>
+            <span style="text-align: center">Sign up using your email address</span>
 
-            <a-col :span="12">
-              <a-row type="flex" align="middle" :gutter="12" style="padding-top: 20px">
-                <a-col :span="8">
-                  <a-form-item>
-                    <a-button type="primary" block>
-                      <i class="fab fa-facebook-f"></i>
-                    </a-button>
-                  </a-form-item>
-                </a-col>
-
-                <a-col :span="8">
-                  <a-form-item>
-                    <a-button type="primary" block>
-                      <i class="fab fa-twitter"></i>
-                    </a-button>
-                  </a-form-item>
-                </a-col>
-
-                <a-col :span="8">
-                  <a-form-item>
-                    <a-button type="primary" block>
-                      <i class="fab fa-google-plus-g"></i>
-                    </a-button>
-                  </a-form-item>
-                </a-col>
-              </a-row>
-              <a-divider>or login with</a-divider>
-
+            <a-col :span="12" style="padding-top: 10px">
               <a-row type="flex" align="middle">
                 <a-col :span="24">
                   <!-- username -->
@@ -71,13 +44,33 @@
                       >
                         <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
                       </a-input>
-                    </a-form-item>
-                    <div style="text-align: left;">
-                      <a-checkbox style="color: black">Remember me</a-checkbox>
-                      <a href="#" style="float: right">Forgot password ?</a>
-                    </div>
-                    <a-form-item style="padding-top: 10px">
-                      <a-button type="primary" block html-type="submit">Log in</a-button>
+                      <a-form-item style="padding-top: 10px">
+                        <a-button type="primary" block html-type="submit">Continue</a-button>
+                        <div class="text-center">
+                          <a href="#">If you already have an account, Login here</a>
+                        </div>
+                        <a-divider>or</a-divider>
+                        <span
+                          style="text-align: center"
+                        >Sign up using your existing social media accounts</span>
+                        <a-row type="flex" align="middle" :gutter="12">
+                          <a-col :span="12">
+                            <a-form-item>
+                              <a-button type="primary" block style="font-size: 18px">
+                                <a-icon type="facebook" theme="filled" />
+                              </a-button>
+                            </a-form-item>
+                          </a-col>
+
+                          <a-col :span="12">
+                            <a-form-item>
+                              <a-button type="primary" block style="font-size: 20px">
+                                <a-icon type="google-plus" />
+                              </a-button>
+                            </a-form-item>
+                          </a-col>
+                        </a-row>
+                      </a-form-item>
                     </a-form-item>
                   </a-form>
                 </a-col>
@@ -91,15 +84,27 @@
 </template>
 
 <script>
-export default {};
+import { Icon } from "ant-design-vue";
+
+const IconFont = Icon.createFromIconfontCN({
+  scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js"
+});
+export default {
+  components: {
+    IconFont
+  }
+};
 </script>
 
 <style>
+.icons-list >>> .anticon {
+  margin-right: 6px;
+  font-size: 24px;
+}
 .card-container {
   /* background: #f5f5f5; */
   overflow: hidden;
   padding: 24px;
-  border: none !important;
   /* text-align: center !important; */
 }
 .overlay-form {
@@ -115,6 +120,7 @@ export default {};
 }
 .rounded-corners-transparent {
   background: white !important;
+  box-shadow: -8px 10px 10px #0000003b;
 }
 #app {
   text-align: center !important;
