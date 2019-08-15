@@ -56,7 +56,11 @@
                         <a-row type="flex" align="middle" :gutter="12">
                           <a-col :span="12">
                             <a-form-item>
-                              <a-button type="primary" block style="font-size: 18px">
+                              <a-button
+                                type="primary"
+                                block
+                                style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
+                              >
                                 <a-icon type="facebook" theme="filled" />
                               </a-button>
                             </a-form-item>
@@ -64,7 +68,11 @@
 
                           <a-col :span="12">
                             <a-form-item>
-                              <a-button type="primary" block style="font-size: 20px">
+                              <a-button
+                                style="font-size: 20px; background-color: #d34836; border-color: #d34836"
+                                type="primary"
+                                block
+                              >
                                 <a-icon type="google-plus" />
                               </a-button>
                             </a-form-item>
