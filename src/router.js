@@ -14,12 +14,12 @@ export default new Router({
           path: '',
           name: 'Home',
           component: () => import('./views/landing/Home.vue')
-        }, 
+        },
         {
           path: 'signUp',
           name: 'Sign Up',
           component: () => import('./views/landing/SignUpNew.vue')
-        }, 
+        },
         {
           path: 'signUp2',
           name: 'Sign Up',
@@ -43,12 +43,18 @@ export default new Router({
           path: 'registration',
           name: 'Registration',
           component: () => import('./views/landing/RegForm.vue')
-        }, 
+        },
         {
           path: 'login',
           name: 'Login',
           component: () => import('./views/landing/Login.vue')
-        }
+        },
+        {
+          path: 'create/connection',
+          name: 'Create Connections',
+          component: () => import('./views/landing/CreateConnection.vue')
+        },
+
       ]
     },
     {
