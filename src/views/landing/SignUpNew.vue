@@ -23,9 +23,9 @@
           </div>
           <div align="middle"> 
               <h3>Please confirm your registration below</h3>
-              <a-select labelInValue :defaultValue="{ key: 'individual' }" style="width: 120px" @change="handleChange">
-    <a-select-option value="individual">Individual</a-select-option>
-    <a-select-option value="corporate">Corporate</a-select-option>
+              <a-select v-model="category" labelInValue :defaultValue="{ key: '0' }" style="width: 120px" @change="handleChange" >
+    <a-select-option value="0">Individual</a-select-option>
+    <a-select-option value="1">Corporate</a-select-option>
   </a-select>
           </div>
           <div align="middle">
@@ -40,16 +40,21 @@
 
 <script>
 export default {
+  // props: ['form'],
+  data: () => ({
+    category: 0
+  }),
     methods: {
     handleChange(value) {
       console.log(value);
     },
     second(){
+      this.$store.commit("SET_REGISTRATION", this.category);
+      console.log('console category :', JSON.stringify(this.category.label))
       this.$router.push("/signUp2");
     }
   }
 };
-
 </script>
 
 <style>
