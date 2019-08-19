@@ -24,7 +24,7 @@
           <div align="middle">
             <h3>Please confirm your registration below</h3>
           </div>
-          <div align="left">
+          <!-- <div align="left">
             <a-input placeholder="Username/Email Address" />
           </div>
           <div>
@@ -35,10 +35,37 @@
           </div>
           <div>
             <a-date-picker @change="onChange" placeholder="Birthday" />
+          </div> -->
+          <div align="middle" id="components-form-demo-vuex">
+            <a-form :form="form" @submit="handleSubmit">
+              <a-form-item> 
+                <a-input
+                  v-decorator="['username', { rules: [{ required: true, message: 'New password is required!' }] }]"
+                  placeholder="Username/Email Address"
+                >
+                  <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
+                </a-input>
+                <a-input
+                  v-decorator="['fname', { rules: [{ required: true, message: 'Please input your username!' }] }]"
+                  placeholder="First Name"
+                >
+                  <a-icon slot="prefix" type="idcard" style="color: rgba(0,0,0,.25)" />
+                </a-input>
+                <a-input
+                  v-decorator="['lname', { rules: [{ required: true, message: 'Please input your username!' }] }]"
+                  placeholder="Last Name"
+                >
+                  <a-icon slot="prefix" type="idcard" style="color: rgba(0,0,0,.25)" />
+                </a-input>
+                <a-date-picker @change="onChange" placeholder="Birthday" />
+                <a-button type="primary" @click="third" block>Continue</a-button>
+                <!-- <a-button type="primary" html-type="submit">Submit</a-button> -->
+              </a-form-item>
+            </a-form>
           </div>
-          <div align="middle">
+          <!-- <div align="middle">
             <a-button type="primary" block>Continue</a-button>
-          </div>
+          </div> -->
         </a-card>
       </a-col>
     </a-row>
@@ -51,9 +78,22 @@ export default {
     handleChange(value) {
       console.log(value);
     },
+    handleSubmit (e) {
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+        }
+      });
+    },
     onChange(date, dateString) {
       console.log(date, dateString);
+      // this.$router.push("/views/landing/signUp3");
+    },
+    third(){
+      this.$router.push("/signUp3");
     }
+
   }
 };
 </script>

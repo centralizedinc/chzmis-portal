@@ -30,7 +30,7 @@
           </div>
           <div align="middle">
               <i>Select approriate account type before proceeding</i>
-              <a-button type="primary" block>Continue</a-button>
+              <a-button type="primary" @click="second" block>Continue</a-button>
           </div>
         </a-card>
       </a-col>
@@ -43,6 +43,9 @@ export default {
     methods: {
     handleChange(value) {
       console.log(value);
+    },
+    second(){
+      this.$router.push("/signUp2");
     }
   }
 };

@@ -25,27 +25,34 @@
             <h3>Create your password</h3>
           </div>
           <div align="left">
-            <i>Remember that your password must:  
-                - Have atleast six (6) characters 
-                - Include at least one (1) letter and one (1) number
+            <i>
+              Remember that your password must:
+              - Have atleast six (6) characters
+              - Include at least one (1) letter and one (1) number
             </i>
           </div>
           <div id="components-form-demo-vuex">
-    <a-form :form="form" @submit="handleSubmit">
-      <a-form-item label="password">
-        <a-input v-decorator="['password',{
-              rules: [{ required: true, message: 'Password is required!' }],
-            }]"/>
-      </a-form-item>
-      <a-form-item label="confirmPassword">
-        <a-input v-decorator="['confirmPassword',{
-              rules: [{ required: true, message: 'Password is required!' }],
-            }]"/>
-      </a-form-item>
-      <a-button type="primary" html-type="submit">Submit</a-button>
-    </a-form>
-  </div>
-          
+            <a-form :form="form" @submit="handleSubmit">
+              <a-form-item>
+                <a-input
+                  v-decorator="['newPassword', { rules: [{ required: true, message: 'New password is required!' }] }]"
+                  placeholder="Create new password"
+                  type="password"
+                >
+                  <a-icon slot="prefix" type="unlock" style="color: rgba(0,0,0,.25)" />
+                </a-input>
+                <a-input
+                  v-decorator="['confirmNewPassword', { rules: [{ required: true, message: 'Please input your username!' }] }]"
+                  placeholder="Confirm new password"
+                  type="password"
+                >
+                  <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
+                </a-input>
+
+                <a-button type="primary" html-type="submit">Submit</a-button>
+              </a-form-item>
+            </a-form>
+          </div>
         </a-card>
       </a-col>
     </a-row>
@@ -80,6 +87,7 @@ export default {
   border-radius: 15px;
   top: 0px;
   background: transparent;
+  margin-bottom: 10px;
 }
 .overlay-form,
 .custom-size {
