@@ -20,7 +20,7 @@
             </a-col>
 
             <!-- RIGHT -->
-            <span style="text-align: center">Sign up using your email address</span>
+            <span style="text-align: center">Login</span>
 
             <a-col :span="12" style="padding-top: 10px">
               <a-row type="flex" align="middle">
@@ -45,11 +45,12 @@
                         <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
                       </a-input>
                       <a-form-item style="padding-top: 10px">
-                        <a-button type="primary" block html-type="submit">Continue</a-button>
+                        <a-button type="primary" block @click="registration">Login</a-button>
                         <div class="text-center">
-                          <a href="#">If you already have an account, Login here</a>
+                          <a href="#">If you haven't set up an account yet, Register here</a>
                         </div>
                         <a-divider>or</a-divider>
+
                         <span
                           style="text-align: center"
                         >Sign up using your existing social media accounts</span>
@@ -93,13 +94,18 @@
 
 <script>
 import { Icon } from "ant-design-vue";
-
 const IconFont = Icon.createFromIconfontCN({
   scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js"
 });
+
 export default {
   components: {
     IconFont
+  },
+  methods: {
+    registration() {
+      this.$router.push("/signUp");
+    }
   }
 };
 </script>
