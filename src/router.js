@@ -59,6 +59,11 @@ export default new Router({
           name: 'Create Connections',
           component: () => import('./views/landing/CreateConnection.vue')
         },
+        {
+          path: 'search/connection',
+          name: 'Connect with Others',
+          component: () => import('./components/SearchConnection.vue')
+        },
 
       ]
     },
