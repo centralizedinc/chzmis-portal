@@ -23,13 +23,9 @@
                 <span>"Connection" is created for an organization or business to promote activities and to discuss anything under the sun. Users/Contacts may ask to join or must be invited to join a specific connection. Members can post their thoughts on the wall and interact with other members through discussion threads.</span>
                 <a-divider></a-divider>
                 <div>
-                  <a-button type="primary" block @click="showModal">Create My Connection</a-button>
-                  <a-modal v-model="visible" title="Add New Connection" onOk="handleOk">
+                  <a-button type="primary" block @click="showModal">Create New Connection</a-button>
+                  <a-modal v-model="visible" title="Create" onOk="handleOk">
                     <template slot="footer">
-                      <!-- <span style="font-style: italic; padding-right: 100px">
-                        <a href="/#/search/connection">or search and connect with others</a>
-                      </span>-->
-                      <search-connection :visible="modal"></search-connection>
                       <a-button key="back" @click="handleCancel">Cancel</a-button>
                       <a-button
                         key="submit"
@@ -40,16 +36,62 @@
                     </template>
 
                     <template>
+                      <!-- search -->
+                      <div class="global-search-wrapper" style="width: 450px">
+                        <a-row type="flex" align="middle">
+                          <a-col :span="23" :offset="1">
+                            <a-auto-complete
+                              class="global-search"
+                              size="large"
+                              style="width: 100%"
+                              @select="onSelect"
+                              @search="handleSearch"
+                              placeholder="Search and Connect with Others"
+                              optionLabelProp="text"
+                            >
+                              <template slot="dataSource">
+                                <a-select-option
+                                  v-for="item in dataSource"
+                                  :key="item.category"
+                                  :text="item.category"
+                                >
+                                  {{item.query}} A
+                                  <a
+                                    :href="`https://s.taobao.com/search?q=${item.query}`"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >{{item.category}}</a>
+                                  BCD
+                                  <span
+                                    class="global-search-item-count"
+                                  >H {{item.count}} EFG</span>
+                                </a-select-option>
+                              </template>
+                              <a-input>
+                                <a-button
+                                  slot="suffix"
+                                  class="search-btn"
+                                  size="large"
+                                  type="primary"
+                                >
+                                  <a-icon type="search" />
+                                </a-button>
+                              </a-input>
+                            </a-auto-complete>
+                          </a-col>
+                        </a-row>
+                      </div>
+                      <a-divider>or Create Own Connection</a-divider>
                       <!-- own connection -->
                       <div>
                         <a-form :layout="formLayout">
-                          <a-form-item label="Create a Name">
+                          <a-form-item label="Name of Connection">
                             <a-input placeholder />
                           </a-form-item>
                         </a-form>
                       </div>
                       <!-- Add contacts -->
-                      <p>Then add members from your social media contact list (optional)</p>
+                      <p>Add contacts from</p>
                       <a-row type="flex" align="middle" :gutter="12">
                         <a-col :span="12">
                           <a-form-item>
@@ -74,17 +116,7 @@
                             </a-button>
                           </a-form-item>
                         </a-col>
-
-                        <a-divider>or</a-divider>
-                        <a-button
-                          type="link"
-                          block
-                          @click="show_search"
-                        >Search and Connect with Others</a-button>
                       </a-row>
-
-                      <!-- modal -->
-                      <search-connection :show_search="modal" @close="modal = false"></search-connection>
                     </template>
                   </a-modal>
                 </div>
@@ -101,15 +133,12 @@
 import headerIcon from "../../assets/Chzmis.png";
 
 export default {
-  components: {
-    searchConnection: () => import("@/components/SearchConnection")
-  },
   data() {
     return {
       headerIcon,
       loading: false,
       visible: false,
-      modal: false
+      dataSource: []
     };
   },
   computed: {
@@ -120,10 +149,6 @@ export default {
   methods: {
     showModal() {
       this.visible = true;
-    },
-    show_search() {
-      this.modal = true;
-      this.visible = false;
     },
     handleOk(e) {
       this.loading = true;
@@ -179,5 +204,41 @@ export default {
 .custom-size {
   width: 500px;
   height: 300px;
+}
+.global-search-wrapper {
+  padding-right: 50px;
+}
+
+.global-search {
+  width: 100%;
+}
+
+.global-search.ant-select-auto-complete .ant-select-selection--single {
+  margin-right: -46px;
+}
+
+.global-search.ant-select-auto-complete
+  .ant-input-affix-wrapper
+  .ant-input:not(:last-child) {
+  padding-right: 62px;
+}
+
+.global-search.ant-select-auto-complete
+  .ant-input-affix-wrapper
+  .ant-input-suffix {
+  right: 0;
+}
+
+.global-search.ant-select-auto-complete
+  .ant-input-affix-wrapper
+  .ant-input-suffix
+  button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.global-search-item-count {
+  position: absolute;
+  right: 16px;
 }
 </style>

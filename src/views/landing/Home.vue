@@ -4,7 +4,7 @@
       <a-col
         :xs="24"
         :md="{span: 22, offset: 1}"
-        :lg="{span: 18, offset: 3}"
+        :lg="{span: 18, offset: 4}"
         style="font-weight: bold"
       >
         <div class="rounded-corners-transparent custom-size"></div>
@@ -20,7 +20,9 @@
             </a-col>
 
             <!-- RIGHT -->
-            <span style="text-align: center">Login</span>
+            <div class="center">
+              <span>Login</span>
+            </div>
 
             <a-col :span="12" style="padding-top: 10px">
               <a-row type="flex" align="middle">
@@ -46,7 +48,7 @@
                       </a-input>
                       <a-form-item style="padding-top: 10px">
                         <a-button type="primary" block @click="registration">Login</a-button>
-                        <div class="text-center">
+                        <div class="center">
                           <a href="#">If you haven't set up an account yet, Register here</a>
                         </div>
                         <a-divider>or</a-divider>
@@ -136,7 +138,7 @@ export default {
   background: white !important;
   box-shadow: -8px 10px 10px #0000003b;
 }
-#app {
+.center {
   text-align: center !important;
 }
 /* .header-style {
