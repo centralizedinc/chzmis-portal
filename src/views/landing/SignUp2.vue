@@ -24,40 +24,32 @@
           <div align="middle">
             <h3>Please confirm your registration below</h3>
           </div>
-          <!-- <div align="left">
-            <a-input placeholder="Username/Email Address" />
-          </div>
-          <div>
-            <a-input placeholder="First Name" />
-          </div>
-          <div>
-            <a-input placeholder="Last Name" />
-          </div>
-          <div>
-            <a-date-picker @change="onChange" placeholder="Birthday" />
-          </div> -->
           <div align="middle" id="components-form-demo-vuex">
-            <a-form :form="form" @submit="handleSubmit">
+            <a-form>
               <a-form-item> 
                 <a-input
-                  v-decorator="['username', { rules: [{ required: true, message: 'New password is required!' }] }]"
+                  v-model="user_details.username"
+                  v-decorator="['username', { rules: [{ required: true, message: 'New username is required!' }] }]"
                   placeholder="Username/Email Address"
+                  
                 >
                   <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
                 </a-input>
                 <a-input
-                  v-decorator="['fname', { rules: [{ required: true, message: 'Please input your username!' }] }]"
+                  v-decorator="['fname', { rules: [{ required: true, message: 'Please input your first name!' }] }]"
                   placeholder="First Name"
+                  v-model="user_details.fname"
                 >
                   <a-icon slot="prefix" type="idcard" style="color: rgba(0,0,0,.25)" />
                 </a-input>
                 <a-input
-                  v-decorator="['lname', { rules: [{ required: true, message: 'Please input your username!' }] }]"
+                  v-decorator="['lname', { rules: [{ required: true, message: 'Please input your last name!' }] }]"
                   placeholder="Last Name"
+                  v-model="user_details.lname"
                 >
                   <a-icon slot="prefix" type="idcard" style="color: rgba(0,0,0,.25)" />
                 </a-input>
-                <a-date-picker @change="onChange" placeholder="Birthday" />
+                <a-date-picker v-model="user_details.bday" @change="onChange" placeholder="Birthday" />
                 <a-button type="primary" @click="third" block>Continue</a-button>
                 <!-- <a-button type="primary" html-type="submit">Submit</a-button> -->
               </a-form-item>
@@ -74,23 +66,29 @@
 
 <script>
 export default {
+  data: () => ({
+    user_details:{}
+  }),
   methods: {
-    handleChange(value) {
-      console.log(value);
-    },
-    handleSubmit (e) {
-      e.preventDefault();
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values);
-        }
-      });
-    },
+    // handleChange(value) {
+    //   console.log(value);
+    // },
+    // handleSubmit (e) {
+    //   e.preventDefault();
+    //   this.form.validateFields((err, values) => {
+    //     if (!err) {
+    //       console.log('Received values of form: ', values);
+    //     }
+    //   });
+    // },
     onChange(date, dateString) {
       console.log(date, dateString);
       // this.$router.push("/views/landing/signUp3");
     },
     third(){
+      this.$store.commit("SET_REGISTRATION", this.user_details);
+      console.log('console user details :', JSON.stringify(this.user_details))
+      // console.log('username :', username);
       this.$router.push("/signUp3");
     }
 

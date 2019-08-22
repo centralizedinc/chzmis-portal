@@ -38,6 +38,7 @@
                   v-decorator="['newPassword', { rules: [{ required: true, message: 'New password is required!' }] }]"
                   placeholder="Create new password"
                   type="password"
+                  v-model="pasword"
                 >
                   <a-icon slot="prefix" type="unlock" style="color: rgba(0,0,0,.25)" />
                 </a-input>
