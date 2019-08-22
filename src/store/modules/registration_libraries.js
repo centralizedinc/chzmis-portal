@@ -13,9 +13,9 @@ const mutations = {
 }
 
 const actions = {
-    ADD_ACCOUNT(context, new_account) {
+    CREATE_ACCOUNT(context, new_account) {
         return new Promise((resolve, reject)=>{
-            new AccountType(context.rootState.user_session.token).addNewAccount(new_account, (err, data)=>{
+            new CreateAccount(context.rootState.user_session.token).createNewAccount(new_account, (err, data)=>{
                 if (err) {
                     reject(err)
                 } else {

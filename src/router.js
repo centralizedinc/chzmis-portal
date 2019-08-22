@@ -31,6 +31,11 @@ export default new Router({
           component: () => import('./views/landing/SignUp3.vue')
         },
         {
+          path: 'newAccount',
+          name: 'New Account',
+          component: () => import('./views/landing/CreateNewAccount.vue')
+        },
+        {
           path: 'googleSignUp',
           name: 'Google Sign up',
           component: () => import('./views/landing/GoogleSignupSuccess.vue')
