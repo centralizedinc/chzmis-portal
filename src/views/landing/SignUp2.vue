@@ -14,14 +14,14 @@
                 <a-input
                   v-decorator="['fname', { rules: [{ required: true, message: 'Please input your first name!' }] }]"
                   placeholder="First Name"
-                  v-model="form.fname"
+                  v-model="form.name.first"
                 >
                   <a-icon slot="prefix" type="idcard" style="color: rgba(0,0,0,.25)" />
                 </a-input>
                 <a-input
                   v-decorator="['lname', { rules: [{ required: true, message: 'Please input your last name!' }] }]"
                   placeholder="Last Name"
-                  v-model="form.lname"
+                  v-model="form.name.last"
                 >
                   <a-icon slot="prefix" type="idcard" style="color: rgba(0,0,0,.25)" />
                 </a-input>

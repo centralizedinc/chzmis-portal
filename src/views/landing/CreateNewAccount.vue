@@ -98,8 +98,11 @@ export default {
       user_info:{
           category: "",
           username:"",
-          fname:"",
-          lname:"",
+          name:{
+              first:"",
+              middle:"",
+              last:""
+          },
           bday:"",
           password:""
       }

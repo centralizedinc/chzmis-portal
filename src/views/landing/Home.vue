@@ -63,6 +63,7 @@
                                 type="primary"
                                 block
                                 style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
+                                @click="facebook"
                               >
                                 <a-icon type="facebook" theme="filled" />
                               </a-button>
@@ -75,6 +76,7 @@
                                 style="font-size: 20px; background-color: #d34836; border-color: #d34836"
                                 type="primary"
                                 block
+                                @click="google"
                               >
                                 <a-icon type="google-plus" />
                               </a-button>
@@ -107,6 +109,14 @@ export default {
   methods: {
     registration() {
       this.$router.push("/signUp");
+    },
+    facebook() {
+      this.$router.push("/facebookSignUp");
+      return
+      this.$router.push("/newAccount");
+    },
+    google() {
+      this.$router.push("/newAccount");
     }
   }
 };
