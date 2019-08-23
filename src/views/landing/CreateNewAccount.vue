@@ -23,30 +23,32 @@
           </div>-->
 
           <a-steps :current="current">
-            <a-step size="small" v-for="item in steps" :key="item.title" :title="item.title"/>
+            <a-step size="small" v-for="item in steps" :key="item.title" :title="item.title" />
           </a-steps>
           <div>
-          <div class="steps-content" v-if="current == 0" v-show="true">{{steps[current].content}}
+            <div class="steps-content" v-if="current == 0" v-show="true">
+              {{steps[current].content}}
               <firstStep :form="user_info"></firstStep>
-          </div>
-          <div class="steps-content" v-if="current == 1" v-show="true">{{steps[current].content}}
+            </div>
+            <div class="steps-content" v-if="current == 1" v-show="true">
+              {{steps[current].content}}
               <secondStep :form="user_info"></secondStep>
-          </div>
-          <div class="steps-content" v-if="current == 2" v-show="true">{{steps[current].content}}
+            </div>
+            <div class="steps-content" v-if="current == 2" v-show="true">
+              {{steps[current].content}}
               <thirdStep :form="user_info"></thirdStep>
+            </div>
+
+            <div class="steps-action">
+              <a-button v-if="current < steps.length - 1" type="primary" @click="next">Next</a-button>
+              <a-button
+                v-if="current == steps.length - 1"
+                type="primary"
+                @click="submit($message.success('Please confirm your account through your email'))"
+              >Done</a-button>
+              <a-button v-if="current>0" style="margin-left: 8px" @click="prev">Previous</a-button>
+            </div>
           </div>
-          
-          <div class="steps-action">
-            <a-button v-if="current < steps.length - 1" type="primary" @click="next">Next</a-button>
-            <a-button
-              v-if="current == steps.length - 1"
-              type="primary"
-              @click="submit($message.success('Please confirm your account through your email'))"
-            >Done</a-button>
-            <a-button v-if="current>0" style="margin-left: 8px" @click="prev">Previous</a-button>
-          </div>
-          </div>
-          
 
           <!-- <div align="middle">
               <i>Select approriate account type before proceeding</i>
@@ -58,66 +60,84 @@
   </div>
 </template>
 <script>
-import SignUpNew from "./SignUpNew"
-import SignUp2 from "./SignUp2"
-import SignUp3 from "./SignUp3"
+import SignUpNew from "./SignUpNew";
+import SignUp2 from "./SignUp2";
+import SignUp3 from "./SignUp3";
 
 export default {
-    components: {
-        firstStep:() => ({
-            component: import("./SignUpNew")
-        }),
-        secondStep:() => ({
-            component: import("./SignUp2")
-        }),
-        thirdStep:() => ({
-            component: import("./SignUp3")
-        }),
-    },
+  components: {
+    firstStep: () => ({
+      component: import("./SignUpNew")
+    }),
+    secondStep: () => ({
+      component: import("./SignUp2")
+    }),
+    thirdStep: () => ({
+      component: import("./SignUp3")
+    })
+  },
   data() {
     return {
       current: 0,
       steps: [
         {
           title: "First",
-        //   content: import("./SignUpNew")
+          //   content: import("./SignUpNew")
           content: ""
         },
         {
-          title: "Second",
-        //   content: import("./SignUp2")
-        //   content: "Second-content"
+          title: "Second"
+          //   content: import("./SignUp2")
+          //   content: "Second-content"
         },
         {
-          title: "Last",
-        //   content: import("./SignUp3")
-        //   content: "Last-content"
+          title: "Last"
+          //   content: import("./SignUp3")
+          //   content: "Last-content"
         }
       ],
-      user_info:[],
-      user_info:{
-          category: "",
-          username:"",
-          name:{
-              first:"",
-              middle:"",
-              last:""
-          },
-          bday:"",
-          password:""
+      // user_info:[],
+      user_info: {
+        category: "",
+        email: "",
+        name: {
+          first: "",
+          middle: "",
+          last: ""
+        },
+        bday: "",
+        password: ""
       }
     };
   },
+  created() {
+    console.log("user_info initialized:", this.user_info);
+    console.log(
+      "user_info STORE:",
+      this.$store.state.third_party_libraries.facebook_details
+    );
+    this.init();
+  },
   methods: {
+    init() {
+      // this.user_info = JSON.parse(JSON.stringify(this.$store.state.third_party_libraries.facebook_details));
+      // Facebook Details
+      this.user_info.email = this.$store.state.third_party_libraries.facebook_details._json.email;
+      this.user_info.name.first = this.$store.state.third_party_libraries.facebook_details._json.first_name;
+      this.user_info.name.middle = this.$store.state.third_party_libraries.facebook_details._json.middle_name;
+      this.user_info.name.last = this.$store.state.third_party_libraries.facebook_details._json.last_name;
+
+      //Google Details
+    },
     next() {
       this.current++;
     },
     prev() {
       this.current--;
     },
-    submit(){
-      this.$store.commit("SET_REGISTRATION", this.user_info);
-      console.log('console user information:', JSON.stringify(this.user_info))
+    submit() {
+      this.$store.dispatch("CREATE_ACCOUNT", this.user_info);
+      console.log("console user information:", JSON.stringify(this.user_info));
       // console.log('username :', username);
       this.$router.push("/");
     }

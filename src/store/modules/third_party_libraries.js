@@ -24,7 +24,20 @@ const mutations = {
 }
 
 const actions = {
+    // GET_FACEBOOK_DETAILS(context) {
+    //     return new Promise((resolve, reject) => {
+    //         new ThirdPartyAPI(context).getFacebook((err, data) => {
+    //             if (err) {
+    //                 reject(err)
+    //             } else {
+    //                 context.commit('FACEBOOK_SIGNUP', data)
+    //                 resolve(data)
+    //             }
+    //         })
+    //     })
+    // },
 }
+
 
 export default {
     state,

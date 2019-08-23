@@ -49,7 +49,7 @@
                       <a-form-item style="padding-top: 10px">
                         <a-button type="primary" block @click="registration">Login</a-button>
                         <div class="center">
-                          <a href="#">If you haven't set up an account yet, Register here</a>
+                          <a @click="signUp">If you haven't set up an account yet, Register here</a>
                         </div>
                         <a-divider>or</a-divider>
 
@@ -63,7 +63,7 @@
                                 type="primary"
                                 block
                                 style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
-                                @click="facebook"
+                                @click="facebookSignUp"
                               >
                                 <a-icon type="facebook" theme="filled" />
                               </a-button>
@@ -76,7 +76,7 @@
                                 style="font-size: 20px; background-color: #d34836; border-color: #d34836"
                                 type="primary"
                                 block
-                                @click="google"
+                                @click="googleSignUp"
                               >
                                 <a-icon type="google-plus" />
                               </a-button>
@@ -110,13 +110,30 @@ export default {
     registration() {
       this.$router.push("/signUp");
     },
-    facebook() {
-      this.$router.push("/facebookSignUp");
-      return
+    signUp() {
       this.$router.push("/newAccount");
     },
-    google() {
-      this.$router.push("/newAccount");
+    // facebook() {
+    //   this.$router.push("/facebookSignUp");
+    //   return
+    //   this.$router.push("/newAccount");
+    // },
+    // google() {
+    //   this.$router.push("/newAccount");
+    // },
+    googleSignUp() {
+      var googleWindow = window.open(
+        process.env.VUE_APP_API_BASE_URL + "auth/google",
+        "Google Sign Up",
+        "width=500,height=500"
+      );
+    },
+    facebookSignUp() {
+      var googleWindow = window.open(
+        process.env.VUE_APP_API_BASE_URL + "auth/facebook",
+        "Facebook Sign Up",
+        "width=500,height=500"
+      );
     }
   }
 };

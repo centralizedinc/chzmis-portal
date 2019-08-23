@@ -4,9 +4,9 @@
             <a-form>
               <a-form-item> 
                 <a-input
-                  v-model="form.username"
-                  v-decorator="['username', { rules: [{ required: true, message: 'New username is required!' }] }]"
-                  placeholder="Username/Email Address"
+                  v-model="form.email"
+                  v-decorator="['email', { rules: [{ required: true, message: 'New email is required!' }] }]"
+                  placeholder="Email Address"
                   
                 >
                   <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
