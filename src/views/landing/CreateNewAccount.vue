@@ -113,8 +113,12 @@ export default {
   created() {
     console.log("user_info initialized:", this.user_info);
     console.log(
-      "user_info STORE:",
+      "user_info STORE:Facebook",
       this.$store.state.third_party_libraries.facebook_details
+    );
+    console.log(
+      "user_info STORE:Google",
+      this.$store.state.third_party_libraries.google_details
     );
     this.init();
   },
@@ -128,6 +132,10 @@ export default {
       this.user_info.name.last = this.$store.state.third_party_libraries.facebook_details._json.last_name;
 
       //Google Details
+      this.user_info.email = this.$store.state.third_party_libraries.google_details._json.email;
+      this.user_info.name.first = this.$store.state.third_party_libraries.google_details._json.first_name;
+      this.user_info.name.middle = this.$store.state.third_party_libraries.google_details._json.middle_name;
+      this.user_info.name.last = this.$store.state.third_party_libraries.google_details._json.last_name;
     },
     next() {
       this.current++;

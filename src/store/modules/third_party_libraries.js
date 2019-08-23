@@ -20,6 +20,9 @@ const mutations = {
     FACEBOOK_SIGNUP(state, data){
         state.facebook_details = data
         state.signup_method = 'facebook'
+    },
+    LOCAL_SIGNUP(state, data){
+        state.signup_method = 'local'
     }
 }
 

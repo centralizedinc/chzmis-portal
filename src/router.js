@@ -46,6 +46,11 @@ export default new Router({
           component: () => import('./views/landing/GoogleSignupSuccess.vue')
         },
         {
+          path: 'policy',
+          name: 'Google Policy',
+          component: () => import('./views/landing/Policy.vue')
+        },
+        {
           path: 'facebookSignUp',
           name: 'Facebook Sign up',
           component: () => import('./views/landing/FacebookSignupSuccess.vue')
