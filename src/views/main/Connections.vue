@@ -1,219 +1,226 @@
 <template>
   <a-card
-    title="Connections"
-    headStyle="padding: 0px; padding-left: 10px; 
-        font-weight: bold; text-align: left; min-height: 0px;
-        background: #3c3c3c; font-size: 18px; color: white;"
-    bodyStyle="max-height: 350px; text-align: left !important;"
-    style="border-radius: 0px 0px 25px 25px;"
+    :headStyle="main_layout_head_style"
+    :bodyStyle="{'text-align': 'left', padding: '0', 'padding-top': '2px'}"
+    class="connection-card"
   >
-    <a-row>
-      <a-col :span="12">
-        <div style="border: 1px solid">
-          <a-tabs type="card" tabPosition="top">
-            <a-tab-pane class="messages-content" v-for="(item, index) in groups" :key="index">
-              <span slot="tab">
-                {{item.title}}
-                <a-tooltip placement="topLeft">
-                  <template slot="title">
-                    <span>{{item.favorite ? 'Remove from favorites' : 'Add to favorites'}}</span>
-                  </template>
-                  <a-button class="btn-icon-only" @click="setFavorite(index)">
-                    <a-icon
-                      type="star"
-                      :theme="item.favorite ? 'filled' : 'outlined'"
-                      :class="item.favorite && 'favorite-tab'"
-                    />
-                  </a-button>
-                </a-tooltip>
-              </span>
-              <comment-section
-                v-for="(item, index) in getPostMessages(item.id)"
-                :key="index"
-                :author="item.author"
-                :avatar="item.avatar"
-                :content="item.content"
-                :likes="item.likes.length"
-                :dislikes="item.dislikes.length"
-                @like="like(item.id)"
-                @dislike="dislike(item.id)"
-                @comment="comment"
-                :action="getUserAction(item)"
-                :datetime="item.datetime"
-                :postid="item.id"
-                :groupid="item.group"
-                show-comment
-              >
-                <comment-section
-                  slot="comment"
-                  v-for="(comment_item, comment_index) in item.comments"
-                  :key="comment_index"
-                  :author="comment_item.author"
-                  :avatar="comment_item.avatar"
-                  :content="comment_item.content"
-                  :likes="comment_item.likes.length"
-                  :dislikes="comment_item.dislikes.length"
-                  @like="like(comment_item.id)"
-                  @dislike="dislike(comment_item.id)"
-                  :postid="item.id"
-                  :action="getUserAction(comment_item)"
-                  :datetime="comment_item.datetime"
-                ></comment-section>
-              </comment-section>
-            </a-tab-pane>
-          </a-tabs>
-        </div>
+    <a-row slot="title">
+      <a-col :span="23">Connections</a-col>
+      <a-col :span="1" style="text-align: center">
+        <a-icon type="minus" @click="$store.commit('SHOW_PROFILE', false)" />
       </a-col>
-      <a-col :span="12">
-        <a-row>
-          <a-col :span="2">
-            <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-          </a-col>
-          <a-col :span="22">
-            <a-textarea v-model="post_message" placeholder="Post a message" :rows="3" />
-            <a-row type="flex" justify="space-between" style="padding: 10px;">
-              <a-col :span="3">
-                <a-tag @click="attachFile">Photo/Video</a-tag>
+    </a-row>
+    <a-row>
+      <a-col :span="24">
+        <a-tabs
+          @change="getConnectionPosts"
+          :activeKey="active_key"
+          :defaultActiveKey="-1"
+          type="card"
+          tabPosition="top"
+        >
+          <!-- Public Connections -->
+          <a-tab-pane :key="-1" tab="Public">
+            <a-row>
+              <a-col :span="hide_msgbox?23:12" style="border-right: 1px solid #eee;">
+                <post-section :loading_data="loading_post" public class="messages-content"></post-section>
               </a-col>
-              <a-col :span="4">
-                <!-- <a-button type="primary" size="small" block @click="send_message">SEND</a-button> -->
-                <a-dropdown>
-                  <a-menu slot="overlay" @click="send_message">
-                    <a-menu-item v-for="group in items" :key="group.id">{{group.title}}</a-menu-item>
-                  </a-menu>
-                  <a-button block type="primary" ghost size="small">
-                    SEND
-                    <a-icon type="down" />
-                  </a-button>
-                </a-dropdown>
+              <a-col :span="1" v-if="hide_msgbox" class="cons-icon">
+                <p>
+                  <a-tooltip placement="left">
+                    <template slot="title">
+                      <span>Show</span>
+                    </template>
+                    <a-icon type="left-circle" @click="hide_msgbox=false" />
+                  </a-tooltip>
+                </p>
+              </a-col>
+              <a-col :span="12" v-else style="padding: 15px; padding-left: 5px; padding-top: 5px;">
+                <a-row>
+                  <a-col :span="24" style="text-align: right">
+                    <a href="#" style="text-decoration: underline;" @click="hide_msgbox=true">
+                      Hide
+                      <a-icon type="right-circle" />
+                    </a>
+                  </a-col>
+                  <a-col :span="2">
+                    <a-avatar
+                      src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                    />
+                  </a-col>
+                  <a-col :span="22">
+                    <a-textarea v-model="post_message" placeholder="Post a message" :rows="3" />
+                    <a-row type="flex" justify="space-between" style="padding: 10px;">
+                      <a-col :span="3">
+                        <a-tag @click="attachFile">Photo/Video</a-tag>
+                      </a-col>
+                      <a-col :span="4">
+                        <a-button @click="send_message" block type="primary" size="small">SEND</a-button>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                </a-row>
               </a-col>
             </a-row>
-          </a-col>
-        </a-row>
+          </a-tab-pane>
+
+          <!-- Private Connections -->
+          <a-tab-pane v-for="(item, index) in connections" :key="index">
+            <span slot="tab">
+              {{item.name}}
+              <a-dropdown placement="bottomRight" style="margin-right: 0; margin-left: 8px">
+                <a-icon type="caret-down" />
+                <a-menu slot="overlay">
+                  <a-menu-item key="0">
+                    <a href="http://www.alipay.com/">Set as Favorite</a>
+                  </a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="1">
+                    <a href="http://www.taobao.com/">Update</a>
+                  </a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="3">
+                    <a href="http://www.taobao.com/">Delete</a>
+                  </a-menu-item>
+                </a-menu>
+              </a-dropdown>
+            </span>
+            <a-row>
+              <a-col :span="hide_msgbox?23:12" style="border-right: 1px solid #eee;">
+                <post-section :loading_data="loading_post" class="messages-content"></post-section>
+              </a-col>
+              <a-col :span="1" v-if="hide_msgbox" class="cons-icon">
+                <p>
+                  <a-tooltip placement="left">
+                    <template slot="title">
+                      <span>Show</span>
+                    </template>
+                    <a-icon type="left-circle" @click="hide_msgbox=false" />
+                  </a-tooltip>
+                </p>
+              </a-col>
+              <a-col :span="12" v-else style="padding: 15px; padding-left: 5px; padding-top: 5px;">
+                <a-row>
+                  <a-col :span="24" style="text-align: right">
+                    <a href="#" style="text-decoration: underline;" @click="hide_msgbox=true">
+                      Hide
+                      <a-icon type="right-circle" />
+                    </a>
+                  </a-col>
+                  <a-col :span="2">
+                    <a-avatar
+                      src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                    />
+                  </a-col>
+                  <a-col :span="22">
+                    <a-textarea v-model="post_message" placeholder="Post a message" :rows="3" />
+                    <a-row type="flex" justify="space-between" style="padding: 10px;">
+                      <a-col :span="3">
+                        <a-tag @click="attachFile">Photo/Video</a-tag>
+                      </a-col>
+                      <a-col :span="4">
+                        <a-button @click="send_message" block type="primary" size="small">SEND</a-button>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                </a-row>
+              </a-col>
+            </a-row>
+          </a-tab-pane>
+
+          <a-button slot="tabBarExtraContent" style="margin-right: 10px" @click="newConnection">New <a-icon type="plus-circle" /></a-button>
+        </a-tabs>
       </a-col>
     </a-row>
   </a-card>
 </template>
 
 <script>
-import CommentSection from "./CommentSection";
-import comments from "./comments.json";
-import groups from "./groups.json";
+import PostSection from "./comment/PostSection";
 
 export default {
   components: {
-    CommentSection
+    PostSection
   },
   data() {
     return {
+      active_key: -1,
       post_message: "",
-      groups,
-      comments,
-      current_post_id: 5
+      loading_post: false,
+      hide_msgbox: false
     };
   },
+  computed: {
+    connections() {
+      return this.$store.state.connections.connections;
+    }
+  },
+  created() {
+    this.$store
+      .dispatch("GET_CONNECTIONS")
+      .then(result => {
+        this.active_key = -1;
+        console.log("done loading connections");
+        console.log("connections :", result);
+      })
+      .catch(err => {
+        console.log("GET_CONNECTIONSerr :", err);
+      });
+    this.loadPublicPost();
+  },
   methods: {
-    getPostMessages(group_id) {
-      var post_messages = [];
-      this.deepCopy(this.comments).forEach(message => {
-        if (message.group === group_id) {
-          if (message.post_id) {
-            // comments from post
-            var index = post_messages.findIndex(x => x.id === message.post_id);
-            if (index >= 0) {
-              if (post_messages[index].comments) {
-                post_messages[index].comments.push(message);
-              } else {
-                post_messages[index].comments = [message];
-              }
-            }
-          } else {
-            // new post
-            message.showcomment = false;
-            post_messages.push(message);
-          }
-        }
-      });
-      // sort date
-      post_messages.sort((a, b) => {
-        return new Date(b.datetime) - new Date(a.datetime);
-      });
-      return post_messages;
+    getConnectionPosts(index) {
+      this.active_key = index;
+      if (index === -1) this.loadPublicPost();
+      else {
+        this.loading_post = true;
+        this.$store.commit(
+          "SET_ACTIVE_CONNECTION",
+          this.connections[index]._id
+        );
+        this.$store
+          .dispatch("GET_CONNECTION_POSTS", { refresh: true })
+          .then(result => {
+            console.log("done loading private post");
+            this.loading_post = false;
+          })
+          .catch(err => {
+            console.log("GET_CONNECTION_POSTSerr :", err);
+            this.loading_post = false;
+          });
+      }
     },
-    openCommentBox(post_id) {
-      var index = this.comments.findIndex(x => x.id === post_id);
-      if (index > -1) this.comments[index].showcomment = true; // Let say that 8 is the current user id
-      console.log("item :", this.comments[index]);
-    },
-    callback(key) {
-      console.log(key);
-    },
-    setFavorite(index) {
-      console.log("item :", index);
-      this.groups[index].favorite = !this.groups[index].favorite;
-      this.groups.sort(function(x, y) {
-        return x.favorite === y.favorite ? 0 : x.favorite ? -1 : 1;
-      });
-    },
-    getUserAction(item) {
-      return item.likes.includes(8) ? 1 : item.dislikes.includes(8) ? 0 : null;
+    loadPublicPost() {
+      this.loading_post = true;
+      this.$store
+        .dispatch("GET_PUBLIC_POSTS")
+        .then(result => {
+          console.log("done loading public post");
+          this.loading_post = false;
+        })
+        .catch(err => {
+          console.log("GET_PUBLIC_POSTSerr :", err);
+          this.loading_post = false;
+        });
     },
     attachFile() {},
-    like(post_id) {
-      var index = this.comments.findIndex(x => x.id === post_id);
-      if (index > -1 && !this.comments[index].likes.includes(8)) {
-        this.comments[index].likes.push(8); // Let say that 8 is the current user id
-        var index2 = this.comments[index].dislikes.findIndex(x => x === 8);
-        if (index2 > -1) {
-          this.comments[index].dislikes.splice(index2, 1);
-        }
-      }
-    },
-    dislike(post_id) {
-      var index = this.comments.findIndex(x => x.id === post_id);
-      if (index > -1 && !this.comments[index].dislikes.includes(8)) {
-        this.comments[index].dislikes.push(8); // Let say that 8 is the current user id
-        var index2 = this.comments[index].likes.findIndex(x => x === 8);
-        if (index2 > -1) {
-          this.comments[index].likes.splice(index2, 1);
-        }
-      }
-    },
-    comment(reply) {
-      console.log("this.comments :", this.comments);
-      if (reply.message) {
-        this.comments.push({
-          id: this.current_post_id.toString(),
-          author: "Mark",
-          avatar:
-            "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
-          content: reply.message,
-          likes: [],
-          dislikes: [],
-          datetime: new Date(),
-          post_id: reply.post_id,
-          group: reply.group_id
-        });
-        this.current_post_id++;
-      }
-      console.log("this.messages2 :", this.comments);
-    },
-    send_message(e) {
+    send_message() {
       if (this.post_message) {
-        this.comments.push({
-          id: this.current_post_id.toString(),
-          author: "Mark",
-          avatar:
-            "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
-          content: this.post_message,
+        var post = {
+          id: new Date().getTime(),
+          author: "acc1",
+          message: this.post_message,
           likes: [],
-          dislikes: [],
-          datetime: new Date(),
-          group: e.key
-        });
-        this.current_post_id++;
+          dislikes: []
+        };
+        if (this.active_key === -1) post.is_public = true;
+        else post.parent_id = this.connections[this.active_key].id;
+        this.$store.dispatch("POST_MESSAGE", post);
         this.post_message = "";
       }
+    },
+    newConnection(){
+
     }
   }
 };
@@ -221,8 +228,9 @@ export default {
 
 <style>
 .messages-content {
-  max-height: 230px;
+  max-height: 400px;
   overflow-y: scroll;
+  padding-right: 2px;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -231,17 +239,29 @@ export default {
   display: none;
 }
 
-.btn-icon-only {
-  background: none !important;
-  border: none !important;
-  padding: 0 0 0 5px !important;
+.ant-tabs-bar {
+  margin: 0;
 }
 
-button.btn-icon-only:hover {
-  color: yellow !important;
+.cons-icon {
+  text-align: center;
+  margin-top: 5px;
 }
 
-.favorite-tab {
-  color: yellow !important;
+.cons-icon i {
+  font-size: 24px;
+  color: blue;
+  cursor: pointer;
+}
+
+.cons-icon i:hover {
+  font-size: 30px;
+}
+
+.connection-card {
+  border: 1px groove #aaa;
+  border-radius: 0px 0px 25px 25px;
+  box-shadow: 0px 1px;
+  max-height: 400px;
 }
 </style>

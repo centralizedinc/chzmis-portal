@@ -7,6 +7,9 @@ import modules from './modules'
 
 Vue.use(Vuex)
 
+const cookies_store = ['user_session']
+var local_store = Object.keys(modules).filter(x => !cookies_store.includes(x))
+
 export default new Vuex.Store({
   modules,
   strict: process.env.NODE_ENV !== 'production',
@@ -14,12 +17,12 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       key: 'chzmis-reference',
-      paths: ['third_party_libraries']
+      paths: local_store
     }),
     //store user session in cookiess
     createPersistedState({
       key: 'chzmis-session',
-      paths: ['user_session'],
+      paths: cookies_store,
       storage: {
         getItem: key => Cookies.get(key),
         setItem: (key, value) => Cookies.set(key, value, {

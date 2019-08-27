@@ -5,11 +5,11 @@
         <header-layout class="secured-header-layout"></header-layout>
       </a-affix>
     </a-layout-header>
-    <a-layout style="height: 100%">
+    <a-layout style="height: 100%;margin-bottom: 50px;">
       <a-layout-sider class="secured-sider-layout">
         <profile></profile>
       </a-layout-sider>
-      <a-layout-content style="padding: 5px 0;">
+      <a-layout-content style="padding: 5px 0;margin-bottom: 35px;">
         <router-view />
       </a-layout-content>
       <a-layout-sider class="secured-acquaintance-layout">

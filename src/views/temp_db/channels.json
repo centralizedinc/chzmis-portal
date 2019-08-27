@@ -1,0 +1,29 @@
+[{
+    "id": "ch1",
+    "name": "Node JS",
+    "avatar": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/1200px-Node.js_logo.svg.png",
+    "subscribers": 3123,
+    "created_by": "acc1",
+    "date_created": "08/08/2019"
+  }, {
+    "id": "ch2",
+    "name": "Vue",
+    "avatar": "https://vuejs.org/images/logo.png",
+    "subscribers": 2645,
+    "created_by": "acc1",
+    "date_created": "08/08/2019"
+  }, {
+    "id": "ch3",
+    "name": "Godfrey Rivera",
+    "avatar": "https://www.facebook.com/search/async/profile_picture/?fbid=100001799073406&width=72&height=72",
+    "subscribers": 523,
+    "created_by": "acc1",
+    "date_created": "08/08/2019"
+  }, {
+    "id": "ch4",
+    "name": "Kris Yango",
+    "avatar": "https://www.facebook.com/search/async/profile_picture/?fbid=1714880653&width=72&height=72",
+    "subscribers": 632,
+    "created_by": "acc1",
+    "date_created": "08/08/2019"
+  }]

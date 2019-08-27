@@ -10,7 +10,7 @@
         <div class="rounded-corners-transparent custom-size"></div>
         <a-card class="overlay-form">
           <!-- LEFT -->
-          <a-row :gutter="24">
+          <a-row :gutter="24" style="text-align: center">
             <a-col :span="12">
               <a-card
                 style="background: transparent !important ; border: none !important ; padding-top: 80px !important"
@@ -57,6 +57,7 @@
                           <a-col :span="12">
                             <a-form-item>
                               <a-button
+                                @click="facebookSignUp"
                                 type="primary"
                                 block
                                 style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
@@ -69,6 +70,7 @@
                           <a-col :span="12">
                             <a-form-item>
                               <a-button
+                                @click="googleSignUp"
                                 style="font-size: 20px; background-color: #d34836; border-color: #d34836"
                                 type="primary"
                                 block
@@ -100,7 +102,23 @@ const IconFont = Icon.createFromIconfontCN({
 export default {
   components: {
     IconFont
-  }
+  },
+  methods: {
+    googleSignUp() {
+      var googleWindow = window.open(
+        process.env.VUE_APP_API_BASE_URL + "auth/google",
+        "Google Sign Up",
+        "width=500,height=500"
+      );
+    },
+    facebookSignUp() {
+      var googleWindow = window.open(
+        process.env.VUE_APP_API_BASE_URL + "auth/facebook",
+        "Facebook Sign Up",
+        "width=500,height=500"
+      );
+    }
+  },
 };
 </script>
 
@@ -129,9 +147,6 @@ export default {
 .rounded-corners-transparent {
   background: white !important;
   box-shadow: -8px 10px 10px #0000003b;
-}
-#app {
-  text-align: center !important;
 }
 /* .header-style {
   font-weight: 800;
