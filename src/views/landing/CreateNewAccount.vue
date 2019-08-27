@@ -38,7 +38,6 @@
               {{steps[current].content}}
               <thirdStep :form="user_info"></thirdStep>
             </div>
-
             <div class="steps-action">
               <a-button v-if="current < steps.length - 1" type="primary" @click="next">Next</a-button>
               <a-button
@@ -163,7 +162,7 @@ export default {
   padding-top: 10px;
   background: transparent;
 }
-.steps-action {
+/* .steps-action {
   margin-top: 10px;
-}
+} */
 </style>
