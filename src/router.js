@@ -31,9 +31,24 @@ export default new Router({
           component: () => import('./views/landing/SignUp3.vue')
         },
         {
+          path: 'newAccount',
+          name: 'New Account',
+          component: () => import('./views/landing/CreateNewAccount.vue')
+        },
+        {
+          path: 'confirmRegistration',
+          name: 'Confirm Registration',
+          component: () => import('./views/landing/ConfirmRegistration.vue')
+        },
+        {
           path: 'googleSignUp',
           name: 'Google Sign up',
           component: () => import('./views/landing/GoogleSignupSuccess.vue')
+        },
+        {
+          path: 'policy',
+          name: 'Google Policy',
+          component: () => import('./views/landing/Policy.vue')
         },
         {
           path: 'facebookSignUp',
@@ -53,6 +68,11 @@ export default new Router({
           path: 'create/connection',
           name: 'Create Connections',
           component: () => import('./views/landing/CreateConnection.vue')
+        },
+        {
+          path: 'search/connection',
+          name: 'Connect with Others',
+          component: () => import('./components/SearchConnection.vue')
         },
 
       ]

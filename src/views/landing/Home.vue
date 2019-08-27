@@ -4,7 +4,7 @@
       <a-col
         :xs="24"
         :md="{span: 22, offset: 1}"
-        :lg="{span: 18, offset: 3}"
+        :lg="{span: 18, offset: 4}"
         style="font-weight: bold"
       >
         <div class="rounded-corners-transparent custom-size"></div>
@@ -20,7 +20,9 @@
             </a-col>
 
             <!-- RIGHT -->
-            <span style="text-align: center">Sign up using your email address</span>
+            <div class="center">
+              <span>Login</span>
+            </div>
 
             <a-col :span="12" style="padding-top: 10px">
               <a-row type="flex" align="middle">
@@ -45,11 +47,12 @@
                         <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
                       </a-input>
                       <a-form-item style="padding-top: 10px">
-                        <a-button type="primary" block html-type="submit">Continue</a-button>
-                        <div class="text-center">
-                          <a href="#">If you already have an account, Login here</a>
+                        <a-button type="primary" block @click="registration">Login</a-button>
+                        <div class="center">
+                          <a @click="signUp">If you haven't set up an account yet, Register here</a>
                         </div>
                         <a-divider>or</a-divider>
+
                         <span
                           style="text-align: center"
                         >Sign up using your existing social media accounts</span>
@@ -95,15 +98,29 @@
 
 <script>
 import { Icon } from "ant-design-vue";
-
 const IconFont = Icon.createFromIconfontCN({
   scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js"
 });
+
 export default {
   components: {
     IconFont
   },
   methods: {
+    registration() {
+      this.$router.push("/signUp");
+    },
+    signUp() {
+      this.$router.push("/newAccount");
+    },
+    // facebook() {
+    //   this.$router.push("/facebookSignUp");
+    //   return
+    //   this.$router.push("/newAccount");
+    // },
+    // google() {
+    //   this.$router.push("/newAccount");
+    // },
     googleSignUp() {
       var googleWindow = window.open(
         process.env.VUE_APP_API_BASE_URL + "auth/google",
@@ -118,7 +135,7 @@ export default {
         "width=500,height=500"
       );
     }
-  },
+  }
 };
 </script>
 
@@ -147,6 +164,9 @@ export default {
 .rounded-corners-transparent {
   background: white !important;
   box-shadow: -8px 10px 10px #0000003b;
+}
+.center {
+  text-align: center !important;
 }
 /* .header-style {
   font-weight: 800;

@@ -20,11 +20,27 @@ const mutations = {
     FACEBOOK_SIGNUP(state, data){
         state.facebook_details = data
         state.signup_method = 'facebook'
+    },
+    LOCAL_SIGNUP(state, data){
+        state.signup_method = 'local'
     }
 }
 
 const actions = {
+    // GET_FACEBOOK_DETAILS(context) {
+    //     return new Promise((resolve, reject) => {
+    //         new ThirdPartyAPI(context).getFacebook((err, data) => {
+    //             if (err) {
+    //                 reject(err)
+    //             } else {
+    //                 context.commit('FACEBOOK_SIGNUP', data)
+    //                 resolve(data)
+    //             }
+    //         })
+    //     })
+    // },
 }
+
 
 export default {
     state,
