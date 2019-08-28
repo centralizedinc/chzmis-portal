@@ -1,6 +1,13 @@
 <template>
-  <a-card style="border-radius: 25px;">
-    <p>
+  <a-card
+    style="border-radius: 25px 0;"
+    :bodyStyle="{'padding-top': '0px'}"
+    :headStyle="layout_head_style"
+  >
+    <div slot="title" class="title-head-style">
+      <a-icon type="close" @click="$store.commit('SHOW_PROFILE', false)" />
+    </div>
+    <p style="text-align: center">
       <a-avatar :size="80" shape="circle" :src="user.avatar"></a-avatar>
       <br />
       <span class="profile-name">{{user.full_name}}</span>
@@ -78,7 +85,6 @@ export default {
 
 .profile-items i {
   padding-right: 5px;
-
 }
 
 .profile-name {

@@ -7,6 +7,8 @@ import './plugins/ant-design-vue.js'
 import mixins from '@/plugins/mixins.js'
 import '@/assets/css/chzmis.scss'
 
+import infiniteScroll from 'vue-infinite-scroll'
+Vue.use(infiniteScroll)
 
 Vue.config.productionTip = false
 Vue.use(mixins)

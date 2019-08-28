@@ -1,0 +1,19 @@
+[{
+    "id": "con1",
+    "name": "Family A",
+    "status": 1,
+    "members": [{
+        "account_id": "acc1",
+        "role": 0
+    }],
+    "created_by": "acc1"
+},{
+    "id": "con2",
+    "name": "Family B",
+    "status": 1,
+    "members": [{
+        "account_id": "acc1",
+        "role": 0
+    }],
+    "created_by": "acc1"
+}]

@@ -10,7 +10,7 @@
         <div class="rounded-corners-transparent custom-size"></div>
         <a-card class="overlay-form">
           <!-- LEFT -->
-          <a-row :gutter="24">
+          <a-row :gutter="24" style="text-align: center">
             <a-col :span="12">
               <a-card
                 style="background: transparent !important ; border: none !important ; padding-top: 80px !important"
@@ -60,10 +60,10 @@
                           <a-col :span="12">
                             <a-form-item>
                               <a-button
+                                @click="facebookSignUp"
                                 type="primary"
                                 block
                                 style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
-                                @click="facebookSignUp"
                               >
                                 <a-icon type="facebook" theme="filled" />
                               </a-button>
@@ -73,10 +73,10 @@
                           <a-col :span="12">
                             <a-form-item>
                               <a-button
+                                @click="googleSignUp"
                                 style="font-size: 20px; background-color: #d34836; border-color: #d34836"
                                 type="primary"
                                 block
-                                @click="googleSignUp"
                               >
                                 <a-icon type="google-plus" />
                               </a-button>

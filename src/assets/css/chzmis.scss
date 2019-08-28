@@ -1,8 +1,8 @@
 @import "colors";
 
 .ant-layout-header {
-  padding: 0 0px !important;
   background: #fff6e2 !important;
+  padding: 0 0px !important;
   box-shadow: 0 2px 8px #1b1b1b23 !important;
   z-index: 10;
 }
@@ -40,3 +40,64 @@
 //     color: white;
 //     // text-align: center;
 // }
+
+.bounce-image {
+  cursor: pointer;
+}
+
+.bounce-image:hover {
+  height: 105% !important;
+  width: 105% !important;
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+}
+@-webkit-keyframes bounce {
+  0%,
+  100% {
+    -webkit-transform: translateY(0);
+  }
+  50% {
+    -webkit-transform: translateY(-5px);
+  }
+}
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.bounce-image:hover {
+  -webkit-animation-name: bounce;
+  animation-name: bounce;
+}
+
+.ant-comment-inner {
+  padding-bottom: 0 !important;
+}
+
+.title-head-style {
+  width: 100%;
+  // text-align: right;
+}
+
+.title-head-style i {
+  float: right;
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 50%;
+  padding: 2px;
+  background: white;
+}
+
+.title-head-style i:hover{
+  background: red;
+}

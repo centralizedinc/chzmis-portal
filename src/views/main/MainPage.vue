@@ -1,7 +1,7 @@
 <template>
   <div>
-    <connections style="margin-bottom: 5px; max-height: 350px"/>
-    <channels/>
+    <connections style="margin-top: 20px; max-height: 400px"/>
+    <channels style="margin-top: 20px;"/>
   </div>
 </template>
 

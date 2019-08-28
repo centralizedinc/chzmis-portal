@@ -1,5 +1,9 @@
 <template>
-  <a-card class="activities-card" bodyStyle="padding: 24px 10px;text-align: center;">
+  <a-card class="activities-card" :bodyStyle="{padding: '24px 10px', 'text-align': 'center', 'padding-top': '0px'}"
+    :headStyle="layout_head_style">
+    <div slot="title" class="title-head-style">
+      <a-icon type="close" @click="$store.commit('SHOW_SETTINGS', false)" />
+    </div>
     <p v-for="(friend, index) in friends" :key="index">
       <a-tooltip placement="left">
         <template slot="title">
@@ -43,15 +47,15 @@ export default {
 </script>
 
 <style>
-.friend-avatar{
+.friend-avatar {
   cursor: pointer;
 }
 
 .friend-avatar:hover {
   height: 105% !important;
   width: 105% !important;
-  -webkit-animation-duration: .5s;
-  animation-duration: .5s;
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   -webkit-animation-timing-function: linear;
@@ -60,7 +64,8 @@ export default {
   -webkit-animation-iteration-count: infinite;
 }
 @-webkit-keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     -webkit-transform: translateY(0);
   }
   50% {
@@ -68,7 +73,8 @@ export default {
   }
 }
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
