@@ -1,65 +1,103 @@
 <template>
-  
+  <!-- <div align="middle">
+      <h3>Create your password</h3>
+  </div>-->
+  <!-- <div align="left">
+      <i>
+        Remember that your password must:
+        <br />Have atleast six (6) characters,
+        <br />Include at least one (1) letter and one (1) number.
+      </i>
+  </div>-->
 
-          
-
-          <div id="components-form-demo-vuex">
-            <div align="middle">
-            <h3>Create your password</h3>
-          </div>
-          <div align="left">
-            <i>
-              Remember that your password must:
-              <br>
-              - Have atleast six (6) characters
-              <br>
-              - Include at least one (1) letter and one (1) number
-            </i>
-          </div>
-            <a-form>
-              <a-form-item>
-                <a-input
-                  v-decorator="['newPassword', { rules: [{ required: true, message: 'New password is required!' }] }]"
-                  placeholder="Create new password"
-                  type="password"
-                  v-model="form.password"
-                >
-                  <a-icon slot="prefix" type="unlock" style="color: rgba(0,0,0,.25)" />
-                </a-input>
-                <a-input
-                  v-decorator="['confirmNewPassword', { rules: [{ required: true, message: 'Please input your username!' }] }]"
-                  placeholder="Confirm new password"
-                  type="password"
-                >
-                  <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
-                </a-input>
-
-                <!-- <a-button type="primary" @click="submit">Submit</a-button> -->
-              </a-form-item>
-            </a-form>
-          </div>
-
-        <!-- </a-card>
-      </a-col>
-    </a-row>
-  </div> -->
+  <a-form :form="form">
+    <a-form-item v-bind="formItemLayout">
+      <a-input
+        placeholder="Create new password"
+        v-decorator="[
+          'password',
+          {
+            rules: [{
+              required: true, message: 'Please input your password!',
+            }, {
+              validator: validateToNextPassword,
+            }],
+          }
+        ]"
+        type="password"
+      />  
+    </a-form-item>
+    <a-form-item v-bind="formItemLayout">
+      <a-input
+        v-model="form.password"
+        placeholder="Confirm new password"
+        v-decorator="[
+          'confirm',
+          {
+            rules: [{
+              required: true, message: 'Please confirm your password!',
+            }, {
+              validator: compareToFirstPassword,
+            }],
+          }
+        ]"
+        type="password"
+        @blur="handleConfirmBlur"
+      />
+    </a-form-item>
+  </a-form>
+  <!-- </div> -->
 </template>
 
 <script>
 export default {
-    props: ['form'],
+  data() {
+    return {
+      confirmDirty: false
+    };
+  },
+  beforeCreate() {
+    this.form = this.$form.createForm(this);
+  },
   methods: {
-    // handleChange(value) {
-    //   console.log(value);
-    // },
-    onChange(date, dateString) {
-      console.log(date, dateString);
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          console.log("Received values of form: ", values);
+        }
+      });
     },
-    submit (){
-      this.$store.commit("SET_REGISTRATION", this.password);
-      console.log('console password :', JSON.stringify(this.password))
-      // this.$router.push("/signUp2");
+    handleConfirmBlur(e) {
+      const value = e.target.value;
+      this.confirmDirty = this.confirmDirty || !!value;
+    },
+    compareToFirstPassword(rule, value, callback) {
+      const form = this.form;
+      if (value && value !== form.getFieldValue("password")) {
+        callback("Two passwords that you enter is inconsistent!");
+      } else {
+        callback();
+      }
+    },
+    validateToNextPassword(rule, value, callback) {
+      const form = this.form;
+      if (value && this.confirmDirty) {
+        form.validateFields(["confirm"], { force: true });
+      }
+      callback();
     }
+    // handleWebsiteChange(value) {
+    //   let autoCompleteResult;
+    //   if (!value) {
+    //     autoCompleteResult = [];
+    //   } else {
+    //     autoCompleteResult = [".com", ".org", ".net"].map(
+    //       domain => `${value}${domain}`
+    //     );
+    //   }
+    //   this.autoCompleteResult = autoCompleteResult;
+    // }
   }
 };
 </script>
@@ -71,7 +109,7 @@ export default {
 .card-container {
   /* background: #f5f5f5; */
   overflow: hidden;
-  padding: 24px;
+  padding: 10px;
   /* text-align: center !important; */
 }
 .overlay-form {
@@ -83,8 +121,11 @@ export default {
 }
 .overlay-form,
 .custom-size {
-  width: 500px;
-  height: 300px;
+  width: 600px;
+  height: 400px;
+}
+.ant-layout {
+  font-size: small;
 }
 /* .header-style {
   font-weight: 800;
