@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span class="no-data-message" v-if="!loading && !loading_data && !posts.length">No Post.</span>
+    <span class="no-data-message" v-if="!loading && !posts.length">No Post.</span>
     <div
       class="post-container"
       v-infinite-scroll="handleLoadingPost"
@@ -56,11 +56,11 @@
 
         <a-input placeholder="Write a reply" @keydown.enter="sendReply($event, item.id)"></a-input>
       </a-comment>
-      <div v-if="!loading && !loading_data && (busy || !posts.length)" class="done-loading-post">
+      <div v-if="!loading && (busy || !posts.length)" class="done-loading-post">
         Done loading. Try to
         <a href="#" @click="reloadPost">refresh</a> for new updates.
       </div>
-      <div v-else-if="loading_data || (loading && !busy)" class="demo-loading-container">
+      <div v-else-if="loading && !busy" class="demo-loading-container">
         <a-spin />
       </div>
     </div>
@@ -74,10 +74,6 @@ import CommentSection from "./CommentSection";
 export default {
   props: {
     public: {
-      type: Boolean,
-      default: false
-    },
-    loading_data: {
       type: Boolean,
       default: false
     }

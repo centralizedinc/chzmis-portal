@@ -1,5 +1,6 @@
 <template>
   <a-card
+    :loading="loading"
     :headStyle="main_layout_head_style"
     :bodyStyle="{'text-align': 'left', padding: '0', 'padding-top': '2px'}"
     class="connection-card"
@@ -21,9 +22,19 @@
         >
           <!-- Public Connections -->
           <a-tab-pane :key="-1" tab="Public">
-            <a-row>
+            <div v-if="loading_submit" class="demo-loading-container">
+              <a-spin />
+            </div>
+            <a-row v-else>
               <a-col :span="hide_msgbox?23:12" style="border-right: 1px solid #eee;">
-                <post-section :loading_data="loading_post" public class="messages-content"></post-section>
+                <a-skeleton
+                  style="padding: 20px"
+                  :loading="loading_post"
+                  active
+                  avatar
+                  :paragraph="{rows: 3}"
+                />
+                <post-section v-if="!loading_post" public class="messages-content"></post-section>
               </a-col>
               <a-col :span="1" v-if="hide_msgbox" class="cons-icon">
                 <p>
@@ -35,10 +46,10 @@
                   </a-tooltip>
                 </p>
               </a-col>
-              <a-col :span="12" v-else style="padding: 15px; padding-left: 5px; padding-top: 5px;">
+              <a-col :span="12" v-else style="padding: 15px; padding-left: 10px; padding-top: 5px;">
                 <a-row>
                   <a-col :span="24" style="text-align: right">
-                    <a href="#" style="text-decoration: underline;" @click="hide_msgbox=true">
+                    <a href="#" class="underline-on-hover" @click="hide_msgbox=true">
                       Hide
                       <a-icon type="right-circle" />
                     </a>
@@ -65,7 +76,7 @@
           </a-tab-pane>
 
           <!-- Private Connections -->
-          <a-tab-pane v-for="(item, index) in connections" :key="index">
+          <a-tab-pane v-for="item in connections" :key="item._id">
             <span slot="tab">
               {{item.name}}
               <a-dropdown placement="bottomRight" style="margin-right: 0; margin-left: 8px">
@@ -76,18 +87,28 @@
                   </a-menu-item>
                   <a-menu-divider />
                   <a-menu-item key="1">
-                    <a href="http://www.taobao.com/">Update</a>
+                    <a href="#" @click="updateConnection(item._id)">Update</a>
                   </a-menu-item>
-                  <a-menu-divider />
+                  <!-- <a-menu-divider /> 
                   <a-menu-item key="3">
                     <a href="http://www.taobao.com/">Delete</a>
-                  </a-menu-item>
+                  </a-menu-item>-->
                 </a-menu>
               </a-dropdown>
             </span>
-            <a-row>
+            <div v-if="loading_submit" class="demo-loading-container">
+              <a-spin />
+            </div>
+            <a-row v-else>
               <a-col :span="hide_msgbox?23:12" style="border-right: 1px solid #eee;">
-                <post-section :loading_data="loading_post" class="messages-content"></post-section>
+                <a-skeleton
+                  style="padding: 20px"
+                  :loading="loading_post"
+                  active
+                  avatar
+                  :paragraph="{rows: 3}"
+                />
+                <post-section v-if="!loading_post" class="messages-content"></post-section>
               </a-col>
               <a-col :span="1" v-if="hide_msgbox" class="cons-icon">
                 <p>
@@ -99,10 +120,10 @@
                   </a-tooltip>
                 </p>
               </a-col>
-              <a-col :span="12" v-else style="padding: 15px; padding-left: 5px; padding-top: 5px;">
+              <a-col :span="12" v-else style="padding: 15px; padding-left: 10px; padding-top: 5px;">
                 <a-row>
                   <a-col :span="24" style="text-align: right">
-                    <a href="#" style="text-decoration: underline;" @click="hide_msgbox=true">
+                    <a href="#" class="underline-on-hover" @click="hide_msgbox=true">
                       Hide
                       <a-icon type="right-circle" />
                     </a>
@@ -123,13 +144,31 @@
                       </a-col>
                     </a-row>
                   </a-col>
+                  <a-col :span="24">
+                    <a href="#" class="underline-on-hover">Members({{item.members.length}}):</a>
+                  </a-col>
+                  <a-col :span="24">
+                    <a-tooltip v-for="(member, i) in item.members" :key="i">
+                      <span
+                        slot="title"
+                      >{{getAuthorName(member.account_id).first}} {{getAuthorName(member.account_id).last}}</span>
+                      <a-avatar :src="getAuthorAvatar(member.account_id)" />
+                    </a-tooltip>
+                  </a-col>
                 </a-row>
               </a-col>
             </a-row>
           </a-tab-pane>
 
-          <a-button slot="tabBarExtraContent" style="margin-right: 10px" @click="newConnection">New <a-icon type="plus-circle" /></a-button>
+          <a-tooltip slot="tabBarExtraContent">
+            <span slot="title">New Connection</span>
+            <a-button type="primary" class="new-button" @click="newConnection">
+              New
+              <a-icon type="plus-circle" />
+            </a-button>
+          </a-tooltip>
         </a-tabs>
+        <new-connection></new-connection>
       </a-col>
     </a-row>
   </a-card>
@@ -137,17 +176,21 @@
 
 <script>
 import PostSection from "./comment/PostSection";
+import NewConnection from "./NewConnection";
 
 export default {
   components: {
-    PostSection
+    PostSection,
+    NewConnection
   },
   data() {
     return {
       active_key: -1,
       post_message: "",
       loading_post: false,
-      hide_msgbox: false
+      hide_msgbox: false,
+      loading: true,
+      loading_submit: false
     };
   },
   computed: {
@@ -156,28 +199,27 @@ export default {
     }
   },
   created() {
+    this.loading = true;
     this.$store
       .dispatch("GET_CONNECTIONS")
       .then(result => {
         this.active_key = -1;
         console.log("done loading connections");
-        console.log("connections :", result);
+        this.loading = false;
       })
       .catch(err => {
         console.log("GET_CONNECTIONSerr :", err);
+        this.loading = false;
       });
     this.loadPublicPost();
   },
   methods: {
-    getConnectionPosts(index) {
-      this.active_key = index;
-      if (index === -1) this.loadPublicPost();
+    getConnectionPosts(active_key) {
+      this.active_key = active_key;
+      if (active_key === -1) this.loadPublicPost();
       else {
         this.loading_post = true;
-        this.$store.commit(
-          "SET_ACTIVE_CONNECTION",
-          this.connections[index]._id
-        );
+        this.$store.commit("SET_ACTIVE_CONNECTION", active_key);
         this.$store
           .dispatch("GET_CONNECTION_POSTS", { refresh: true })
           .then(result => {
@@ -205,22 +247,28 @@ export default {
     },
     attachFile() {},
     send_message() {
+      this.loading_submit = true;
       if (this.post_message) {
         var post = {
-          id: new Date().getTime(),
-          author: "acc1",
+          author: "3",
           message: this.post_message,
           likes: [],
           dislikes: []
         };
         if (this.active_key === -1) post.is_public = true;
-        else post.parent_id = this.connections[this.active_key].id;
+        else post.parent_id = this.active_key;
         this.$store.dispatch("POST_MESSAGE", post);
         this.post_message = "";
+        this.loading_submit = false;
       }
     },
-    newConnection(){
-
+    newConnection() {
+      this.$store.dispatch("OPEN_NEW_CONNECTION");
+    },
+    updateConnection(connection_id) {
+      this.$store.dispatch("OPEN_CREATE_CONNECTION", {
+        connection_id
+      });
     }
   }
 };
@@ -263,5 +311,13 @@ export default {
   border-radius: 0px 0px 25px 25px;
   box-shadow: 0px 1px;
   max-height: 400px;
+}
+
+.new-button {
+  margin-right: 10px;
+}
+
+.underline-on-hover:hover {
+  text-decoration: underline;
 }
 </style>

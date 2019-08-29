@@ -3,8 +3,8 @@ export default {
     install(Vue) {
         Vue.mixin({
             computed: {
-                account_id(){
-                  return this.$store.state.accounts.account.account_id
+                account_id() {
+                    return this.$store.state.accounts.account.account_id
                 },
                 main_layout_head_style() {
                     var main_head_style = {
@@ -46,12 +46,13 @@ export default {
                     if (text.length > 100) return text.substring(0, 100) + '...'
                     else return text
                 },
-                getAuthorName(account_id){
-                    console.log('account_id :', account_id);
-                    return this.$store.state.users.users.find(x => x.account_id === account_id).name;
+                getAuthorName(account_id) {
+                    const author = this.$store.state.users.users.find(x => x.account_id === account_id);
+                    return author ? author.name : {};
                 },
-                getAuthorAvatar(account_id){
-                    return this.$store.state.users.users.find(x => x.account_id === account_id).avatar;
+                getAuthorAvatar(account_id) {
+                    const author = this.$store.state.users.users.find(x => x.account_id === account_id)
+                    return author ? author.avatar : {};
                 }
                 // getPopupContainer(trigger) {
                 //     return trigger.parentElement
