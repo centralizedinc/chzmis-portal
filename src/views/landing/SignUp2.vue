@@ -1,7 +1,7 @@
 <template>
-          <div align="middle" id="components-form-demo-vuex">
-            <h4>Please confirm your registration below</h4>
-            <a-form>
+  <div align="left">
+    <h4>Please confirm your registration below</h4>
+    <!-- <a-form :form="details" @submit="handleSubmit">
               <a-form-item> 
                 <a-input
                   v-model="form.email"
@@ -26,40 +26,130 @@
                   <a-icon slot="prefix" type="idcard" style="color: rgba(0,0,0,.25)" />
                 </a-input>
                 <a-date-picker v-model="form.bday" @change="onChange" placeholder="Birthday" />
-                <!-- <a-button type="primary" @click="third" block>Continue</a-button> -->
-                <!-- <a-button type="primary" html-type="submit">Submit</a-button> -->
               </a-form-item>
-            </a-form>
-          </div>
+    </a-form>-->
+
+    <a-form :form="form">
+      <!-- email -->
+      <a-form-item>
+        <a-input
+          placeholder="Email Address"
+          v-decorator="[
+            'email',
+            {
+              rules: [{ required: true, message: 'Email Address is required!' }],
+            }
+          ]"
+        />
+      </a-form-item>
+      <!-- name -->
+      <a-form-item>
+        <a-input
+          placeholder="First name"
+          v-decorator="[
+            'first',
+            {
+              rules: [{ required: true, message: 'Please input your first name!' }],
+            }
+          ]"
+        />
+      </a-form-item>
+      <a-form-item>
+        <a-input
+          placeholder="Last Name"
+          v-decorator="[
+            'last',
+            {
+              rules: [{ required: true, message: 'Please input your last name!' }],
+            }
+          ]"
+        />
+      </a-form-item>
+      <a-form-item
+      v-model="form.bday"
+      v-bind="formItemLayout"
+      
+    >
+      <a-date-picker placeholder="Birthday" v-decorator="['date-picker', config]" />
+    </a-form-item>
+    </a-form>
+  </div>
 </template>
 
 <script>
 export default {
-  props: ['form'],
+  props: ["form"],
+  // computed: {
+  //   username() {
+  //     return this.$store.state.username;
+  //   }
+  // },
+  // watch: {
+  //   username(val) {
+  //     console.log("this.$store.state.username: ", val);
+  //     this.form.setFieldsValue({ username: val });
+  //   }
+  // },
+  created() {
+    this.form = this.$form.createForm(this, {
+      onFieldsChange: (_, changedFields) => {
+        this.$emit("change", changedFields);
+      },
+      mapPropsToFields: () => {
+        return {
+          email: this.$form.createFormField({
+            value: this.email
+          }),
+          first: this.$form.createFormField({
+            value: this.first
+          }),
+          last: this.$form.createFormField({
+            value: this.last
+          })
+        };
+      },
+      onValuesChange: (_, values) => {
+        console.log(values);
+        // Synchronize to vuex store in real time
+        // this.$store.commit('update', values)
+      }
+    });
+  },
   methods: {
-    handleChange(value) {
-      console.log(value);
-    },
-    handleSubmit (e) {
+    handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
+          console.log("Received values of form: ", values);
+          this.$store.commit("update", values);
         }
       });
-    },
-    onChange(date, dateString) {
-      console.log(date, dateString);
-      // this.$router.push("/views/landing/signUp3");
-    },
-    third(){
-      this.$store.commit("SET_REGISTRATION", this.user_details);
-      console.log('console user details :', JSON.stringify(this.user_details))
-      // console.log('username :', username);
-      this.$router.push("/signUp3");
     }
-
   }
+  // methods: {
+  //   handleChange(value) {
+  //     console.log(value);
+  //   },
+  //   handleSubmit (e) {
+  //     e.preventDefault();
+  //     this.form.validateFields((err, values) => {
+  //       if (!err) {
+  //         console.log('Received values of form: ', values);
+  //       }
+  //     });
+  //   },
+  //   onChange(date, dateString) {
+  //     console.log(date, dateString);
+  //     // this.$router.push("/views/landing/signUp3");
+  //   },
+  //   third(){
+  //     this.$store.commit("SET_REGISTRATION", this.user_details);
+  //     console.log('console user details :', JSON.stringify(this.user_details))
+  //     // console.log('username :', username);
+  //     this.$router.push("/signUp3");
+  //   }
+
+  // }
 };
 </script>
 
@@ -68,7 +158,7 @@ export default {
   margin-bottom: 5px;
 }
 .ant-card {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .card-container {
   /* background: #f5f5f5; */
@@ -78,14 +168,14 @@ export default {
 }
 .overlay-form {
   /* position: absolute; */
-  border-radius: 15px;
+  border-radius: 0px;
   top: 0px;
   background: transparent;
 }
 .overlay-form,
 .custom-size {
-  width: 500px;
-  height: 300px;
+  width: 800px;
+  height: 600px;
 }
 /* .header-style {
   font-weight: 800;

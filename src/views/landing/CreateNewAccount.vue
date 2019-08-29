@@ -28,7 +28,7 @@
           <div>
             <div class="steps-content" v-if="current == 0" v-show="true">
               {{steps[current].content}}
-              <firstStep :form="user_info"></firstStep>
+              <firstStep :form="user_info" ></firstStep>
             </div>
             <div class="steps-content" v-if="current == 1" v-show="true">
               {{steps[current].content}}
@@ -64,6 +64,7 @@ import SignUp2 from "./SignUp2";
 import SignUp3 from "./SignUp3";
 
 export default {
+  props: ["password", "details", "category"],
   components: {
     firstStep: () => ({
       component: import("./SignUpNew")
@@ -99,14 +100,24 @@ export default {
       user_info: {
         category: "",
         email: "",
+        avatar: "",
         name: {
           first: "",
           middle: "",
           last: ""
         },
         bday: "",
-        password: ""
-      }
+        password: "",
+        method: "",
+        google_id: "",
+        facebook_id: ""
+      },
+      form: this.$form.createForm(this, {
+
+      }),
+      config: {
+        rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+      },
     };
   },
   created() {
@@ -122,6 +133,34 @@ export default {
     this.init();
   },
   methods: {
+    // handleSubmit(e) {
+    //   e.preventDefault();
+    //   this.form.validateFieldsAndScroll((err, values) => {
+    //     if (!err) {
+    //       console.log("Received values of form: ", values);
+    //     }
+    //   });
+    // },
+    // handleConfirmBlur(e) {
+    //   const value = e.target.value;
+    //   this.confirmDirty = this.confirmDirty || !!value;
+    // },
+    // compareToFirstPassword(rule, value, callback) {
+    //   const form = this.form;
+    //   if (value && value !== form.getFieldValue("password")) {
+    //     callback("Two passwords that you enter is inconsistent!");
+    //   } else {
+    //     callback();
+    //   }
+    // },
+    // validateToNextPassword(rule, value, callback) {
+    //   const form = this.form;
+    //   if (value && this.confirmDirty) {
+    //     form.validateFields(["confirm"], { force: true });
+    //   }
+    //   callback();
+    // },
+
     init() {
       // this.user_info = JSON.parse(JSON.stringify(this.$store.state.third_party_libraries.facebook_details));
       // Facebook Details
@@ -129,12 +168,17 @@ export default {
       this.user_info.name.first = this.$store.state.third_party_libraries.facebook_details._json.first_name;
       this.user_info.name.middle = this.$store.state.third_party_libraries.facebook_details._json.middle_name;
       this.user_info.name.last = this.$store.state.third_party_libraries.facebook_details._json.last_name;
-
+      this.user_info.avatar = this.$store.state.third_party_libraries.facebook_details._json.picture.data.url;
+      this.user_info.facebook_id = this.$store.state.third_party_libraries.facebook_details._json.id;
+      this.user_info.method = this.$store.state.third_party_libraries.facebook_details.provider;
       //Google Details
       this.user_info.email = this.$store.state.third_party_libraries.google_details._json.email;
-      this.user_info.name.first = this.$store.state.third_party_libraries.google_details._json.first_name;
+      this.user_info.name.first = this.$store.state.third_party_libraries.google_details._json.given_name;
       this.user_info.name.middle = this.$store.state.third_party_libraries.google_details._json.middle_name;
-      this.user_info.name.last = this.$store.state.third_party_libraries.google_details._json.last_name;
+      this.user_info.name.last = this.$store.state.third_party_libraries.google_details._json.family_name;
+      this.user_info.avatar = this.$store.state.third_party_libraries.google_details._json.picture;
+      this.user_info.google_id = this.$store.state.third_party_libraries.google_details._json.sub;
+      this.user_info.method = this.$store.state.third_party_libraries.google_details.provider;
     },
     next() {
       this.current++;
@@ -142,11 +186,15 @@ export default {
     prev() {
       this.current--;
     },
+    
     submit() {
-      this.$store.dispatch("CREATE_ACCOUNT", this.user_info);
-      console.log("console user information:", JSON.stringify(this.user_info));
-      // console.log('username :', username);
-      this.$router.push("/");
+        this.$store.dispatch("CREATE_ACCOUNT", this.user_info);
+        console.log(
+          "console user information:",
+          JSON.stringify(this.user_info)
+        );
+        // console.log('username :', username);
+        this.$router.push("/");
     }
   }
 };
