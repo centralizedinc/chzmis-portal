@@ -18,15 +18,7 @@ const mutations = {
 
 const actions = {
     CREATE_ACCOUNT(context, new_account) {
-        return new Promise((resolve, reject)=>{
-            new NewAccountAPI(context).newAccount(new_account, (err, data)=>{
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(data)
-                }
-            })
-        })
+        return new NewAccountAPI().newAccount(new_account)
     }
 }
 

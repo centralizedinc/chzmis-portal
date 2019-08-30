@@ -25,11 +25,10 @@
           }
         ]"
         type="password"
-      />  
+      />
     </a-form-item>
     <a-form-item v-bind="formItemLayout">
       <a-input
-        v-model="form.password"
         placeholder="Confirm new password"
         v-decorator="[
           'confirm',
@@ -51,14 +50,26 @@
 
 <script>
 export default {
+  props: ["form"],
   data() {
     return {
-      confirmDirty: false
+      confirmDirty: false,
+      form: this.$form.createForm(this)
     };
   },
-  beforeCreate() {
-    this.form = this.$form.createForm(this);
-  },
+  // created() {
+  //   var formdata = {};
+  //   Object.keys(this.formdata).forEach(d => {
+  //     formdata[d] = this.$form.createFormField({
+  //       value: this.formdata[d]
+  //     });
+  //   });
+  //   this.form = this.$form.createForm(this, {
+  //     mapPropsToFields: () => {
+  //       return formdata;
+  //     }
+  //   });
+  // },
   methods: {
     handleSubmit(e) {
       e.preventDefault();

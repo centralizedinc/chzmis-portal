@@ -4,7 +4,6 @@
     <a-form :form="form">
       <a-form-item>
         <a-select
-          v-model="form.category"
           labelInValue
           :defaultValue="{ key: '0' }"
           style="width: 120px"
@@ -32,6 +31,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
+          this.second()
         }
       });
     },

@@ -113,6 +113,24 @@ export default {
     signUp() {
       this.$router.push("/newAccount");
     },
+    login() {
+      var auth = {
+          userName: this.username,
+          passWord: this.password
+      };
+      this.$store.dispatch("LOGIN", auth).then(result=> {
+        console.log("Success Login");
+        if (this.$store.state.user_session.isAuthenticated === true) {
+          // Notification message
+          
+          this.$router.push("/")
+        } else {
+          // notification error
+        }
+      })
+      .catch(err => {})
+      console.log('auth :', auth);
+    },
     // facebook() {
     //   this.$router.push("/facebookSignUp");
     //   return
@@ -123,14 +141,14 @@ export default {
     // },
     googleSignUp() {
       var googleWindow = window.open(
-        process.env.VUE_APP_API_BASE_URL + "auth/google",
+        process.env.VUE_APP_API_BASE_URL + "/auth/google",
         "Google Sign Up",
         "width=500,height=500"
       );
     },
     facebookSignUp() {
       var googleWindow = window.open(
-        process.env.VUE_APP_API_BASE_URL + "auth/facebook",
+        process.env.VUE_APP_API_BASE_URL + "/auth/facebook",
         "Facebook Sign Up",
         "width=500,height=500"
       );
