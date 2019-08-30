@@ -26,26 +26,125 @@
             <a-step size="small" v-for="item in steps" :key="item.title" :title="item.title" />
           </a-steps>
           <div>
-            <div class="steps-content" v-if="current == 0" v-show="true">
+            <div class="steps-content" v-if="current == 0">
               {{steps[current].content}}
-              <firstStep :form="user_info" ></firstStep>
+              <!-- <firstStep :form="form"></firstStep> -->
+              <div align="middle">
+                <h3>Please confirm your registration below</h3>
+                <a-form :form="form">
+                  <a-form-item>
+                    <a-select
+                      v-decorator="['category',{
+                        rules: [rules.required('Category')],
+                        initialValue: '0'
+                      }]"
+                      style="width: 120px"
+                    >
+                      <a-select-option value="0">Individual</a-select-option>
+                      <a-select-option value="1">Corporate</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-form>
+                <br />
+                <i>Select approriate account type before proceeding</i>
+              </div>
             </div>
-            <div class="steps-content" v-if="current == 1" v-show="true">
+            <div class="steps-content" v-else-if="current == 1">
               {{steps[current].content}}
-              <secondStep :form="user_info"></secondStep>
+              <!-- <secondStep :form="form"></secondStep> -->
+              <div align="left">
+                <h4>Please confirm your registration below</h4>
+                <a-form :form="form">
+                  <!-- email -->
+                  <a-form-item>
+                    <a-input
+                      placeholder="Email Address"
+                      v-decorator="[
+                        'email',
+                        {
+                          rules: [rules.required('Email Address')]
+                        }
+                      ]"
+                    />
+                  </a-form-item>
+                  <!-- name -->
+                  <a-form-item>
+                    <a-input
+                      placeholder="First name"
+                      v-decorator="[
+                        'name.first',
+                        {
+                          rules: [rules.required('First Name')]
+                        }
+                      ]"
+                    />
+                  </a-form-item>
+                  <a-form-item>
+                    <a-input
+                      placeholder="Last Name"
+                      v-decorator="[
+                        'name.last',
+                        {
+                          rules: [rules.required('Last Name')]
+                        }
+                      ]"
+                    />
+                  </a-form-item>
+                  <a-form-item>
+                    <a-date-picker
+                      placeholder="Birthdate"
+                      v-decorator="['birthdate', {
+                      rules: [rules.required('Date of Birth')]
+                    }]"
+                    />
+                  </a-form-item>
+                </a-form>
+              </div>
             </div>
-            <div class="steps-content" v-if="current == 2" v-show="true">
+            <div class="steps-content" v-else-if="current == 2">
               {{steps[current].content}}
-              <thirdStep :form="user_info"></thirdStep>
+              <!-- <thirdStep :form="form"></thirdStep> -->
+              <a-form :form="form">
+                <a-form-item>
+                  <a-input
+                    placeholder="Create new password"
+                    v-decorator="[
+                      'password',
+                      {
+                        rules: [[rules.required('Password')], {
+                          validator: validateToNextPassword,
+                        }],
+                      }
+                    ]"
+                    type="password"
+                  />
+                </a-form-item>
+                <a-form-item>
+                  <a-input
+                    placeholder="Confirm new password"
+                    v-decorator="[
+                      'confirm_password',
+                      {
+                        rules: [[rules.required('Confirm Password')], {
+                          validator: compareToFirstPassword,
+                        }],
+                      }
+                    ]"
+                    type="password"
+                    @blur="handleConfirmBlur"
+                  />
+                </a-form-item>
+              </a-form>
             </div>
             <div class="steps-action">
-              <a-button v-if="current < steps.length - 1" type="primary" @click="next">Next</a-button>
+              <a-button v-if="current>0" style="margin-left: 8px" @click="prev">Previous</a-button>
+
               <a-button
-                v-if="current == steps.length - 1"
+                v-if="current === 2"
                 type="primary"
                 @click="submit($message.success('Please confirm your account through your email'))"
               >Done</a-button>
-              <a-button v-if="current>0" style="margin-left: 8px" @click="prev">Previous</a-button>
+              <a-button v-else type="primary" @click="next">Next</a-button>
             </div>
           </div>
 
@@ -59,23 +158,7 @@
   </div>
 </template>
 <script>
-import SignUpNew from "./SignUpNew";
-import SignUp2 from "./SignUp2";
-import SignUp3 from "./SignUp3";
-
 export default {
-  props: ["password", "details", "category"],
-  components: {
-    firstStep: () => ({
-      component: import("./SignUpNew")
-    }),
-    secondStep: () => ({
-      component: import("./SignUp2")
-    }),
-    thirdStep: () => ({
-      component: import("./SignUp3")
-    })
-  },
   data() {
     return {
       current: 0,
@@ -96,8 +179,7 @@ export default {
           //   content: "Last-content"
         }
       ],
-      // user_info:[],
-      user_info: {
+      values: {
         category: "",
         email: "",
         avatar: "",
@@ -112,16 +194,17 @@ export default {
         google_id: "",
         facebook_id: ""
       },
-      form: this.$form.createForm(this, {
-
-      }),
-      config: {
-        rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+      form: this.$form.createForm(this),
+      rules: {
+        required: v => {
+          return { required: true, message: `${v} is required!` };
+        }
       },
+      form_data: {}
     };
   },
   created() {
-    console.log("user_info initialized:", this.user_info);
+    // console.log("user_info initialized:", this.user_info);
     console.log(
       "user_info STORE:Facebook",
       this.$store.state.third_party_libraries.facebook_details
@@ -130,71 +213,198 @@ export default {
       "user_info STORE:Google",
       this.$store.state.third_party_libraries.google_details
     );
+
     this.init();
   },
   methods: {
-    // handleSubmit(e) {
-    //   e.preventDefault();
-    //   this.form.validateFieldsAndScroll((err, values) => {
-    //     if (!err) {
-    //       console.log("Received values of form: ", values);
-    //     }
-    //   });
-    // },
-    // handleConfirmBlur(e) {
-    //   const value = e.target.value;
-    //   this.confirmDirty = this.confirmDirty || !!value;
-    // },
-    // compareToFirstPassword(rule, value, callback) {
-    //   const form = this.form;
-    //   if (value && value !== form.getFieldValue("password")) {
-    //     callback("Two passwords that you enter is inconsistent!");
-    //   } else {
-    //     callback();
-    //   }
-    // },
-    // validateToNextPassword(rule, value, callback) {
-    //   const form = this.form;
-    //   if (value && this.confirmDirty) {
-    //     form.validateFields(["confirm"], { force: true });
-    //   }
-    //   callback();
-    // },
+    showProfile() {
+      this.$refs.form.validate();
+      if (this.valid) {
+        this.show_profile = true;
+      } else {
+        this.$notifyError([{ message: "Please fill-up required fields" }]);
+      }
+    },
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          console.log("Received values of form: ", values);
+        }
+      });
+    },
+    handleConfirmBlur(e) {
+      const value = e.target.value;
+      this.confirmDirty = this.confirmDirty || !!value;
+    },
+    compareToFirstPassword(rule, value, callback) {
+      const form = this.form;
+      if (value && value !== form.getFieldValue("password")) {
+        callback("Two passwords that you enter is inconsistent!");
+      } else {
+        callback();
+      }
+    },
+    validateToNextPassword(rule, value, callback) {
+      const form = this.form;
+      if (value && this.confirmDirty) {
+        form.validateFields(["confirm"], { force: true });
+      }
+      callback();
+    },
 
     init() {
+      // signup_method facebook
+      console.log(
+        "this.$store.state.third_party_libraries.signup_method :",
+        this.$store.state.third_party_libraries.signup_method
+      );
+      this.form_data.method = this.$store.state.third_party_libraries.signup_method;
+      if (this.$store.state.third_party_libraries.signup_method == "facebook") {
+        const facebook_details = this.deepCopy(
+          this.$store.state.third_party_libraries.facebook_details
+        );
+        console.log("facebook_details :", facebook_details);
+        this.form = this.$form.createForm(this, {
+          mapPropsToFields: () => {
+            return {
+              email: this.$form.createFormField({
+                value: facebook_details.emails[0].value
+              }),
+              "name.first": this.$form.createFormField({
+                value: facebook_details.name.givenName
+              }),
+              "name.last": this.$form.createFormField({
+                value: facebook_details.name.familyName
+              })
+            };
+          }
+        });
+        this.form_data.facebook_id = facebook_details.id;
+      } else if (
+        this.$store.state.third_party_libraries.signup_method === "google"
+      ) {
+        // signup_method google
+        const google_details = this.deepCopy(
+          this.$store.state.third_party_libraries.google_details._json
+        );
+        this.form = this.$form.createForm(this, {
+          mapPropsToFields: () => {
+            console.log(
+              "google details :",
+              this.$store.state.third_party_libraries.google_details
+            );
+            return {
+              email: this.$form.createFormField({
+                value: google_details.email
+              }),
+              "name.first": this.$form.createFormField({
+                value: google_details.given_name
+              }),
+              "name.last": this.$form.createFormField({
+                value: google_details.family_name
+              })
+            };
+          }
+        });
+        this.form_data.google_id = google_details.sub;
+      } else if (
+        this.$store.state.third_party_libraries.signup_method === "local"
+      ) {
+        // local sign up
+        this.form = this.$form.createForm(this);
+      }
+
       // this.user_info = JSON.parse(JSON.stringify(this.$store.state.third_party_libraries.facebook_details));
       // Facebook Details
-      this.user_info.email = this.$store.state.third_party_libraries.facebook_details._json.email;
-      this.user_info.name.first = this.$store.state.third_party_libraries.facebook_details._json.first_name;
-      this.user_info.name.middle = this.$store.state.third_party_libraries.facebook_details._json.middle_name;
-      this.user_info.name.last = this.$store.state.third_party_libraries.facebook_details._json.last_name;
-      this.user_info.avatar = this.$store.state.third_party_libraries.facebook_details._json.picture.data.url;
-      this.user_info.facebook_id = this.$store.state.third_party_libraries.facebook_details._json.id;
-      this.user_info.method = this.$store.state.third_party_libraries.facebook_details.provider;
+
+      // this.email.value = this.$store.state.third_party_libraries.facebook_details._json.email;
+      // this.name.first.value = this.$store.state.third_party_libraries.facebook_details._json.first_name;
+      // this.user_info.name.middle = this.$store.state.third_party_libraries.facebook_details._json.middle_name;
+      // this.user_info.name.last = this.$store.state.third_party_libraries.facebook_details._json.last_name;
+      // this.user_info.avatar = this.$store.state.third_party_libraries.facebook_details._json.picture.data.url;
+      // this.user_info.facebook_id = this.$store.state.third_party_libraries.facebook_details._json.id;
+      // this.user_info.method = this.$store.state.third_party_libraries.facebook_details.provider;
+
       //Google Details
-      this.user_info.email = this.$store.state.third_party_libraries.google_details._json.email;
-      this.user_info.name.first = this.$store.state.third_party_libraries.google_details._json.given_name;
-      this.user_info.name.middle = this.$store.state.third_party_libraries.google_details._json.middle_name;
-      this.user_info.name.last = this.$store.state.third_party_libraries.google_details._json.family_name;
-      this.user_info.avatar = this.$store.state.third_party_libraries.google_details._json.picture;
-      this.user_info.google_id = this.$store.state.third_party_libraries.google_details._json.sub;
-      this.user_info.method = this.$store.state.third_party_libraries.google_details.provider;
+
+      // this.user_info.email = this.$store.state.third_party_libraries.google_details._json.email;
+      // this.user_info.name.first = this.$store.state.third_party_libraries.google_details._json.given_name;
+      // this.user_info.name.middle = this.$store.state.third_party_libraries.google_details._json.middle_name;
+      // this.user_info.name.last = this.$store.state.third_party_libraries.google_details._json.family_name;
+      // this.user_info.avatar = this.$store.state.third_party_libraries.google_details._json.picture;
+      // this.user_info.google_id = this.$store.state.third_party_libraries.google_details._json.sub;
+      // this.user_info.method = this.$store.state.third_party_libraries.google_details.provider;
     },
     next() {
-      this.current++;
+      console.log("this.form_data :", this.form_data);
+      this.form.validateFieldsAndScroll((err, data) => {
+        if (!err) {
+          Object.keys(data).forEach(key => {
+            this.form_data[key] = data[key];
+          });
+          // this.mapProps()
+          this.current++;
+        }
+      });
     },
     prev() {
+      console.log("this.form_data :", this.form_data);
+      this.mapProps();
       this.current--;
     },
-    
+    mapProps() {
+      var data = {};
+      if (this.current === 1) {
+        data = {
+          category: this.$form.createFormField({
+            value: this.form_data.category
+          })
+        };
+      } else if (this.current === 2) {
+        data = {
+          email: this.$form.createFormField({
+            value: this.form_data.email
+          }),
+          "name.first": this.$form.createFormField({
+            value: this.form_data.name.first
+          }),
+          "name.last": this.$form.createFormField({
+            value: this.form_data.name.last
+          }),
+          birthdate: this.$form.createFormField({
+            value: this.form_data.birthdate
+          })
+        };
+      }
+      this.form = this.$form.createForm(this, {
+        mapPropsToFields() {
+          return data;
+        }
+      });
+    },
+
     submit() {
-        this.$store.dispatch("CREATE_ACCOUNT", this.user_info);
-        console.log(
-          "console user information:",
-          JSON.stringify(this.user_info)
-        );
-        // console.log('username :', username);
-        this.$router.push("/");
+      this.form.validateFieldsAndScroll((err, data) => {
+        if (!err) {
+          Object.keys(data).forEach(key => {
+            this.form_data[key] = data[key];
+          });
+          console.log("Received data of form: ", this.form_data);
+          // this.$store.commit("update", values);
+          this.$store
+            .dispatch("CREATE_ACCOUNT", this.form_data)
+            .then(result => {
+              console.log("result.data.model :", result.data.model);
+              this.$router.push("/");
+            })
+            .catch(err => {
+              console.log("err :", err);
+            });
+          // console.log("console user information:", JSON.stringify(this.values));
+          // // console.log('username :', username);
+        }
+      });
     }
   }
 };

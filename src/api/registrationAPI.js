@@ -11,14 +11,8 @@ export default class NewAccountAPI {
     axios.defaults.headers.common['access_token'] = token;
   }
 
-  newAccount(new_account, cb) {
+  newAccount(new_account) {
     console.log("api############# new account" + JSON.stringify(new_account))
-    axios.post('/signup', new_account).then((result) => {
-            console.log("api############# ADD New Account")
-            cb(result.data.errors, result.data.model)
-        })
-        .catch(err => {
-            cb(err)
-        })
-      }
+    return axios.post('/signup', new_account)
+  }
 }
