@@ -57,23 +57,22 @@
                 <h4>Please confirm your registration below</h4>
                 <a-form :form="form">
                   <a-form-item>
-                    
                     <a-upload
-    name="avatar"
-    listType="picture-card"
-    class="avatar-uploader"
-    :showUploadList="false"
-    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-    :beforeUpload="beforeUpload"
-    @preview="handlePreview"
-    @change="handleChange"
-  >
-    <img v-if="avatar" :src="avatar" style="width: 100px;" alt="avatar" />
-    <div v-else>
-        <a-icon :type="loading ? 'loading' : 'plus'" />
-        <div class="ant-upload-text">Upload</div>
-    </div>
-  </a-upload>
+                      name="avatar"
+                      listType="picture-card"
+                      class="avatar-uploader"
+                      :showUploadList="false"
+                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      :beforeUpload="beforeUpload"
+                      @preview="handlePreview"
+                      @change="handleChange"
+                    >
+                      <img v-if="avatar" :src="avatar" style="width: 100px;" alt="avatar" />
+                      <div v-else>
+                        <a-icon :type="loading ? 'loading' : 'plus'" />
+                        <div class="ant-upload-text">Upload</div>
+                      </div>
+                    </a-upload>
                   </a-form-item>
 
                   <!-- email -->
@@ -188,7 +187,7 @@ export default {
   data() {
     return {
       loading: false,
-      avatar: '',
+      avatar: "",
       // previewVisible: false,
       // previewImage: "",
       // fileList: [{}],
@@ -298,30 +297,29 @@ export default {
     //   this.fileList = fileList;
     // },
 
-
-    handleChange (info) {
-      if (info.file.status === 'uploading') {
-        this.loading = true
-        return
+    handleChange(info) {
+      if (info.file.status === "uploading") {
+        this.loading = true;
+        return;
       }
-      if (info.file.status === 'done') {
+      if (info.file.status === "done") {
         // Get this url from response in real world.
-        getBase64(info.file.originFileObj, (imageUrl) => {
-          this.avatar = imageUrl
-          this.loading = false
-        })
+        getBase64(info.file.originFileObj, imageUrl => {
+          this.avatar = imageUrl;
+          this.loading = false;
+        });
       }
     },
-    beforeUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
+    beforeUpload(file) {
+      const isJPG = file.type === "image/jpeg";
       if (!isJPG) {
-        this.$message.error('You can only upload JPG file!')
+        this.$message.error("You can only upload JPG file!");
       }
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
-        this.$message.error('Image must smaller than 2MB!')
+        this.$message.error("Image must smaller than 2MB!");
       }
-      return isJPG && isLt2M
+      return isJPG && isLt2M;
     },
 
     init() {
@@ -336,7 +334,7 @@ export default {
           this.$store.state.third_party_libraries.facebook_details
         );
         console.log("facebook_details :", facebook_details);
-        this.avatar = facebook_details.photos[0].value
+        this.avatar = facebook_details.photos[0].value;
         this.form = this.$form.createForm(this, {
           mapPropsToFields: () => {
             return {
@@ -348,7 +346,7 @@ export default {
               }),
               "name.last": this.$form.createFormField({
                 value: facebook_details.name.familyName
-              }),
+              })
             };
           }
         });
@@ -360,7 +358,7 @@ export default {
         const google_details = this.deepCopy(
           this.$store.state.third_party_libraries.google_details._json
         );
-        this.avatar = google_details.photos[0].value
+        this.avatar = google_details.photos[0].value;
         this.form = this.$form.createForm(this, {
           mapPropsToFields: () => {
             console.log(
@@ -465,7 +463,7 @@ export default {
           });
           console.log("Received data of form: ", this.form_data);
           // this.$store.commit("update", values);
-          this.form_data.avatar = this.avatar
+          this.form_data.avatar = this.avatar;
           this.$store
             .dispatch("CREATE_ACCOUNT", this.form_data)
             .then(result => {
@@ -497,18 +495,18 @@ export default {
 /* avatar style */
 
 .avatar-uploader > .ant-upload {
-    width: 128px;
-    height: 128px;
-  }
-  .ant-upload-select-picture-card i {
-    font-size: 32px;
-    color: #999;
-  }
+  width: 128px;
+  height: 128px;
+}
+.ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
+}
 
-  .ant-upload-select-picture-card .ant-upload-text {
-    margin-top: 8px;
-    color: #666;
-  }
+.ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+}
 
 /* .avatar-uploader > .ant-upload {
   width: 100px;
