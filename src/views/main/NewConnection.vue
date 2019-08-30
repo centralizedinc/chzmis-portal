@@ -4,6 +4,7 @@
       title="Search Connection"
       :visible="show"
       @cancel="close"
+      :footer="loading || fetching_data ? null: undefined"
       class="modal-search-connection"
     >
       <div v-if="loading || fetching_data" class="demo-loading-container">
@@ -33,14 +34,13 @@
     <a-modal
       v-model="show_create_connection"
       :title="update_connection ? 'Update Connection': 'Add New Connection'"
+      :footer="loading || fetching_data ? null: undefined"
       :closable="false"
     >
-      <template slot="footer">
-        <a-button key="back" @click="close" :disabled="loading">Cancel</a-button>
-        <a-button key="submit" type="primary" :loading="loading" @click="submit">Submit</a-button>
-      </template>
-
-      <template>
+      <div v-if="loading || fetching_data" class="demo-loading-container">
+        <a-spin />
+      </div>
+      <template v-else>
         <!-- own connection -->
         <a-form :form="form">
           <a-form-item label="Connection Name">
@@ -64,7 +64,7 @@
               <a-select-option
                 v-for="item in users"
                 :key="item.account_id"
-              >{{item.name.first}} {{item.name.last}}</a-select-option>
+              >{{item && item.name ? `${item.name.first} ${item.name.last}` : ""}}</a-select-option>
             </a-select>
           </a-form-item>
         </a-form>
@@ -96,6 +96,11 @@
           </a-col>
         </a-row>
       </template>
+
+      <template slot="footer">
+        <a-button key="back" @click="close" :disabled="loading">Cancel</a-button>
+        <a-button key="submit" type="primary" :loading="loading" @click="submit">Submit</a-button>
+      </template>
     </a-modal>
   </div>
 </template>
@@ -112,7 +117,7 @@ export default {
     };
   },
   created() {
-    console.log('this :', this.$form);
+    console.log("this :", this.$form);
   },
   computed: {
     show() {
@@ -132,18 +137,19 @@ export default {
         this.$store.state.connections.search_connections
       );
       return this.search
-        ? data.filter(x => this.compareSearch([x._id, x.name], this.search))
+        ? data.filter(x => this.compareSearch(x, ["_id", "name"], this.search))
         : [];
     },
     users() {
       var data = this.deepCopy(this.$store.state.users.users);
       return this.search_user
-        ? data.filter(x =>
-            this.compareSearch(
-              [x.account_id, x.name.first, x.name.middle, x.name.last],
+        ? data.filter(x => {
+            return this.compareSearch(
+              x,
+              ["account_id", "name.first", "name.last", "email"],
               this.search_user
-            )
-          )
+            );
+          })
         : [];
     },
     connections() {
@@ -152,46 +158,53 @@ export default {
   },
   watch: {
     show_create_connection(val) {
-      console.log('this.$form :', this.$form);
-      if (val) {
-        console.log('this.update_connection :', this.update_connection);
-        if (this.update_connection) {
-          var connection = this.connections.find(
-            x => x._id.toString() === this.update_connection
-          );
-          this.form = this.$form.createForm(this, {
-            mapPropsToFields() {
-              return {
-                name: this.$form.createFormField({
-                  value: connection.name
-                }),
-                members: this.$form.createFormField({
-                  value: connection.members
-                })
-              };
-            }
-          });
-        } else {
-          this.form = this.$form.createForm(this);
-        }
-      }
+      // if (val) {
+      //   if (this.update_connection) {
+      //     var connection = this.connections.find(
+      //       x => x._id.toString() === this.update_connection
+      //     );
+      //     this.form = this.$form.createForm(this, {
+      //       mapPropsToFields() {
+      //         return {
+      //           name: this.$form.createFormField({
+      //             value: connection.name
+      //           }),
+      //           members: this.$form.createFormField({
+      //             value: connection.members
+      //           })
+      //         };
+      //       }
+      //     });
+      //   } else {
+      //     this.form = this.$form.createForm(this);
+      //   }
+      // }
     }
   },
   methods: {
-    compareSearch(sources, search_key) {
-      if (!search_key) return false;
-      if (Array.isArray(sources)) sources = [sources];
-      console.log("sources :", sources);
-      console.log("search_key :", search_key);
-      return (
-        sources.findIndex(
-          v =>
-            v
-              .toString()
-              .toLowerCase()
-              .indexOf(search_key.toLowerCase()) > -1
-        ) > -1
-      );
+    compareSearch(data, keys, search_key) {
+      if (!data || !search_key || !keys) return false;
+      if (!Array.isArray(keys)) keys = [keys];
+      for (let i = 0; i < keys.length; i++) {
+        if (
+          data[keys[i]] &&
+          data[keys[i]]
+            .toString()
+            .toLowerCase()
+            .indexOf(search_key.toLowerCase()) > -1
+        )
+          return true;
+      }
+      return false;
+      // return (
+      //   sources.findIndex(
+      //     v =>
+      //       v
+      //         .toString()
+      //         .toLowerCase()
+      //         .indexOf(search_key.toLowerCase()) > -1
+      //   ) > -1
+      // );
     },
     close() {
       if (this.reload_connection) {

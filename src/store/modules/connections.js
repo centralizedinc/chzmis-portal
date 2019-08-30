@@ -71,17 +71,19 @@ const actions = {
             });
     },
     OPEN_CREATE_CONNECTION(context, data) {
-        if (data) context.commit('SET_UPDATE_CONNECTION', data.connection_id);
-        context.commit('SHOW_CREATE_CONNECTION', true);
-        // context.commit('FETCHING_DATA', true)
-        // ConnectionsAPI.getConnectionsNameAndId()
-        //     .then((result) => {
-        //         console.log('result.data.model :', result.data.model);
-        //         context.commit('SET_SEARCH_CONNECTION', result.data.model)
-        //         context.commit('FETCHING_DATA', false)
-        //     }).catch((err) => {
-        //         context.commit('FETCHING_DATA', false)
-        //     });
+        return new Promise((resolve, reject) => {
+            context.commit("FETCHING_DATA", true)
+            if (data) context.commit('SET_UPDATE_CONNECTION', data.connection_id);
+            context.dispatch("GET_USERS_DETAILS", {}, { root: true })
+                .then((users) => {
+                    context.commit('SHOW_CREATE_CONNECTION', true);
+                    context.commit("FETCHING_DATA", false)
+                    resolve(users)
+                }).catch((err) => {
+                    context.commit("FETCHING_DATA", false)
+                    reject(err)
+                });
+        })
     },
     CONNECT_TO_CONNECTION(context, data) {
         return ConnectionsAPI.connect(data.connection)

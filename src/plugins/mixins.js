@@ -48,11 +48,15 @@ export default {
                 },
                 getAuthorName(account_id) {
                     const author = this.$store.state.users.users.find(x => x.account_id === account_id);
-                    return author ? author.name : {};
+                    return author && author.name ? author.name : {};
+                },
+                getAuthorEmail(account_id) {
+                    const author = this.$store.state.users.users.find(x => x.account_id === account_id);
+                    return author ? author.email : '';
                 },
                 getAuthorAvatar(account_id) {
                     const author = this.$store.state.users.users.find(x => x.account_id === account_id)
-                    return author ? author.avatar : {};
+                    return author ? author.avatar : '';
                 }
                 // getPopupContainer(trigger) {
                 //     return trigger.parentElement
