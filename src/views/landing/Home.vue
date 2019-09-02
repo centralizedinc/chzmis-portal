@@ -48,19 +48,76 @@
                       </a-input>
                       <a-form-item style="padding-top: 10px">
                         <a-button type="primary" block @click="registration">Login</a-button>
-                        <div class="center">
-                          <a @click="signUp">If you haven't set up an account yet, Register here</a>
-                        </div>
-                        <a-divider>or</a-divider>
 
+                        <div>
+                          <a
+                            @click="() => modal2Visible = true"
+                          >If you haven't set up an account yet, Register here</a>
+                          <a-modal
+                            title="Please select account to use in sing up"
+                            centered
+                            v-model="modal2Visible"
+                            :footer="null"
+                            @ok="() => modal2Visible = false"
+                          >
+                            <!-- content -->
+                            <a-form-item style="padding-top: 10px">
+                              <a-row type="flex" align="middle" :gutter="12">
+                                <a-col :span="24">
+                                  <a-form-item>
+                                    <a-button
+                                      @click="localSignUp"
+                                      type="primary"
+                                      block
+                                      style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
+                                    >
+                                    Sign up locally
+                                      <a-icon type="primary" theme="filled" />
+                                    </a-button>
+                                  </a-form-item>
+                                </a-col>
+                              </a-row>
+                              <a-row type="flex" align="middle" :gutter="12">
+                                <a-col :span="24">
+                                  <a-form-item>
+                                    <a-button
+                                      @click="facebookSignUp"
+                                      type="primary"
+                                      block
+                                      style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
+                                    >
+                                      <a-icon type="facebook" theme="filled" />
+                                    </a-button>
+                                  </a-form-item>
+                                </a-col>
+                              </a-row>
+                              <a-row type="flex" align="middle" :gutter="12">
+                                <a-col :span="24">
+                                  <a-form-item>
+                                    <a-button
+                                      @click="googleSignUp"
+                                      style="font-size: 20px; background-color: #d34836; border-color: #d34836"
+                                      type="primary"
+                                      block
+                                    >
+                                      <a-icon type="google-plus" />
+                                    </a-button>
+                                  </a-form-item>
+                                </a-col>
+                              </a-row>
+                            </a-form-item>
+                          </a-modal>
+                        </div>
+
+                        <a-divider>or</a-divider>
                         <span
                           style="text-align: center"
-                        >Sign up using your existing social media accounts</span>
+                        >Login using your existing social media accounts</span>
                         <a-row type="flex" align="middle" :gutter="12">
-                          <a-col :span="12">
+                          <a-col :span="24">
                             <a-form-item>
                               <a-button
-                                @click="facebookSignUp"
+                                @click="facebookLogin"
                                 type="primary"
                                 block
                                 style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
@@ -69,11 +126,12 @@
                               </a-button>
                             </a-form-item>
                           </a-col>
-
-                          <a-col :span="12">
+                        </a-row>
+                        <a-row type="flex" align="middle" :gutter="12">
+                          <a-col :span="24">
                             <a-form-item>
                               <a-button
-                                @click="googleSignUp"
+                                @click="googleLogin"
                                 style="font-size: 20px; background-color: #d34836; border-color: #d34836"
                                 type="primary"
                                 block
@@ -101,55 +159,77 @@ import { Icon } from "ant-design-vue";
 const IconFont = Icon.createFromIconfontCN({
   scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js"
 });
-
 export default {
   components: {
     IconFont
   },
+  data() {
+    return {
+      modal1Visible: false,
+      modal2Visible: false
+    };
+  },
   methods: {
+    setModal1Visible(modal1Visible) {
+      this.modal1Visible = modal1Visible;
+    },
+
     registration() {
       this.$router.push("/signUp");
     },
-    signUp() {
+    localSignUp() {
       this.$router.push("/newAccount");
     },
     login() {
       var auth = {
-          userName: this.username,
-          passWord: this.password
+        userName: this.username,
+        passWord: this.password
       };
-      this.$store.dispatch("LOGIN", auth).then(result=> {
-        console.log("Success Login");
-        if (this.$store.state.user_session.isAuthenticated === true) {
-          // Notification message
-          
-          this.$router.push("/")
-        } else {
-          // notification error
-        }
-      })
-      .catch(err => {})
-      console.log('auth :', auth);
+      this.$store
+        .dispatch("LOGIN", auth)
+        .then(result => {
+          console.log("Success Login");
+          if (this.$store.state.user_session.isAuthenticated === true) {
+            // Notification message
+
+            this.$router.push("/");
+          } else {
+            // notification error
+          }
+        })
+        .catch(err => {});
+      console.log("auth :", auth);
     },
-    // facebook() {
-    //   this.$router.push("/facebookSignUp");
-    //   return
-    //   this.$router.push("/newAccount");
-    // },
-    // google() {
-    //   this.$router.push("/newAccount");
-    // },
-    googleSignUp() {
-      var googleWindow = window.open(
-        process.env.VUE_APP_API_BASE_URL + "/auth/google",
-        "Google Sign Up",
-        "width=500,height=500"
-      );
+    // SIGNIN
+    facebookLogin() {
+
+      this.$router.push("/main");
+      // var googleWindow = window.open(
+        // process.env.VUE_APP_API_BASE_URL + "/auth/facebook",
+        // "Facebook Sign In",
+        // "width=500,height=500"
+      // );
     },
+    googleLogin() {
+      this.$router.push("/main");
+      // var googleWindow = window.open(
+        // process.env.VUE_APP_API_BASE_URL + "/auth/google",
+      //   "Google Sign In",
+      //   "width=500,height=500"
+      // );
+    },
+    // SIGNUP
     facebookSignUp() {
       var googleWindow = window.open(
         process.env.VUE_APP_API_BASE_URL + "/auth/facebook",
         "Facebook Sign Up",
+        "width=500,height=500"
+      );
+    },
+    googleSignUp() {
+      var googleWindow = window.open(
+        process.env.VUE_APP_API_BASE_URL + "/auth/google",
+        "Google Sign Up",
         "width=500,height=500"
       );
     }
@@ -177,7 +257,7 @@ export default {
 .overlay-form,
 .custom-size {
   width: 800px;
-  height: 400px;
+  height: 480px;
 }
 .rounded-corners-transparent {
   background: white !important;
