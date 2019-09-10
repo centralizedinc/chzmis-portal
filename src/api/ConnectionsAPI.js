@@ -2,13 +2,19 @@ import axios from 'axios'
 
 export default class ConnectionAPI {
 
+    constructor(token) {
+        axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URL;
+        axios.defaults.headers.common['Content-Type'] = 'application/json';
+        axios.defaults.headers.common['access_token'] = token;
+    }
 
     /**
      * @returns {Promise}
      * @param {String} connection 
      */
-    static create(connection) {
-        return axios.post(`${process.env.VUE_APP_API_BASE_URL}/connections`, connection)
+    create(connection) {
+        console.log("axios.defaults.headers.common['access_token']:", axios.defaults.headers.common['access_token']);
+        return axios.post('connections', connection)
     }
 
     /**
@@ -16,30 +22,30 @@ export default class ConnectionAPI {
      * @param {String} id
      * @param {String} connection 
      */
-    static update(id, connection) {
-        return axios.post(`${process.env.VUE_APP_API_BASE_URL}/connections/${id}`, connection)
+    update(id, connection) {
+        return axios.post(`connections/${id}`, connection)
     }
 
     /**
      * @returns {Promise}
      * @param {String} account_id 
      */
-    static getConnectionsByAccountID(account_id) {
-        return axios.get(`${process.env.VUE_APP_API_BASE_URL}/connections/member/${account_id}`)
+    getConnectionsByAccountID(account_id) {
+        return axios.get(`connections/member/${account_id}`)
     }
 
     /**
      * @returns {Promise}
      */
-    static getConnectionsNameAndId() {
-        return axios.get(`${process.env.VUE_APP_API_BASE_URL}/connections/search`)
+    getConnectionsNameAndId() {
+        return axios.get('connections/search')
     }
 
     /**
      * @returns {Promise}
      * @param {String} connection 
      */
-    static connect(connection) {
-        return axios.post(`${process.env.VUE_APP_API_BASE_URL}/connections/connect`, { connection })
+    connect(connection) {
+        return axios.post('connections/connect', { connection })
     }
 }

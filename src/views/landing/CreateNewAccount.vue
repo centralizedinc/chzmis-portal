@@ -137,14 +137,20 @@
               </a-form>
             </div>
             <div class="steps-action">
-              <a-button v-if="current>0" style="margin-left: 8px" @click="prev">Previous</a-button>
+              <a-button
+                v-if="current>0"
+                :disabled="loading"
+                style="margin-left: 8px"
+                @click="prev"
+              >Previous</a-button>
 
               <a-button
+                :loading="loading"
                 v-if="current === 2"
                 type="primary"
                 @click="submit($message.success('Please confirm your account through your email'))"
               >Done</a-button>
-              <a-button v-else type="primary" @click="next">Next</a-button>
+              <a-button v-else type="primary" @click="next" :loading="loading">Next</a-button>
             </div>
           </div>
 
@@ -161,6 +167,7 @@
 export default {
   data() {
     return {
+      loading: false,
       current: 0,
       steps: [
         {
@@ -385,6 +392,7 @@ export default {
     },
 
     submit() {
+      this.loading = true;
       this.form.validateFieldsAndScroll((err, data) => {
         if (!err) {
           Object.keys(data).forEach(key => {
@@ -396,10 +404,12 @@ export default {
             .dispatch("CREATE_ACCOUNT", this.form_data)
             .then(result => {
               console.log("result.data.model :", result.data.model);
+              this.loading = false;
               this.$router.push("/");
             })
             .catch(err => {
               console.log("err :", err);
+              this.loading = false;
             });
           // console.log("console user information:", JSON.stringify(this.values));
           // // console.log('username :', username);

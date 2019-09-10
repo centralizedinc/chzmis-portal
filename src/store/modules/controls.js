@@ -21,6 +21,11 @@ const mutations = {
     },
     SHOW_SETTINGS(state, show) {
         state.show_settings = show
+    },
+    RESET(state) {
+        Object.keys(state).forEach(key => {
+            state[key] = initialState()[key];
+        })
     }
 }
 

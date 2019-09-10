@@ -1,29 +1,54 @@
+import AccountAPI from "../../api/AccountAPI";
+
+
 function initialState() {
     return {
-        account: {
-            "_id": "5d5f5918d1f3c006f8639957",
-            "date_created": "2019-08-23T03:10:16.773Z",
-            "date_modified": "2019-08-23T03:10:16.774Z",
-            "phone": "09123456798",
-            "name": {
-                "first": "Godofuri",
-                "middle": "S",
-                "last": "Rivera"
-            },
-            "address": "bahay namin",
-            "email": "godofuri76@gmail.com",
-            "account_id": 3,
-            "__v": 0
-        }
+        account: {},
+        user: {},
+        token: "",
+        is_authenticated: false
     }
 }
 
 const state = initialState()
 
 const mutations = {
+    LOGIN(state, data) {
+        state.account = data.account;
+        state.user = data.user;
+        state.token = data.token;
+        state.is_authenticated = true;
+    },
+    RESET(state) {
+        Object.keys(state).forEach(key => {
+            state[key] = initialState()[key];
+        })
+    }
 }
 
 const actions = {
+    LOGIN(context, account) {
+        new AccountAPI(null);
+        return new Promise((resolve, reject) => {
+            AccountAPI.login(account)
+                .then((result) => {
+                    console.log('LOGIN :', result.data.model);
+                    if (result.data.model.is_authenticated) {
+                        context.commit("LOGIN", result.data.model);
+                        context.commit("SETUP", result.data.model.token);
+                        context.dispatch("GET_USERS_DETAILS", {}, { root: true })
+                        resolve(result.data.model);
+                    } else reject(result.data.model);
+                }).catch((err) => {
+                    console.log('A err :', err);
+                    reject(err)
+                });
+        })
+    },
+    LOGOUT(context) {
+        console.log("Logging out...");
+        context.commit("RESET");
+    }
 }
 
 export default {

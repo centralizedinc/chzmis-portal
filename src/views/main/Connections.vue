@@ -25,8 +25,8 @@
             <div v-if="loading_submit" class="demo-loading-container">
               <a-spin />
             </div>
-            <a-row v-else>
-              <a-col :span="hide_msgbox?23:12" style="border-right: 1px solid #eee;">
+            <a-row>
+              <a-col :span="hide_msgbox?23:14" style="border-right: 1px solid #eee;">
                 <a-skeleton
                   style="padding: 20px"
                   :loading="loading_post"
@@ -34,7 +34,12 @@
                   avatar
                   :paragraph="{rows: 3}"
                 />
-                <post-section v-if="!loading_post" public class="messages-content"></post-section>
+                <post-section
+                  v-if="!loading_post"
+                  :reload_new_post="loading_submit"
+                  public
+                  class="messages-content"
+                ></post-section>
               </a-col>
               <a-col :span="1" v-if="hide_msgbox" class="cons-icon">
                 <p>
@@ -46,7 +51,7 @@
                   </a-tooltip>
                 </p>
               </a-col>
-              <a-col :span="12" v-else style="padding: 15px; padding-left: 10px; padding-top: 5px;">
+              <a-col :span="10" v-else style="padding: 15px; padding-left: 10px; padding-top: 5px;">
                 <a-row>
                   <a-col :span="24" style="text-align: right">
                     <a href="#" class="underline-on-hover" @click="hide_msgbox=true">
@@ -55,20 +60,74 @@
                     </a>
                   </a-col>
                   <a-col :span="2">
-                    <a-avatar
-                      src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                    />
+                    <a-avatar :src="getLoginUser().avatar">{{getLoginUser("initial")}}</a-avatar>
                   </a-col>
-                  <a-col :span="22">
-                    <a-textarea v-model="post_message" placeholder="Post a message" :rows="3" />
+                  <a-col :span="21" :offset="1">
+                    <a-textarea
+                      v-model="post_message"
+                      @keypress.enter="send_message"
+                      placeholder="Post a message"
+                      :rows="3"
+                    />
                     <a-row type="flex" justify="space-between" style="padding: 10px;">
                       <a-col :span="3">
-                        <a-tag @click="attachFile">Photo/Video</a-tag>
+                        <a-upload
+                          :multiple="true"
+                          :showUploadList="false"
+                          :beforeUpload="attachFile"
+                        >
+                          <a-button
+                            type="default"
+                            :loading="loading_submit"
+                            size="small"
+                          >Photo / Video</a-button>
+                        </a-upload>
                       </a-col>
                       <a-col :span="4">
-                        <a-button @click="send_message" block type="primary" size="small">SEND</a-button>
+                        <a-button
+                          @click="send_message"
+                          :loading="loading_submit"
+                          block
+                          type="primary"
+                          size="small"
+                        >SEND</a-button>
                       </a-col>
                     </a-row>
+                  </a-col>
+                  <a-col :span="24">
+                    <template v-for="(img, index) in post_file_images">
+                      <a-tooltip :key="index">
+                        <span slot="title">{{img.name}}</span>
+                        <div class="preview-uploads-card">
+                          <a-icon
+                            class="preview-uploads-card-close"
+                            type="close-circle"
+                            @click="removeFileList(index)"
+                          ></a-icon>
+                          <img :src="img.imageUrl" width="50" />
+                          <div
+                            :key="`preview${index}`"
+                            class="preview-uploads-card-view"
+                            @click="preview_file_list=img"
+                          >
+                            <span style="line-height: 4;">View</span>
+                          </div>
+                        </div>
+                      </a-tooltip>
+                    </template>
+                    <a-modal
+                      :width="300"
+                      :visible="preview_file_list.imageUrl && preview_file_list.imageUrl !== ''"
+                      title="Preview Image"
+                      :footer="null"
+                      class="modal-preview-image"
+                      @cancel="preview_file_list={}"
+                    >
+                      <a-tooltip>
+                        <span slot="title">{{preview_file_list.name}}</span>
+                        <img :src="preview_file_list.imageUrl" :alt="preview_file_list.name" />
+                      </a-tooltip>
+                    </a-modal>
                   </a-col>
                 </a-row>
               </a-col>
@@ -87,7 +146,7 @@
                   </a-menu-item>
                   <a-menu-divider />
                   <a-menu-item key="1">
-                    <a href="#" @click="updateConnection(item._id)">Update</a>
+                    <a href="#" @click="updateConnection(item)">Update</a>
                   </a-menu-item>
                   <!-- <a-menu-divider /> 
                   <a-menu-item key="3">
@@ -99,8 +158,8 @@
             <div v-if="loading_submit" class="demo-loading-container">
               <a-spin />
             </div>
-            <a-row v-else>
-              <a-col :span="hide_msgbox?23:12" style="border-right: 1px solid #eee;">
+            <a-row>
+              <a-col :span="hide_msgbox?23:14" style="border-right: 1px solid #eee;">
                 <a-skeleton
                   style="padding: 20px"
                   :loading="loading_post"
@@ -108,7 +167,11 @@
                   avatar
                   :paragraph="{rows: 3}"
                 />
-                <post-section v-if="!loading_post" class="messages-content"></post-section>
+                <post-section
+                  v-if="!loading_post"
+                  :reload_new_post="loading_submit"
+                  class="messages-content"
+                ></post-section>
               </a-col>
               <a-col :span="1" v-if="hide_msgbox" class="cons-icon">
                 <p>
@@ -120,7 +183,7 @@
                   </a-tooltip>
                 </p>
               </a-col>
-              <a-col :span="12" v-else style="padding: 15px; padding-left: 10px; padding-top: 5px;">
+              <a-col :span="10" v-else style="padding: 15px; padding-left: 10px; padding-top: 5px;">
                 <a-row>
                   <a-col :span="24" style="text-align: right">
                     <a href="#" class="underline-on-hover" @click="hide_msgbox=true">
@@ -129,20 +192,74 @@
                     </a>
                   </a-col>
                   <a-col :span="2">
-                    <a-avatar
-                      src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                    />
+                    <a-avatar :src="getLoginUser().avatar">{{getLoginUser("initial")}}</a-avatar>
                   </a-col>
-                  <a-col :span="22">
-                    <a-textarea v-model="post_message" placeholder="Post a message" :rows="3" />
+                  <a-col :span="21" :offset="1">
+                    <a-textarea
+                      v-model="post_message"
+                      @keypress.enter="send_message"
+                      placeholder="Post a message"
+                      :rows="3"
+                    />
                     <a-row type="flex" justify="space-between" style="padding: 10px;">
                       <a-col :span="3">
-                        <a-tag @click="attachFile">Photo/Video</a-tag>
+                        <a-upload
+                          :multiple="true"
+                          :showUploadList="false"
+                          :beforeUpload="attachFile"
+                        >
+                          <a-button
+                            type="default"
+                            :loading="loading_submit"
+                            size="small"
+                          >Photo / Video</a-button>
+                        </a-upload>
                       </a-col>
                       <a-col :span="4">
-                        <a-button @click="send_message" block type="primary" size="small">SEND</a-button>
+                        <a-button
+                          @click="send_message"
+                          :loading="loading_submit"
+                          block
+                          type="primary"
+                          size="small"
+                        >SEND</a-button>
                       </a-col>
                     </a-row>
+                  </a-col>
+                  <a-col :span="24">
+                    <template v-for="(img, index) in post_file_images">
+                      <a-tooltip :key="index">
+                        <span slot="title">{{img.name}}</span>
+                        <div class="preview-uploads-card">
+                          <a-icon
+                            class="preview-uploads-card-close"
+                            type="close-circle"
+                            @click="removeFileList(index)"
+                          ></a-icon>
+                          <img :src="img.imageUrl" width="50" />
+                          <div
+                            :key="`preview${index}`"
+                            class="preview-uploads-card-view"
+                            @click="preview_file_list=img"
+                          >
+                            <span style="line-height: 4;">View</span>
+                          </div>
+                        </div>
+                      </a-tooltip>
+                    </template>
+                    <a-modal
+                      :width="300"
+                      :visible="preview_file_list.imageUrl && preview_file_list.imageUrl !== ''"
+                      title="Preview Image"
+                      :footer="null"
+                      class="modal-preview-image"
+                      @cancel="preview_file_list={}"
+                    >
+                      <a-tooltip>
+                        <span slot="title">{{preview_file_list.name}}</span>
+                        <img :src="preview_file_list.imageUrl" :alt="preview_file_list.name" />
+                      </a-tooltip>
+                    </a-modal>
                   </a-col>
                   <a-col :span="24">
                     <a href="#" class="underline-on-hover">Members({{item.members.length}}):</a>
@@ -152,7 +269,9 @@
                       <span
                         slot="title"
                       >{{getAuthorName(member.account_id).first}} {{getAuthorName(member.account_id).last}}</span>
-                      <a-avatar :src="getAuthorAvatar(member.account_id)" />
+                      <a-avatar
+                        :src="getAuthorAvatar(member.account_id)"
+                      >{{getAuthorName(member.account_id).first ? getAuthorName(member.account_id).first[0].toUpperCase() : "?"}}</a-avatar>
                     </a-tooltip>
                   </a-col>
                 </a-row>
@@ -190,7 +309,10 @@ export default {
       loading_post: false,
       hide_msgbox: false,
       loading: true,
-      loading_submit: false
+      loading_submit: false,
+      post_file_list: [],
+      post_file_images: [],
+      preview_file_list: {}
     };
   },
   computed: {
@@ -216,8 +338,13 @@ export default {
   methods: {
     getConnectionPosts(active_key) {
       this.active_key = active_key;
-      if (active_key === -1) this.loadPublicPost();
-      else {
+      this.post_file_images = [];
+      this.post_file_list = [];
+      this.preview_file_list = {};
+      if (active_key === -1) {
+        this.$store.commit("SET_ACTIVE_CONNECTION", "");
+        this.loadPublicPost();
+      } else {
         this.loading_post = true;
         this.$store.commit("SET_ACTIVE_CONNECTION", active_key);
         this.$store
@@ -245,30 +372,66 @@ export default {
           this.loading_post = false;
         });
     },
-    attachFile() {},
+    attachFile(file) {
+      console.log("file :", file);
+      this.post_file_list = [...this.post_file_list, file];
+      this.getBase64(file, imageUrl => {
+        this.post_file_images = [
+          ...this.post_file_images,
+          { imageUrl, name: file.name }
+        ];
+      });
+      console.log("this.post_file_list :", this.post_file_list);
+    },
+    removeFileList(i) {
+      this.post_file_list.splice(i, 1);
+      this.post_file_images.splice(i, 1);
+    },
     send_message() {
       this.loading_submit = true;
       if (this.post_message) {
         var post = {
-          author: "3",
-          message: this.post_message,
-          likes: [],
-          dislikes: []
+          message: this.post_message
         };
+        console.log("this.active_key :", this.active_key);
         if (this.active_key === -1) post.is_public = true;
         else post.parent_id = this.active_key;
-        this.$store.dispatch("POST_MESSAGE", post);
-        this.post_message = "";
-        this.loading_submit = false;
+
+        console.log("this.post_file_list :", this.post_file_list);
+        // if attachment is not null
+        var form_data = null;
+        if (this.post_file_list.length) {
+          form_data = new FormData();
+          this.post_file_list.forEach(file => {
+            form_data.append("files", file, file.name);
+          });
+        }
+        console.log("form_data :", form_data);
+        this.$store
+          .dispatch("POST_MESSAGE", { form_data, post })
+          .then(result => {
+            console.log("POST_MESSAGE result :", result);
+            this.post_message = "";
+            this.post_file_list = [];
+            this.post_file_images = [];
+            this.loading_submit = false;
+          })
+          .catch(err => {
+            console.error(err);
+            this.loading_submit = false;
+          });
       }
     },
     newConnection() {
       this.$store.dispatch("OPEN_NEW_CONNECTION");
     },
-    updateConnection(connection_id) {
-      this.$store.dispatch("OPEN_CREATE_CONNECTION", {
-        connection_id
-      });
+    updateConnection(connection) {
+      this.$store.dispatch("OPEN_CREATE_CONNECTION", connection);
+    },
+    getBase64(img, callback) {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => callback(reader.result));
+      reader.readAsDataURL(img);
     }
   }
 };
@@ -319,5 +482,58 @@ export default {
 
 .underline-on-hover:hover {
   text-decoration: underline;
+}
+
+.preview-uploads-card {
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  width: 62px;
+  height: 65px;
+  float: left;
+  margin: 0 3px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-uploads-card-view {
+  position: absolute;
+  top: 5px;
+  width: 85%;
+  height: 85%;
+  text-align: center;
+  color: black;
+  font-weight: bold;
+  background: #aaa;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.preview-uploads-card-view:hover {
+  opacity: 0.8;
+}
+
+.preview-uploads-card-close {
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  color: red;
+  cursor: pointer;
+}
+
+.preview-uploads-card-close:hover {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.modal-preview-image .ant-modal-body {
+  padding: 0px !important;
+}
+
+.modal-preview-image img {
+  height: 100%;
+  width: 100%;
 }
 </style>

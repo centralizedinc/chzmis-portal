@@ -28,10 +28,11 @@
               <a-row type="flex" align="middle">
                 <a-col :span="24">
                   <!-- username -->
-                  <a-form :form="form" @submit="handleSubmit">
+                  <a-form :form="form" @submit="login">
                     <a-form-item>
                       <a-input
-                        v-decorator="['userName', { rules: [{ required: true, message: 'Please input your username!' }] }]"
+                        @keypress.enter="login"
+                        v-decorator="['email', { rules: [{ required: true, message: 'Please input your username!' }] }]"
                         placeholder="Username or Email Address"
                       >
                         <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
@@ -40,6 +41,7 @@
                     <!-- password -->
                     <a-form-item>
                       <a-input
+                        @keypress.enter="login"
                         v-decorator="['password',{ rules: [{ required: true, message: 'Please input your Password!' }] }]"
                         type="password"
                         placeholder="Password"
@@ -47,9 +49,12 @@
                         <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
                       </a-input>
                       <a-form-item style="padding-top: 10px">
-                        <a-button type="primary" block @click="registration">Login</a-button>
+                        <a-button type="primary" block @click="login" :loading="loading">Login</a-button>
                         <div class="center">
-                          <a @click="signUp">If you haven't set up an account yet, Register here</a>
+                          <a
+                            @click="signUp"
+                            :disabled="loading"
+                          >If you haven't set up an account yet, Register here</a>
                         </div>
                         <a-divider>or</a-divider>
 
@@ -60,6 +65,7 @@
                           <a-col :span="12">
                             <a-form-item>
                               <a-button
+                                :disabled="loading"
                                 @click="facebookSignUp"
                                 type="primary"
                                 block
@@ -73,6 +79,7 @@
                           <a-col :span="12">
                             <a-form-item>
                               <a-button
+                                :disabled="loading"
                                 @click="googleSignUp"
                                 style="font-size: 20px; background-color: #d34836; border-color: #d34836"
                                 type="primary"
@@ -106,6 +113,12 @@ export default {
   components: {
     IconFont
   },
+  data() {
+    return {
+      loading: false,
+      form: this.$form.createForm(this)
+    };
+  },
   methods: {
     registration() {
       this.$router.push("/signUp");
@@ -114,22 +127,29 @@ export default {
       this.$router.push("/newAccount");
     },
     login() {
-      var auth = {
-          userName: this.username,
-          passWord: this.password
-      };
-      this.$store.dispatch("LOGIN", auth).then(result=> {
-        console.log("Success Login");
-        if (this.$store.state.user_session.isAuthenticated === true) {
-          // Notification message
-          
-          this.$router.push("/")
-        } else {
-          // notification error
+      this.loading = true;
+      this.form.validateFieldsAndScroll((err, auth) => {
+        if (!err) {
+          console.log("Received values of form: ", auth);
+          this.$store
+            .dispatch("LOGIN", auth)
+            .then(result => {
+              console.log("Success Login");
+              if (this.$store.state.accounts.is_authenticated) {
+                // Notification message
+
+                this.$router.push("/main");
+              } else {
+                // notification error
+              }
+              this.loading = false;
+            })
+            .catch(err => {
+              console.log("LOGIN err :", err);
+              this.loading = false;
+            });
         }
-      })
-      .catch(err => {})
-      console.log('auth :', auth);
+      });
     },
     // facebook() {
     //   this.$router.push("/facebookSignUp");

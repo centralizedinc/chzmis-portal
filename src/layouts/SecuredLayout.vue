@@ -1,20 +1,20 @@
 <template>
   <a-layout>
-    <a-layout-header style="background: transparent; padding: 0px">
+    <a-layout-header style="background: transparent; padding: 0px; height: 50px; line-height: 45px;">
       <a-affix :offsetTop="0">
         <header-layout class="secured-header-layout"></header-layout>
       </a-affix>
     </a-layout-header>
-    <a-layout style="height: 100%;margin-bottom: 50px;">
+    <a-layout style="height: 100%;margin-bottom: 50px;padding: 50px;">
       <a-layout-sider class="secured-sider-layout">
         <profile></profile>
       </a-layout-sider>
-      <a-layout-content style="padding: 5px 0;margin-bottom: 35px;">
+      <a-layout-content style="margin: 0 12px;">
         <router-view />
       </a-layout-content>
-      <a-layout-sider class="secured-acquaintance-layout">
+      <!-- <a-layout-sider class="secured-acquaintance-layout">
         <acquaintance></acquaintance>
-      </a-layout-sider>
+      </a-layout-sider> -->
     </a-layout>
     <a-layout-footer class="secured-taskbar-layout">
       <a-affix :offsetBottom="33">
@@ -47,21 +47,26 @@ export default {
     Profile,
     Acquaintance,
     Taskbar
+  },
+  created() {
+    this.$store.commit("SETUP", this.$store.state.accounts.token);
   }
 };
 </script>
 
 <style>
-.secured-sider-layout {
+/* .secured-sider-layout {
   padding: 5px !important;
-}
+} */
 
 .secured-sider-layout,
 .secured-sider-layout ul {
+  margin: 0 12px;
   background: none !important;
-  flex: 0 0 250px !important;
-  max-width: 250px !important;
-  min-width: 250px !important;
+  flex: 0 0 216px !important;
+  max-width: 216px !important;
+  min-width: 216px !important;
+  width: 216px !important;
 }
 
 .secured-footer-layout {

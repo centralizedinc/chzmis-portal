@@ -3,9 +3,6 @@ export default {
     install(Vue) {
         Vue.mixin({
             computed: {
-                account_id() {
-                    return this.$store.state.accounts.account.account_id
-                },
                 main_layout_head_style() {
                     var main_head_style = {
                         'padding-left': '10px', 'font-weight': 'bold', 'text-align': 'left',
@@ -23,6 +20,40 @@ export default {
                 }
             },
             methods: {
+                getLoginAccount(req) {
+                    const account = this.deepCopy(this.$store.state.accounts.account);
+                    return account;
+                },
+                getLoginUser(req) {
+                    const user = this.deepCopy(this.$store.state.accounts.user);
+                    if (req)
+                        if (req === "fullname") {
+                            return `${user.name.first} ${user.name.last}`;
+                        } else if (req === "initial") {
+                            return user.name.first[0].toUpperCase()
+                        }
+                    return user;
+                },
+                getUsers(account_id, option) {
+                    if (Array.isArray(account_id)) {
+                        var users = this.deepCopy(this.$store.state.users.users).find(x => account_id.includes(x.account_id));
+                        if (option === "fullname")
+                            return users.map(x => x.name ? `${x.name.first} ${x.name.last}` : '');
+                        else if (option === "initial")
+                            return users.map(x => x.name ? x.name.first[0].toUpperCase() : '');
+                        return users || [];
+                    } else {
+                        console.log('account_id :', account_id);
+                        var user = this.deepCopy(this.$store.state.users.users).find(x => x.account_id === account_id);
+                        // console.log('user :', user);
+                        // return {}
+                        if (option === "fullname")
+                            return user.name ? `${user.name.first} ${user.name.last}` : '';
+                        else if (option === "initial")
+                            return user.name ? user.name.first[0].toUpperCase() : '';
+                        return user || {};
+                    }
+                },
                 deepCopy(obj) {
                     return JSON.parse(JSON.stringify(obj));
                 },
@@ -38,7 +69,9 @@ export default {
                         hour12: true,
                         year: "numeric",
                         month: "long",
-                        day: "2-digit"
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit"
                     });
                     return dt;
                 },
