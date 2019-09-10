@@ -52,9 +52,29 @@
             <div class="steps-content" v-else-if="current == 1">
               {{steps[current].content}}
               <!-- <secondStep :form="form"></secondStep> -->
-              <div align="left">
+
+              <div align="middle">
                 <h4>Please confirm your registration below</h4>
                 <a-form :form="form">
+                  <a-form-item>
+                    <a-upload
+                      name="avatar"
+                      listType="picture-card"
+                      class="avatar-uploader"
+                      :showUploadList="false"
+                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      :beforeUpload="beforeUpload"
+                      @preview="handlePreview"
+                      @change="handleChange"
+                    >
+                      <img v-if="avatar" :src="avatar" style="width: 100px;" alt="avatar" />
+                      <div v-else>
+                        <a-icon :type="loading ? 'loading' : 'plus'" />
+                        <div class="ant-upload-text">Upload</div>
+                      </div>
+                    </a-upload>
+                  </a-form-item>
+
                   <!-- email -->
                   <a-form-item>
                     <a-input
@@ -164,24 +184,34 @@
   </div>
 </template>
 <script>
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener("load", () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
 export default {
   data() {
     return {
       loading: false,
+      avatar: "",
+      // previewVisible: false,
+      // previewImage: "",
+      // fileList: [{}],
+
       current: 0,
       steps: [
         {
-          title: "First",
+          title: "Category",
           //   content: import("./SignUpNew")
           content: ""
         },
         {
-          title: "Second"
+          title: "User details"
           //   content: import("./SignUp2")
           //   content: "Second-content"
         },
         {
-          title: "Last"
+          title: "Password"
           //   content: import("./SignUp3")
           //   content: "Last-content"
         }
@@ -221,7 +251,7 @@ export default {
       this.$store.state.third_party_libraries.google_details
     );
 
-    this.init();
+  //   this.init();
   },
   methods: {
     showProfile() {
@@ -260,67 +290,107 @@ export default {
       callback();
     },
 
+    // avatar
+
+    // handleCancel() {
+    //   this.previewVisible = false;
+    // },
+    // handlePreview(file) {
+    //   this.previewImage = file.url || file.thumbUrl;
+    //   this.previewVisible = true;
+    // },
+    // handleChange({ fileList }) {
+    //   this.fileList = fileList;
+    // },
+
+    handleChange(info) {
+      if (info.file.status === "uploading") {
+        this.loading = true;
+        return;
+      }
+      if (info.file.status === "done") {
+        // Get this url from response in real world.
+        getBase64(info.file.originFileObj, imageUrl => {
+          this.avatar = imageUrl;
+          this.loading = false;
+        });
+      }
+    },
+    beforeUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      if (!isJPG) {
+        this.$message.error("You can only upload JPG file!");
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$message.error("Image must smaller than 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+
     init() {
       // signup_method facebook
-      console.log(
-        "this.$store.state.third_party_libraries.signup_method :",
-        this.$store.state.third_party_libraries.signup_method
-      );
-      this.form_data.method = this.$store.state.third_party_libraries.signup_method;
-      if (this.$store.state.third_party_libraries.signup_method == "facebook") {
-        const facebook_details = this.deepCopy(
-          this.$store.state.third_party_libraries.facebook_details
-        );
-        console.log("facebook_details :", facebook_details);
-        this.form = this.$form.createForm(this, {
-          mapPropsToFields: () => {
-            return {
-              email: this.$form.createFormField({
-                value: facebook_details.emails[0].value
-              }),
-              "name.first": this.$form.createFormField({
-                value: facebook_details.name.givenName
-              }),
-              "name.last": this.$form.createFormField({
-                value: facebook_details.name.familyName
-              })
-            };
-          }
-        });
-        this.form_data.facebook_id = facebook_details.id;
-      } else if (
-        this.$store.state.third_party_libraries.signup_method === "google"
-      ) {
+      // console.log(
+      //   "this.$store.state.third_party_libraries.signup_method :",
+      //   this.$store.state.third_party_libraries.signup_method
+      // );
+      // this.form_data.method = this.$store.state.third_party_libraries.signup_method;
+      // if (this.$store.state.third_party_libraries.signup_method == "facebook") {
+      //   const facebook_details = this.deepCopy(
+      //     this.$store.state.third_party_libraries.facebook_details
+      //   );
+      //   console.log("facebook_details :", facebook_details);
+      //   this.avatar = facebook_details.photos[0].value;
+      //   this.form = this.$form.createForm(this, {
+      //     mapPropsToFields: () => {
+      //       return {
+      //         email: this.$form.createFormField({
+      //           value: facebook_details.emails[0].value
+      //         }),
+      //         "name.first": this.$form.createFormField({
+      //           value: facebook_details.name.givenName
+      //         }),
+      //         "name.last": this.$form.createFormField({
+      //           value: facebook_details.name.familyName
+      //         })
+      //       };
+      //     }
+      //   });
+      //   this.form_data.facebook_id = facebook_details.id;
+      // } else if (
+      //   this.$store.state.third_party_libraries.signup_method === "google"
+      // ) {
         // signup_method google
-        const google_details = this.deepCopy(
-          this.$store.state.third_party_libraries.google_details._json
-        );
-        this.form = this.$form.createForm(this, {
-          mapPropsToFields: () => {
-            console.log(
-              "google details :",
-              this.$store.state.third_party_libraries.google_details
-            );
-            return {
-              email: this.$form.createFormField({
-                value: google_details.email
-              }),
-              "name.first": this.$form.createFormField({
-                value: google_details.given_name
-              }),
-              "name.last": this.$form.createFormField({
-                value: google_details.family_name
-              })
-            };
-          }
-        });
-        this.form_data.google_id = google_details.sub;
-      } else if (
-        this.$store.state.third_party_libraries.signup_method === "local"
-      ) {
-        // local sign up
-        this.form = this.$form.createForm(this);
-      }
+      //   const google_details = this.deepCopy(
+      //     this.$store.state.third_party_libraries.google_details._json
+      //   );
+      //   this.avatar = google_details.photos[0].value;
+      //   this.form = this.$form.createForm(this, {
+      //     mapPropsToFields: () => {
+      //       console.log(
+      //         "google details :",
+      //         this.$store.state.third_party_libraries.google_details
+      //       );
+      //       return {
+      //         email: this.$form.createFormField({
+      //           value: google_details.email
+      //         }),
+      //         "name.first": this.$form.createFormField({
+      //           value: google_details.given_name
+      //         }),
+      //         "name.last": this.$form.createFormField({
+      //           value: google_details.family_name
+      //         })
+      //       };
+      //     }
+      //   });
+      //   this.form_data.google_id = google_details.sub;
+      // } else if (
+      //   this.$store.state.third_party_libraries.signup_method === "local"
+      // ) {
+      //   // local sign up
+      //   this.form = this.$form.createForm(this);
+      // }
 
       // this.user_info = JSON.parse(JSON.stringify(this.$store.state.third_party_libraries.facebook_details));
       // Facebook Details
@@ -400,6 +470,7 @@ export default {
           });
           console.log("Received data of form: ", this.form_data);
           // this.$store.commit("update", values);
+          this.form_data.avatar = this.avatar;
           this.$store
             .dispatch("CREATE_ACCOUNT", this.form_data)
             .then(result => {
@@ -430,6 +501,39 @@ export default {
   padding-top: 10px;
   background: transparent;
 }
+/* avatar style */
+
+.avatar-uploader > .ant-upload {
+  width: 128px;
+  height: 128px;
+}
+.ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
+}
+
+.ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+}
+.custom-size {
+  width: 800px;
+  height: 550px;
+}
+/* .avatar-uploader > .ant-upload {
+  width: 100px;
+  height: 100px;
+}
+.ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
+}
+
+.ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+} */
+
 /* .steps-action {
   margin-top: 10px;
 } */
