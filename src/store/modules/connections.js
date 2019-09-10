@@ -8,13 +8,16 @@ function initialState() {
         show_create_connection: false,
         fetching_data: false,
         search_connections: [],
-        update_connection_id: ""
+        selected_connection: null
     }
 }
 
 const state = initialState()
 
 const mutations = {
+    SETUP(state, token){
+        new ConnectionsAPI(token);
+    },
     SET_ACTIVE_CONNECTION(state, data) {
         state.active_connection = data;
     },
@@ -37,8 +40,14 @@ const mutations = {
         const i = state.search_connections.findIndex(x => x._id.toString() === data.connection);
         state.search_connections[i].connected = true;
     },
-    SET_UPDATE_CONNECTION(state, data) {
-        state.update_connection_id = data
+    SET_SELECTED_CONNECTION(state, data) {
+        console.log('SET_SELECTED_CONNECTION :', data);
+        state.selected_connection = data
+    },
+    RESET(state) {
+        Object.keys(state).forEach(key => {
+            state[key] = initialState()[key];
+        })
     }
 }
 
@@ -47,7 +56,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             if ((data && data.refresh) || !context.state.connections.length) {
                 context.commit('SET_CONNECTIONS', []);
-                ConnectionsAPI.getConnectionsByAccountID(context.rootState.accounts.account.account_id)
+                new ConnectionsAPI(context.rootState.accounts.token).getConnectionsByAccountID(context.rootState.accounts.account.account_id)
                     .then((connections) => {
                         context.commit('SET_CONNECTIONS', connections.data.model);
                         resolve(connections.data.model)
@@ -61,7 +70,7 @@ const actions = {
     OPEN_NEW_CONNECTION(context) {
         context.commit('SHOW_NEW_CONNECTION', true)
         context.commit('FETCHING_DATA', true)
-        ConnectionsAPI.getConnectionsNameAndId()
+        new ConnectionsAPI(context.rootState.accounts.token).getConnectionsNameAndId()
             .then((result) => {
                 console.log('result.data.model :', result.data.model);
                 context.commit('SET_SEARCH_CONNECTION', result.data.model)
@@ -71,23 +80,19 @@ const actions = {
             });
     },
     OPEN_CREATE_CONNECTION(context, data) {
-        if (data) context.commit('SET_UPDATE_CONNECTION', data.connection_id);
+        context.commit("FETCHING_DATA", true)
+        if (data) context.commit('SET_SELECTED_CONNECTION', data);
         context.commit('SHOW_CREATE_CONNECTION', true);
-        // context.commit('FETCHING_DATA', true)
-        // ConnectionsAPI.getConnectionsNameAndId()
-        //     .then((result) => {
-        //         console.log('result.data.model :', result.data.model);
-        //         context.commit('SET_SEARCH_CONNECTION', result.data.model)
-        //         context.commit('FETCHING_DATA', false)
-        //     }).catch((err) => {
-        //         context.commit('FETCHING_DATA', false)
-        //     });
+        context.commit("FETCHING_DATA", false);
     },
     CONNECT_TO_CONNECTION(context, data) {
-        return ConnectionsAPI.connect(data.connection)
+        return new ConnectionsAPI(context.rootState.accounts.token).connect(data.connection)
     },
     CREATE_CONNECTION(context, data) {
-        return ConnectionsAPI.create(data)
+        return new ConnectionsAPI(context.rootState.accounts.token).create(data)
+    },
+    UPDATE_CONNECTION(context, data) {
+        return new ConnectionsAPI(context.rootState.accounts.token).update(data.id, data.connection)
     }
 }
 

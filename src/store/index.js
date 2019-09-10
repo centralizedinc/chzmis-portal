@@ -7,7 +7,7 @@ import modules from './modules'
 
 Vue.use(Vuex)
 
-const cookies_store = ['user_session']
+const cookies_store = ['accounts']
 var local_store = Object.keys(modules).filter(x => !cookies_store.includes(x))
 
 export default new Vuex.Store({

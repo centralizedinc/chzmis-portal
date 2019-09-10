@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export default class CommentsAPI {
+export default class UsersAPI {
 
     constructor(token) {
         axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URL;
@@ -11,11 +11,7 @@ export default class CommentsAPI {
     /**
      * @returns {Promise}
      */
-    getCommentsByPostIds(posts) {
-        return axios.post('comments/posts', posts);
-    }
-
-    sendComment(comment){
-        return axios.post('comments', comment);
+    getUsersDetails() {
+        return axios.get('users/details');
     }
 }

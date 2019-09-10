@@ -4,6 +4,7 @@
       title="Search Connection"
       :visible="show"
       @cancel="close"
+      :footer="loading || fetching_data ? null: undefined"
       class="modal-search-connection"
     >
       <div v-if="loading || fetching_data" class="demo-loading-container">
@@ -32,15 +33,14 @@
     </a-modal>
     <a-modal
       v-model="show_create_connection"
-      :title="update_connection ? 'Update Connection': 'Add New Connection'"
+      :title="selected_connection ? 'Update Connection': 'Add New Connection'"
+      :footer="loading || fetching_data ? null: undefined"
       :closable="false"
     >
-      <template slot="footer">
-        <a-button key="back" @click="close" :disabled="loading">Cancel</a-button>
-        <a-button key="submit" type="primary" :loading="loading" @click="submit">Submit</a-button>
-      </template>
-
-      <template>
+      <div v-if="loading || fetching_data" class="demo-loading-container">
+        <a-spin />
+      </div>
+      <template v-else>
         <!-- own connection -->
         <a-form :form="form">
           <a-form-item label="Connection Name">
@@ -53,23 +53,66 @@
             />
           </a-form-item>
           <a-form-item label="Members">
-            <a-select
-              v-decorator="['members']"
-              mode="multiple"
-              placeholder="Add a member"
-              :filterOption="false"
-              @search="v => search_user=v"
-              notFoundContent="No Result"
-            >
-              <a-select-option
-                v-for="item in users"
-                :key="item.account_id"
-              >{{item.name.first}} {{item.name.last}}</a-select-option>
-            </a-select>
+            <!-- <template v-for="(item, i) in form.getFieldValue('members')"> -->
+            <a-form-item :style="{ display: 'inline-block', width: '75%' }">
+              <a-select
+                v-decorator="['member_account_id']"
+                placeholder="Add a member"
+                showSearch
+                optionFilterProp="children"
+                :filterOption="filterOption"
+                @search="v => search_user=v"
+                notFoundContent="No Result"
+              >
+                <a-select-option
+                  v-for="item in users"
+                  :key="item.account_id"
+                >{{item && item.name ? `${item.name.first} ${item.name.last}` : ""}}</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item :style="{ display: 'inline-block', width: '25%' }">
+              <a-select v-decorator="['member_role', { initialValue: '0' }]" placeholder="Role">
+                <a-select-option value="0">Member</a-select-option>
+                <a-select-option value="1">Admin</a-select-option>
+              </a-select>
+            </a-form-item>
+            <!-- <a-form-item
+                :key="`r${i}`"
+                :style="{ 'text-align': 'center', display: 'inline-block', width: '5%' }"
+              >
+                <a-icon
+                  class="dynamic-delete-button"
+                  type="minus-circle-o"
+                  @click="() => remove(i)"
+                />
+              </a-form-item>
+            </template>-->
+            <!-- <a-form-item v-bind="formItemLayoutWithOutLabel" style="text-align:center">
+              <a-button type="dashed" style="width: 60%" @click="addMember">
+                <a-icon type="plus" />Add Member
+              </a-button>
+            </a-form-item>-->
+            <a-form-item style="text-align: center">
+              <a-button type="primary" style="width: 40%" @click="addMember">Add</a-button>
+            </a-form-item>
+            <a-form-item>
+              <a-select
+                @deselect="removeMember"
+                v-decorator="['members_index']"
+                mode="multiple"
+                :open="false"
+              >
+                <a-select-option v-for="item in members" :key="item.account_id">
+                  <!-- {{item.account_id}} -->
+                  {{getUsers(item.account_id, "fullname")}}/{{["Member","Admin"][item.role]}}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
           </a-form-item>
         </a-form>
         <!-- Add contacts -->
         <p>Or add members from your social media contact list (optional)</p>
+        {{members}}
         <a-row type="flex" align="middle" :gutter="12">
           <a-col :span="12">
             <a-form-item>
@@ -96,6 +139,11 @@
           </a-col>
         </a-row>
       </template>
+
+      <template slot="footer">
+        <a-button key="back" @click="close" :disabled="loading">Cancel</a-button>
+        <a-button key="submit" type="primary" :loading="loading" @click="submit">Submit</a-button>
+      </template>
     </a-modal>
   </div>
 </template>
@@ -107,12 +155,13 @@ export default {
       search: "",
       search_user: "",
       loading: false,
+      members: [],
       reload_connection: false,
       form: this.$form.createForm(this)
     };
   },
   created() {
-    console.log('this :', this.$form);
+    this.reset();
   },
   computed: {
     show() {
@@ -121,8 +170,8 @@ export default {
     show_create_connection() {
       return this.$store.state.connections.show_create_connection;
     },
-    update_connection() {
-      return this.$store.state.connections.update_connection;
+    selected_connection() {
+      return this.deepCopy(this.$store.state.connections.selected_connection);
     },
     fetching_data() {
       return this.$store.state.connections.fetching_data;
@@ -138,66 +187,110 @@ export default {
     users() {
       var data = this.deepCopy(this.$store.state.users.users);
       return this.search_user
-        ? data.filter(x =>
-            this.compareSearch(
-              [x.account_id, x.name.first, x.name.middle, x.name.last],
+        ? data.filter(x => {
+            return this.compareSearch(
+              [
+                x.account_id,
+                x.name ? x.name.first : "",
+                x.name ? x.name.last : "",
+                x.email
+              ],
               this.search_user
-            )
-          )
+            );
+          })
         : [];
     },
     connections() {
       return this.$store.state.connections.connections;
     }
+    // form_accounts() {
+    //   var members = this.form.getFieldValue("members");
+    //   if (members.length) {
+    //     const accounts = members.map(x => x.account_id);
+    //     return accounts;
+    //   } else return [];
+    // }
   },
   watch: {
     show_create_connection(val) {
-      console.log('this.$form :', this.$form);
-      if (val) {
-        console.log('this.update_connection :', this.update_connection);
-        if (this.update_connection) {
-          var connection = this.connections.find(
-            x => x._id.toString() === this.update_connection
-          );
+      var _form = this.$form,
+        _self = this;
+      if (val)
+        if (this.selected_connection) {
+          this.members = this.selected_connection.members;
           this.form = this.$form.createForm(this, {
             mapPropsToFields() {
               return {
-                name: this.$form.createFormField({
-                  value: connection.name
+                name: _form.createFormField({
+                  value: _self.selected_connection.name
                 }),
-                members: this.$form.createFormField({
-                  value: connection.members
+                members_index: _form.createFormField({
+                  value: _self.members.map(x => x.account_id)
                 })
               };
             }
           });
         } else {
-          this.form = this.$form.createForm(this);
+          this.reset();
         }
-      }
     }
   },
   methods: {
-    compareSearch(sources, search_key) {
-      if (!search_key) return false;
-      if (Array.isArray(sources)) sources = [sources];
-      console.log("sources :", sources);
-      console.log("search_key :", search_key);
+    reset() {
+      this.members = [];
+      this.search = "";
+      this.search_user = "";
+      this.loading = false;
+      this.reload_connection = false;
+      var _form = this.$form;
+      this.form = this.$form.createForm(this, {
+        mapPropsToFields() {
+          return {
+            members: _form.createFormField({
+              value: []
+            })
+          };
+        }
+      });
+    },
+    filterOption(input, option) {
       return (
-        sources.findIndex(
-          v =>
-            v
-              .toString()
-              .toLowerCase()
-              .indexOf(search_key.toLowerCase()) > -1
-        ) > -1
+        option.componentOptions.children[0].text
+          .toLowerCase()
+          .indexOf(input.toLowerCase()) >= 0
       );
     },
+    compareSearch(values, search_key) {
+      if (!search_key || !values) return false;
+      if (!Array.isArray(values)) values = [values];
+      for (let i = 0; i < values.length; i++) {
+        if (
+          values[i] &&
+          values[i]
+            .toString()
+            .toLowerCase()
+            .indexOf(search_key.toLowerCase()) > -1
+        )
+          return true;
+      }
+      return false;
+      // return (
+      //   sources.findIndex(
+      //     v =>
+      //       v
+      //         .toString()
+      //         .toLowerCase()
+      //         .indexOf(search_key.toLowerCase()) > -1
+      //   ) > -1
+      // );
+    },
     close() {
+      this.reset();
       if (this.reload_connection) {
         this.$store.dispatch("GET_CONNECTIONS", { refresh: true });
         this.reload_connection = false;
       }
+      this.$store.commit("SET_SELECTED_CONNECTION", null);
       this.$store.commit("SHOW_NEW_CONNECTION", false);
       this.$store.commit("SHOW_CREATE_CONNECTION", false);
     },
@@ -211,7 +304,6 @@ export default {
           this.reload_connection = true;
         })
         .catch(err => {
-          console.log("connect err :", err);
           this.loading = false;
         });
     },
@@ -224,9 +316,18 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, connection) => {
         if (!err) {
-          console.log("Received values of form: ", connection);
+          var action = "CREATE_CONNECTION",
+            body = { name: connection.name, members: this.members };
+          if (this.selected_connection) {
+            action = "UPDATE_CONNECTION";
+            body = {
+              id: this.selected_connection._id,
+              connection: { name: connection.name, members: this.members }
+            };
+          }
+          console.log('body :', body);
           this.$store
-            .dispatch("CREATE_CONNECTION", connection)
+            .dispatch(action, body)
             .then(result => {
               console.table([result.data.model]);
               this.reload_connection = true;
@@ -241,6 +342,35 @@ export default {
           console.log("err :", err);
           this.loading = false;
         }
+      });
+    },
+    addMember() {
+      // var counts = this.form.getFieldValue("counts");
+      // counts++
+      // this.form.setFieldsValue({
+      //   counts
+      // });
+      const account_id = this.form.getFieldValue("member_account_id");
+      const role = this.form.getFieldValue("member_role");
+      this.members.push({ account_id, role });
+      this.form.setFieldsValue({
+        members_index: this.members.map(x => x.account_id),
+        member_account_id: "",
+        member_role: "0"
+      });
+    },
+    removeMember(account_id) {
+      const i = this.members.findIndex(x => x.account_id === account_id);
+      this.members.splice(i, 1);
+      this.form.setFieldsValue({
+        members_index: this.members.map(x => x.account_id)
+      });
+    },
+    remove(index) {
+      var current_members = this.form.getFieldValue("members");
+      var members = current_members.filter((v, i) => i !== index);
+      this.form.setFieldsValue({
+        members
       });
     }
   }
@@ -271,5 +401,10 @@ export default {
 
 .modal-search-connection .ant-modal-header {
   text-align: center;
+}
+
+.dynamic-delete-button {
+  cursor: pointer;
+  font-size: 10px;
 }
 </style>

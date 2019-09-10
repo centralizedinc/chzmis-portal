@@ -1,16 +1,20 @@
 <template>
   <a-card
-    style="border-radius: 25px 0;"
-    :bodyStyle="{'padding-top': '0px'}"
-    :headStyle="layout_head_style"
+    style="border: 1px solid rgba(0,0,0,.4); width: 216px;"
+    :headStyle="main_layout_head_style"
   >
-    <div slot="title" class="title-head-style">
-      <a-icon type="close" @click="$store.commit('SHOW_PROFILE', false)" />
-    </div>
+    <!-- <div slot="title">
+      <a-icon type="minus" style="float: right; margin-right: 5px;" @click="$store.commit('SHOW_PROFILE', false)" />
+    </div> -->
     <p style="text-align: center">
-      <a-avatar :size="80" shape="circle" :src="user.avatar"></a-avatar>
+      <a-avatar
+        :size="80"
+        style="font-size: 50px;font-weight: bold;"
+        shape="circle"
+        :src="getLoginUser().avatar"
+      >{{getLoginUser("initial")}}</a-avatar>
       <br />
-      <span class="profile-name">{{user.full_name}}</span>
+      <span class="profile-name">{{getLoginUser("fullname")}}</span>
       <br />
       <span style="font-size: 12px">{{subscribers_count}} subscribers</span>
       <br />

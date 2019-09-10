@@ -23,6 +23,11 @@ const mutations = {
     },
     LOCAL_SIGNUP(state, data){
         state.signup_method = 'local'
+    },
+    RESET(state) {
+        Object.keys(state).forEach(key => {
+            state[key] = initialState()[key];
+        })
     }
 }
 

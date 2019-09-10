@@ -1,5 +1,4 @@
 import NewAccountAPI from '../../api/registrationAPI'
-import { Col } from 'ant-design-vue';
 
 function initialState() {
     return {
@@ -13,6 +12,11 @@ const mutations = {
     SET_REGISTRATION(state, data){
         console.log('data of store :', data);
         state.user_info = data
+    },
+    RESET(state) {
+        Object.keys(state).forEach(key => {
+            state[key] = initialState()[key];
+        })
     }
 }
 

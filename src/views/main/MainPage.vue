@@ -1,6 +1,6 @@
 <template>
   <div>
-    <connections style="margin-top: 20px; max-height: 400px"/>
+    <connections style="max-height: 400px"/>
     <channels style="margin-top: 20px;"/>
   </div>
 </template>

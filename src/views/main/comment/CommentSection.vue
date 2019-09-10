@@ -29,14 +29,52 @@
         slot="author"
       >{{getAuthorName(comment.author).first}} {{getAuthorName(comment.author).last}}</a>
 
-      <a-avatar slot="avatar" :src="getAuthorAvatar(comment.author)" />
+      <a-avatar
+        slot="avatar"
+        :src="getUsers(comment.author).avatar"
+      >{{getUsers(comment.author, "initial")}}</a-avatar>
 
-      <p slot="content">{{comment.message}}</p>
+      <div slot="content">
+        <p>{{comment.message}}</p>
+        <a-row
+          v-if="comment.uploads.length"
+          type="flex"
+          align="middle"
+          justify="space-around"
+          class="upload-items"
+        >
+          <a-col
+            v-for="i in (comment.uploads.length <= 4 ? comment.uploads.length : 3)"
+            :key="i"
+            :span="5"
+          >
+            <img
+              :src="comment.uploads[i - 1].location"
+              :alt="comment.uploads[i - 1].location"
+              width="100"
+              @click="viewMoreAttachment(comment.author, comment.uploads, i-1)"
+            />
+          </a-col>
+          <a-col :span="5" v-if="comment.uploads.length > 4" class="post-more-attachments">
+            <img
+              :src="comment.uploads[3].location"
+              :alt="comment.uploads[3].location"
+              width="100"
+              @click="viewMoreAttachment(comment.author, comment.uploads, 3)"
+            />
+            <div class="more-bg" @click="viewMoreAttachment(comment.author, comment.uploads, 3)"></div>
+            <span
+              class="more-label"
+              @click="viewMoreAttachment(comment.author, comment.uploads, 3)"
+            >{{`+${comment.uploads.length - 3}`}}</span>
+          </a-col>
+        </a-row>
+      </div>
 
       <a-tooltip
         v-if="comment.date_created"
         slot="datetime"
-        :title="moment(comment.date_created).format('YYYY-MM-DD HH:mm:ss')"
+        :title="formatDate(comment.date_created)"
       >
         <span>{{moment(comment.date_created).fromNow()}}</span>
       </a-tooltip>
@@ -70,6 +108,10 @@ export default {
     },
     show_comments: {
       type: Boolean
+    },
+    public: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -77,6 +119,9 @@ export default {
       if (!this.post) return [];
       const comments = this.deepCopy(this.$store.state.comments.comments);
       const filtered_comments = comments.filter(x => x.post_id === this.post);
+      filtered_comments.sort(
+        (a, b) => new Date(b.date_created) - new Date(a.date_created)
+      );
       const _comments = filtered_comments.slice(0, this.load_comments);
       return _comments;
     },
@@ -96,14 +141,14 @@ export default {
   },
   methods: {
     isLike(likes) {
-      return likes && likes.includes(this.account_id);
+      return likes && likes.includes(this.getLoginAccount().account_id);
     },
     isDislike(dislikes) {
-      return dislikes && dislikes.includes(this.account_id);
+      return dislikes && dislikes.includes(this.getLoginAccount().account_id);
     },
     like(item, type) {
       var remove = false;
-      if (item.likes.includes(this.account_id)) remove = true;
+      if (item.likes.includes(this.getLoginAccount().account_id)) remove = true;
 
       var dispatch_name = "LIKE_COMMENT";
       if (type === 0) {
@@ -111,13 +156,13 @@ export default {
       }
       this.$store.dispatch(dispatch_name, {
         id: item.id,
-        account_id: this.account_id,
+        account_id: this.getLoginAccount().account_id,
         remove
       });
     },
     dislike(item, type) {
       var remove = false;
-      if (item.likes.includes(this.account_id)) remove = true;
+      if (item.likes.includes(this.getLoginAccount().account_id)) remove = true;
 
       var dispatch_name = "DISLIKE_COMMENT";
       if (type === 0) {
@@ -125,7 +170,7 @@ export default {
       }
       this.$store.dispatch(dispatch_name, {
         id: item.id,
-        account_id: this.account_id,
+        account_id: this.getLoginAccount().account_id,
         remove
       });
     },
@@ -139,6 +184,14 @@ export default {
         });
         this.loading = false;
       }, 1000);
+    },
+    viewMoreAttachment(author, attachments, current_index) {
+      this.$emit("preview", {
+        show: true,
+        author,
+        attachments,
+        current_index
+      });
     }
   }
 };

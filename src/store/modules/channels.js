@@ -9,8 +9,16 @@ function initialState() {
 const state = initialState()
 
 const mutations = {
+    SETUP(state, token){
+
+    },
     SET_CHANNELS(state, data) {
         state.channels = data;
+    },
+    RESET(state) {
+        Object.keys(state).forEach(key => {
+            state[key] = initialState()[key];
+        })
     }
 }
 
