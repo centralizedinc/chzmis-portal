@@ -51,12 +51,9 @@ const actions = {
         console.log('new post message :', data);
         return new Promise((resolve, reject) => {
             var msg_data = {}
-            const upload_data = {
-                account_id: context.rootState.accounts.account.account_id,
-                form_data: data.form_data
-            }
+            if(!data.upload_data.account_id) data.upload_data.account_id = context.rootState.accounts.account.account_id;
             new UploadAPI(context.rootState.accounts.token)
-                .uploadPost(upload_data)
+                .uploadPost(data.upload_data)
                 .then((result) => {
                     console.log('result :', result);
                     if(result) data.post.uploads = result.data.model;

@@ -42,7 +42,11 @@ const actions = {
     },
     SEND_COMMENT(context, data) {
         return new Promise((resolve, reject) => {
-            var comment = data.comment, upload_data = { account_id: context.rootState.accounts.account.account_id, form_data: data.form_data };
+            var comment = data.comment,
+                upload_data = {
+                    account_id: context.rootState.connections.active_connection || context.rootState.accounts.account.account_id,
+                    form_data: data.form_data
+                };
 
             new UploadAPI(context.rootState.accounts.token)
                 .uploadComment(upload_data)

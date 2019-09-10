@@ -49,11 +49,12 @@
                         <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
                       </a-input>
                       <a-form-item style="padding-top: 10px">
-                        <a-button type="primary" block @click="registration">Login</a-button>
+                        <a-button type="primary" :loading="loading" block @click="login">Login</a-button>
 
                         <div>
                           <a
                             @click="() => modal2Visible = true"
+                            :disabled="loading"
                           >If you haven't set up an account yet, Register here</a>
                           <a-modal
                             title="Please select account to use in sing up"
@@ -119,6 +120,7 @@
                           <a-col :span="24">
                             <a-form-item>
                               <a-button
+                                :disabled="loading"
                                 @click="facebookLogin"
                                 type="primary"
                                 block
@@ -133,6 +135,7 @@
                           <a-col :span="24">
                             <a-form-item>
                               <a-button
+                                :disabled="loading"
                                 @click="googleLogin"
                                 style="font-size: 20px; background-color: #d34836; border-color: #d34836"
                                 type="primary"
@@ -167,8 +170,10 @@ export default {
   },
   data() {
     return {
+      form: this.$form.createForm(this),
       modal1Visible: false,
-      modal2Visible: false
+      modal2Visible: false,
+      loading: false
     };
   },
   methods: {

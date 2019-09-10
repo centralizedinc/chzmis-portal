@@ -373,7 +373,6 @@ export default {
         });
     },
     attachFile(file) {
-      console.log("file :", file);
       this.post_file_list = [...this.post_file_list, file];
       this.getBase64(file, imageUrl => {
         this.post_file_images = [
@@ -381,7 +380,6 @@ export default {
           { imageUrl, name: file.name }
         ];
       });
-      console.log("this.post_file_list :", this.post_file_list);
     },
     removeFileList(i) {
       this.post_file_list.splice(i, 1);
@@ -393,11 +391,13 @@ export default {
         var post = {
           message: this.post_message
         };
-        console.log("this.active_key :", this.active_key);
-        if (this.active_key === -1) post.is_public = true;
+        var form_data_id = this.active_key;
+        if (this.active_key === -1) {
+          form_data_id = ""
+          post.is_public = true;
+        }
         else post.parent_id = this.active_key;
 
-        console.log("this.post_file_list :", this.post_file_list);
         // if attachment is not null
         var form_data = null;
         if (this.post_file_list.length) {
@@ -406,11 +406,9 @@ export default {
             form_data.append("files", file, file.name);
           });
         }
-        console.log("form_data :", form_data);
         this.$store
-          .dispatch("POST_MESSAGE", { form_data, post })
+          .dispatch("POST_MESSAGE", { upload_data: {account_id: form_data_id, form_data}, post })
           .then(result => {
-            console.log("POST_MESSAGE result :", result);
             this.post_message = "";
             this.post_file_list = [];
             this.post_file_images = [];
