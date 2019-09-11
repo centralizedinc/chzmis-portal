@@ -56,62 +56,7 @@
                             @click="() => modal2Visible = true"
                             :disabled="loading"
                           >If you haven't set up an account yet, Register here</a>
-                          <a-modal
-                            title="Please select account to use in sing up"
-                            centered
-                            v-model="modal2Visible"
-                            :footer="null"
-                            @ok="() => modal2Visible = false"
-                          >
-                            <!-- content -->
-                            <a-form-item style="padding-top: 10px">
-                              <a-row type="flex" align="middle" :gutter="12">
-                                <a-col :span="24">
-                                  <a-form-item>
-                                    <a-button
-                                      @click="localSignUp"
-                                      type="primary"
-                                      block
-                                      style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
-                                    >
-                                    Sign up locally
-                                      <a-icon type="primary" theme="filled" />
-                                    </a-button>
-                                  </a-form-item>
-                                </a-col>
-                              </a-row>
-                              <a-row type="flex" align="middle" :gutter="12">
-                                <a-col :span="24">
-                                  <a-form-item>
-                                    <a-button
-                                      @click="facebookSignUp"
-                                      type="primary"
-                                      block
-                                      style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
-                                    >
-                                      <a-icon type="facebook" theme="filled" />
-                                    </a-button>
-                                  </a-form-item>
-                                </a-col>
-                              </a-row>
-                              <a-row type="flex" align="middle" :gutter="12">
-                                <a-col :span="24">
-                                  <a-form-item>
-                                    <a-button
-                                      @click="googleSignUp"
-                                      style="font-size: 20px; background-color: #d34836; border-color: #d34836"
-                                      type="primary"
-                                      block
-                                    >
-                                      <a-icon type="google-plus" />
-                                    </a-button>
-                                  </a-form-item>
-                                </a-col>
-                              </a-row>
-                            </a-form-item>
-                          </a-modal>
                         </div>
-
                         <a-divider>or</a-divider>
                         <span
                           style="text-align: center"
@@ -149,6 +94,84 @@
                       </a-form-item>
                     </a-form-item>
                   </a-form>
+
+                  <!-- Sign up -->
+                  <a-modal
+                    title="Signup"
+                    centered
+                    v-model="modal2Visible"
+                    :footer="null"
+                    @ok="() => modal2Visible = false"
+                  >
+                    <!-- content -->
+                    <a-form>
+                      <a-row type="flex" align="center" :gutter="12">
+                        <!-- email -->
+                        <a-col :span="24">
+                          <a-form-item>
+                            <a-input
+                              placeholder="Email Address"
+                              v-decorator="['email',{rules: [{ required: true, message: 'Email Address is required!' }],}]"
+                            />
+                          </a-form-item>
+                        </a-col>
+                        <!-- password -->
+                        <a-col :span="24">
+                          <a-form-item>
+                            <a-input
+                              placeholder="Create new password"
+                              v-decorator="['password',{rules: [{required: true, message: 'Please input your password!',}, {validator: validateToNextPassword,}],}]"
+                              type="password"
+                            />
+                          </a-form-item>
+                        </a-col>
+                        <a-col :span="24">
+                          <a-form-item>
+                            <a-input
+                              placeholder="Confirm new password"
+                              v-decorator="['confirm',{rules: [{required: true, message: 'Please confirm your password!',}, {validator: compareToFirstPassword,}],}]"
+                              type="password"
+                              @blur="handleConfirmBlur"
+                            />
+                          </a-form-item>
+                        </a-col>
+
+                        <a-button
+                          @click="localSignUp"
+                          type="primary"
+                          block
+                          style="font-size: 18px ; background-color: #3b5998; border-co`lor: #3b5998"
+                        >
+                          Signup
+                          <a-icon type="primary" theme="filled" />
+                        </a-button>
+                      </a-row>
+                    </a-form>
+                    <a-divider>or sigup using</a-divider>
+                    <a-row type="flex" align="top" :gutter="12">
+                      <a-col :span="12">
+                        <a-button
+                          @click="facebookSignUp"
+                          type="primary"
+                          block
+                          style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
+                        >
+                          <a-icon type="facebook" theme="filled" />
+                        </a-button>
+                      </a-col>
+
+                      <a-col :span="12">
+                        <a-button
+                          @click="googleSignUp"
+                          style="font-size: 20px; background-color: #d34836; border-color: #d34836"
+                          type="primary"
+                          block
+                        >
+                          <a-icon type="google-plus" />
+                        </a-button>
+                      </a-col>
+                    </a-row>
+                  </a-modal>
                 </a-col>
               </a-row>
             </a-col>
@@ -173,8 +196,38 @@ export default {
       form: this.$form.createForm(this),
       modal1Visible: false,
       modal2Visible: false,
+<<<<<<< HEAD
+      values: {
+        email: "",
+        password: "",
+        google_id: "",
+        facebook_id: ""
+      },
+      confirmDirty: false,
+      form: this.$form.createForm(this),
+      rules: {
+        required: v => {
+          return { required: true, message: `${v} is required!` };
+        }
+      },
+      form_data: {}
+=======
       loading: false
+>>>>>>> eb60d6f8e6bd6fc027192349d5778193983707b5
     };
+  },
+  created() {
+    // console.log("user_info initialized:", this.user_info);
+    console.log(
+      "user_info STORE:Facebook",
+      this.$store.state.third_party_libraries.facebook_details
+    );
+    console.log(
+      "user_info STORE:Google",
+      this.$store.state.third_party_libraries.google_details
+    );
+
+  //   this.init();
   },
   methods: {
     setModal1Visible(modal1Visible) {
@@ -214,21 +267,20 @@ export default {
     },
     // SIGNIN
     facebookLogin() {
-
-      this.$router.push("/main");
-      // var googleWindow = window.open(
-        // process.env.VUE_APP_API_BASE_URL + "/auth/facebook",
-        // "Facebook Sign In",
-        // "width=500,height=500"
-      // );
+      // this.$router.push("/main");
+      var googleWindow = window.open(
+      process.env.VUE_APP_API_BASE_URL + "/auth/facebook",
+      "Facebook Sign In",
+      "width=500,height=500"
+      );
     },
     googleLogin() {
-      this.$router.push("/main");
-      // var googleWindow = window.open(
-        // process.env.VUE_APP_API_BASE_URL + "/auth/google",
-      //   "Google Sign In",
-      //   "width=500,height=500"
-      // );
+      // this.$router.push("/main");
+      var googleWindow = window.open(
+      process.env.VUE_APP_API_BASE_URL + "/auth/google",
+        "Google Sign In",
+        "width=500,height=500"
+      );
     },
     // SIGNUP
     facebookSignUp() {
@@ -244,7 +296,65 @@ export default {
         "Google Sign Up",
         "width=500,height=500"
       );
-    }
+    },
+    // validator
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          console.log("Received values of form: ", values);
+        }
+      });
+    },
+    handleConfirmBlur(e) {
+      const value = e.target.value;
+      this.confirmDirty = this.confirmDirty || !!value;
+    },
+    compareToFirstPassword(rule, value, callback) {
+      const form = this.form;
+      if (value && value !== form.getFieldValue("password")) {
+        callback("Two passwords that you enter is inconsistent!");
+      } else {
+        callback();
+      }
+    },
+    validateToNextPassword(rule, value, callback) {
+      const form = this.form;
+      if (value && this.confirmDirty) {
+        form.validateFields(["confirm"], { force: true });
+      }
+      callback();
+    },
+    
+    
+    // 
+
+
+    //  mapProps() {
+    //   var data = {};
+    //   if (this.current === 1) {
+    //     data = {
+    //       category: this.$form.createFormField({
+    //         value: this.form_data.category
+    //       })
+    //     };
+    //   } else if (this.current === 2) {
+    //     data = {
+    //       email: this.$form.createFormField({
+    //         value: this.form_data.email
+    //       }),
+    //       "password": this.$form.createFormField({
+    //         value: this.form_data.password
+    //       })
+    //     };
+    //   }
+    //   this.form = this.$form.createForm(this, {
+    //     mapPropsToFields() {
+    //       return data;
+    //     }
+    //   });
+    // }
+
   }
 };
 </script>
