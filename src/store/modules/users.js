@@ -2,7 +2,8 @@ import UsersAPI from '../../api/UsersAPI'
 
 function initialState() {
     return {
-        users: []
+        users: [],
+        active_user: ""
     }
 }
 
@@ -19,6 +20,10 @@ const mutations = {
         Object.keys(state).forEach(key => {
             state[key] = initialState()[key];
         })
+    },
+    ACTIVE_PROFILE(state, account_id) {
+        console.log("ACTIVE_PROFILE", account_id);
+        state.active_user = account_id;
     }
 }
 

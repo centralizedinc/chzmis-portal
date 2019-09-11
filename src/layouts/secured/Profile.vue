@@ -14,6 +14,7 @@
         :src="getLoginUser().avatar"
       >{{getLoginUser("initial")}}</a-avatar>
       <br />
+      <br />
       <span class="profile-name">{{getLoginUser("fullname")}}</span>
       <br />
       <span style="font-size: 12px">{{subscribers_count}} subscribers</span>
@@ -75,6 +76,14 @@ export default {
     },
     connections_count() {
       return 20;
+    },
+    active_user() {
+      // return this.$store.state.active_user;
+      console.log('active_user account :', account);
+      if(this.$store.state.users.active_user) {return this.getUsers(account)
+      }else {
+          this.getLoginUser()
+      }
     }
   }
 };
@@ -92,8 +101,8 @@ export default {
 }
 
 .profile-name {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 </style>

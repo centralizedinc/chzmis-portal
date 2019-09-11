@@ -8,7 +8,7 @@ export default class NewAccountAPI {
     // axios.defaults.headers.common['access_token'] = token;
   }
 
-  newAccount(new_account) {
+  getnewAccount(new_account) {
     console.log("api############# new account" + JSON.stringify(new_account));
     return axios.post('signup', new_account);
   }

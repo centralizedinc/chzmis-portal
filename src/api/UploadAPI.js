@@ -22,4 +22,5 @@ export default class UploadAPI {
         if (!form_data) return Promise.resolve();
         return axios.post(`upload/comment/${account_id}`, form_data)
     }
+    
 }

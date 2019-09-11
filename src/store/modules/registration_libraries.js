@@ -23,6 +23,16 @@ const mutations = {
 const actions = {
     CREATE_ACCOUNT(context, new_account) {
         return new NewAccountAPI().newAccount(new_account)
+    //     return new Promise((resolve, reject) => {
+    //         new NewAccountAPI(context.rootState.new_account.token).getCreateAccount()
+    //             .then((result) => {
+    //                 console.table(result.data.model);
+    //                 context.commit("SET_CREATE_ACCOUNT", result.data.model);
+    //                 resolve(result.data.model)
+    //             }).catch((err) => {
+    //                 reject(err)
+    //             });
+    //     })
     }
 }
 
