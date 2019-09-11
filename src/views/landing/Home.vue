@@ -196,24 +196,7 @@ export default {
       form: this.$form.createForm(this),
       modal1Visible: false,
       modal2Visible: false,
-<<<<<<< HEAD
-      values: {
-        email: "",
-        password: "",
-        google_id: "",
-        facebook_id: ""
-      },
-      confirmDirty: false,
-      form: this.$form.createForm(this),
-      rules: {
-        required: v => {
-          return { required: true, message: `${v} is required!` };
-        }
-      },
-      form_data: {}
-=======
       loading: false
->>>>>>> eb60d6f8e6bd6fc027192349d5778193983707b5
     };
   },
   created() {
