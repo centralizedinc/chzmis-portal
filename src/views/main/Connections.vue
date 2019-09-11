@@ -321,6 +321,7 @@
               :src="getLoginUser().avatar"
             >{{getLoginUser("initial")}}</a-avatar>
             <br />
+            <br />
             <span class="profile-name">{{getLoginUser("fullname")}}</span>
             <br />
             <span style="font-size: 12px">{{subscribers_count}} subscribers</span>
@@ -332,7 +333,7 @@
           <!-- <p v-for="(item, index) in items" :key="index" class="profile-items">
             <a-icon :type="item.icon" />
             {{item.title}}
-          </p> -->
+          </p>-->
         </a-card>
       </a-drawer>
     </div>
@@ -457,11 +458,7 @@ export default {
         };
         var connection_id = this.active_key;
         if (this.active_key === -1) {
-<<<<<<< HEAD
-          form_data_id = "";
-=======
           connection_id = "";
->>>>>>> ae2c18ec76a1f569efe07cf70aef20a4099b4fb4
           post.is_public = true;
         } else post.parent_id = this.active_key;
 
@@ -475,11 +472,7 @@ export default {
         }
         this.$store
           .dispatch("POST_MESSAGE", {
-<<<<<<< HEAD
-            upload_data: { account_id: form_data_id, form_data },
-=======
             upload_data: { connection_id, form_data },
->>>>>>> ae2c18ec76a1f569efe07cf70aef20a4099b4fb4
             post
           })
           .then(result => {
@@ -505,7 +498,6 @@ export default {
       reader.addEventListener("load", () => callback(reader.result));
       reader.readAsDataURL(img);
     },
-<<<<<<< HEAD
     showProfile(account_id) {
       console.log("console active_user :", account_id);
       this.$store.commit("ACTIVE_PROFILE", account_id);
@@ -515,10 +507,9 @@ export default {
     },
     onClose() {
       this.visible = false;
-=======
+    },
     setFavorite(parent_id) {
       this.$store.dispatch("SET_FAVORITE", { type: 0, parent_id });
->>>>>>> ae2c18ec76a1f569efe07cf70aef20a4099b4fb4
     }
   }
 };
@@ -629,5 +620,4 @@ export default {
   font-weight: bold;
   text-transform: capitalize;
 }
-
 </style>
