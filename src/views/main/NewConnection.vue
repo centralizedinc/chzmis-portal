@@ -43,6 +43,21 @@
       <template v-else>
         <!-- own connection -->
         <a-form :form="form">
+          <a-form-item class="align-items-middle">
+            <a-upload
+              listType="picture-card"
+              class="avatar-uploader"
+              :showUploadList="false"
+              :beforeUpload="uploadAvatar"
+              @change="handleChangeAvatar"
+            >
+              <img v-if="avatar.imageUrl" :src="avatar.imageUrl" :alt="avatar.imageUrl" />
+              <div v-else>
+                <a-icon v-if="loading_avatar" type="loading" />
+                <div class="ant-upload-text" v-else>Upload Avatar</div>
+              </div>
+            </a-upload>
+          </a-form-item>
           <a-form-item label="Connection Name">
             <a-input
               v-decorator="[
@@ -112,7 +127,6 @@
         </a-form>
         <!-- Add contacts -->
         <p>Or add members from your social media contact list (optional)</p>
-        {{members}}
         <a-row type="flex" align="middle" :gutter="12">
           <a-col :span="12">
             <a-form-item>
@@ -157,7 +171,12 @@ export default {
       loading: false,
       members: [],
       reload_connection: false,
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this),
+      loading_avatar: false,
+      avatar: {
+        imageUrl: "",
+        form_data: null
+      }
     };
   },
   created() {
@@ -217,6 +236,7 @@ export default {
         _self = this;
       if (val)
         if (this.selected_connection) {
+          this.avatar.imageUrl = this.selected_connection.avatar.location;
           this.members = this.selected_connection.members;
           this.form = this.$form.createForm(this, {
             mapPropsToFields() {
@@ -239,6 +259,8 @@ export default {
     reset() {
       this.members = [];
       this.search = "";
+      this.avatar.imageUrl = "";
+      this.avatar.form_data = null;
       this.search_user = "";
       this.loading = false;
       this.reload_connection = false;
@@ -285,11 +307,11 @@ export default {
       // );
     },
     close() {
-      this.reset();
       if (this.reload_connection) {
         this.$store.dispatch("GET_CONNECTIONS", { refresh: true });
         this.reload_connection = false;
       }
+      this.reset();
       this.$store.commit("SET_SELECTED_CONNECTION", null);
       this.$store.commit("SHOW_NEW_CONNECTION", false);
       this.$store.commit("SHOW_CREATE_CONNECTION", false);
@@ -325,11 +347,9 @@ export default {
               connection: { name: connection.name, members: this.members }
             };
           }
-          console.log('body :', body);
           this.$store
-            .dispatch(action, body)
+            .dispatch(action, { body, form_data: this.avatar.form_data })
             .then(result => {
-              console.table([result.data.model]);
               this.reload_connection = true;
               this.loading = false;
               this.close();
@@ -372,6 +392,21 @@ export default {
       this.form.setFieldsValue({
         members
       });
+    },
+    handleChangeAvatar(info) {
+      if (info.file.status === "uploading") {
+        this.loading_avatar = true;
+        return;
+      }
+    },
+    uploadAvatar(file) {
+      var form_data = new FormData();
+      form_data.append("avatar", file, file.name);
+      this.avatar.form_data = form_data;
+      this.getBase64(file, imageUrl => {
+        this.avatar.imageUrl = imageUrl;
+        this.loading_avatar = false;
+      });
     }
   }
 };
@@ -406,5 +441,9 @@ export default {
 .dynamic-delete-button {
   cursor: pointer;
   font-size: 10px;
+}
+
+.avatar-uploader img {
+  width: 110px;
 }
 </style>

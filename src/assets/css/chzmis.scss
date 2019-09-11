@@ -98,6 +98,12 @@
   background: white;
 }
 
-.title-head-style i:hover{
+.title-head-style i:hover {
   background: red;
+}
+
+.align-items-middle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

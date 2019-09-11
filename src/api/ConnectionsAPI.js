@@ -13,7 +13,6 @@ export default class ConnectionAPI {
      * @param {String} connection 
      */
     create(connection) {
-        console.log("axios.defaults.headers.common['access_token']:", axios.defaults.headers.common['access_token']);
         return axios.post('connections', connection)
     }
 

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <span class="no-data-message" v-if="!loading && !posts.length">No Post.</span>
     <div
       class="post-container"
       v-infinite-scroll="handleLoadingPost"
@@ -237,7 +236,6 @@ export default {
       this.post_data.sort(
         (a, b) => new Date(b.date_created) - new Date(a.date_created)
       );
-      console.log("this.post_data :", this.post_data);
       var _posts = this.post_data.slice(0, this.load_count);
       return _posts;
     }
@@ -291,7 +289,6 @@ export default {
       this.$store
         .dispatch("SEND_COMMENT", { comment: { message, post_id }, form_data })
         .then(result => {
-          console.log("comments result :", result);
           event.target.value = "";
           this.post_file_list = [];
           this.post_file_images = [];
@@ -367,7 +364,6 @@ export default {
         attachments,
         current_index
       };
-      console.log("this.more_attachments :", this.more_attachments);
       this.$refs.carousel.goTo(current_index, false);
     },
     setActiveComment(id) {
@@ -410,8 +406,6 @@ export default {
           ];
         }
       });
-      console.log("this.post_file_list :", this.post_file_list);
-      console.log("this.post_file_images :", this.post_file_images);
     },
     removeFileList(id, i) {
       const file_index = this.post_file_list.findIndex(x => x.id === id),

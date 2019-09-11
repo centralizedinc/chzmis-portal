@@ -43,10 +43,7 @@ export default {
                             return users.map(x => x.name ? x.name.first[0].toUpperCase() : '');
                         return users || [];
                     } else {
-                        console.log('account_id :', account_id);
                         var user = this.deepCopy(this.$store.state.users.users).find(x => x.account_id === account_id);
-                        // console.log('user :', user);
-                        // return {}
                         if (option === "fullname")
                             return user.name ? `${user.name.first} ${user.name.last}` : '';
                         else if (option === "initial")
@@ -90,6 +87,11 @@ export default {
                 getAuthorAvatar(account_id) {
                     const author = this.$store.state.users.users.find(x => x.account_id === account_id)
                     return author ? author.avatar : '';
+                },
+                getBase64(img, callback) {
+                    const reader = new FileReader();
+                    reader.addEventListener("load", () => callback(reader.result));
+                    reader.readAsDataURL(img);
                 }
                 // getPopupContainer(trigger) {
                 //     return trigger.parentElement

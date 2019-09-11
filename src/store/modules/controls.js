@@ -30,6 +30,9 @@ const mutations = {
 }
 
 const actions = {
+    SET_FAVORITE(context, data){
+        
+    }
 }
 
 export default {
