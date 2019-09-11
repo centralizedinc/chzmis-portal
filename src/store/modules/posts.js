@@ -19,25 +19,19 @@ const mutations = {
         state.public_post = data
     },
     SET_CONNECTION_POSTS(state, data) {
-        console.log('SET_CONNECTION_POSTS :', data);
         state.connection_posts = data
     },
     SET_CHANNEL_POSTS(state, data) {
         state.channel_posts = data
     },
     SHOW_COMMENTS(state, data) {
-        console.log('data :', data);
-        
         if (data.is_public) {
             const index = state.public_post.findIndex(x => x._id === data.post_id);
-            console.log('public index :', index);
             state.public_post[index].show_comment = data.load_comment;
         } else {
             const index = state.connection_posts.findIndex(x => x._id === data.post_id);
-            console.log('private index :', index);
             state.connection_posts[index].show_comment = data.load_comment;
         }
-        console.log('state.public_post :', state.public_post);
     },
     RESET(state) {
         Object.keys(state).forEach(key => {
@@ -48,26 +42,34 @@ const mutations = {
 
 const actions = {
     POST_MESSAGE(context, data) {
-        console.log('new post message :', data);
         return new Promise((resolve, reject) => {
+            // Initialize msg_data
             var msg_data = {}
-            if(!data.upload_data.account_id) data.upload_data.account_id = context.rootState.accounts.account.account_id;
+
+            // check if the uploaded files is public or not
+            if (!data.upload_data.connection_id) { 
+                data.upload_data.connection_id = context.rootState.accounts.account.account_id; 
+                data.upload_data.is_public = true;
+            }
+
+            // Upload files
             new UploadAPI(context.rootState.accounts.token)
-                .uploadPost(data.upload_data)
+                .uploadConnection(data.upload_data)
                 .then((result) => {
-                    console.log('result :', result);
-                    if(result) data.post.uploads = result.data.model;
+                    if (result) data.post.uploads = result.data.model;
+
+                    // Save Post Message
                     return new PostAPI(context.rootState.accounts.token)
                         .postMessage(data.post)
                 })
                 .then((result) => {
-                    console.log('result2 :', result);
                     msg_data = result.data.model;
+
+                    // Get the latest posts
                     if (data.post.is_public) return context.dispatch("GET_PUBLIC_POSTS", { refresh: true });
                     else return context.dispatch("GET_CONNECTION_POSTS", { refresh: true });
                 })
                 .then((result) => {
-                    console.log('POSTING MSG result :', result);
                     resolve(msg_data)
                 })
                 .catch((err) => {
@@ -88,13 +90,7 @@ const actions = {
                             });
                             post_ids = result.data.model.map(v => v._id);
                         }
-                        // posts.data.model.forEach(post => {
-                        //     post.show_comment = 0;
-                        //     _posts.push(post);
-                        //     post_ids.push(post._id);
-                        // })
                         context.commit('SET_PUBLIC_POSTS', posts);
-                        console.log('post_ids :', post_ids);
                         return context.dispatch("GET_COMMENTS_BY_POSTS", { post_ids }, { root: true })
                     })
                     .then((result) => {
@@ -118,7 +114,6 @@ const actions = {
                             _posts.push(post);
                             post_ids.push(post._id);
                         })
-                        console.log('_posts :', _posts);
                         context.commit('SET_CONNECTION_POSTS', _posts);
                         return context.dispatch("GET_COMMENTS_BY_POSTS", { post_ids }, { root: true })
                     })

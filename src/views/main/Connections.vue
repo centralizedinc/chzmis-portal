@@ -136,13 +136,17 @@
 
           <!-- Private Connections -->
           <a-tab-pane v-for="item in connections" :key="item._id">
-            <span slot="tab">
-              {{item.name}}
+            <div slot="tab">
+              <a-avatar
+                :src="item.avatar ? item.avatar.location: null"
+                size="small"
+              >{{item.name[0].toUpperCase()}}</a-avatar>
+              <span style="margin-left: 5px;">{{item.name}}</span>
               <a-dropdown placement="bottomRight" style="margin-right: 0; margin-left: 8px">
                 <a-icon type="caret-down" />
                 <a-menu slot="overlay">
                   <a-menu-item key="0">
-                    <a href="http://www.alipay.com/">Set as Favorite</a>
+                    <a href="#" @click="setFavorite(item._id)">Set as Favorite</a>
                   </a-menu-item>
                   <a-menu-divider />
                   <a-menu-item key="1">
@@ -154,7 +158,7 @@
                   </a-menu-item>-->
                 </a-menu>
               </a-dropdown>
-            </span>
+            </div>
             <div v-if="loading_submit" class="demo-loading-container">
               <a-spin />
             </div>
@@ -451,9 +455,13 @@ export default {
         var post = {
           message: this.post_message
         };
-        var form_data_id = this.active_key;
+        var connection_id = this.active_key;
         if (this.active_key === -1) {
+<<<<<<< HEAD
           form_data_id = "";
+=======
+          connection_id = "";
+>>>>>>> ae2c18ec76a1f569efe07cf70aef20a4099b4fb4
           post.is_public = true;
         } else post.parent_id = this.active_key;
 
@@ -467,7 +475,11 @@ export default {
         }
         this.$store
           .dispatch("POST_MESSAGE", {
+<<<<<<< HEAD
             upload_data: { account_id: form_data_id, form_data },
+=======
+            upload_data: { connection_id, form_data },
+>>>>>>> ae2c18ec76a1f569efe07cf70aef20a4099b4fb4
             post
           })
           .then(result => {
@@ -493,6 +505,7 @@ export default {
       reader.addEventListener("load", () => callback(reader.result));
       reader.readAsDataURL(img);
     },
+<<<<<<< HEAD
     showProfile(account_id) {
       console.log("console active_user :", account_id);
       this.$store.commit("ACTIVE_PROFILE", account_id);
@@ -502,6 +515,10 @@ export default {
     },
     onClose() {
       this.visible = false;
+=======
+    setFavorite(parent_id) {
+      this.$store.dispatch("SET_FAVORITE", { type: 0, parent_id });
+>>>>>>> ae2c18ec76a1f569efe07cf70aef20a4099b4fb4
     }
   }
 };

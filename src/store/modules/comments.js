@@ -25,12 +25,10 @@ const mutations = {
 
 const actions = {
     GET_COMMENTS_BY_POSTS(context, data) {
-        console.log('data.comments :', data.post_ids);
         return new Promise((resolve, reject) => {
             if (data.post_ids && data.post_ids.length) {
                 new CommentsAPI(context.rootState.accounts.token).getCommentsByPostIds(data.post_ids)
                     .then((comments) => {
-                        console.log('comments result :', comments);
                         context.commit('SET_COMMENTS', comments.data.model);
                         resolve(comments.data.model)
                     }).catch((err) => {
@@ -42,16 +40,27 @@ const actions = {
     },
     SEND_COMMENT(context, data) {
         return new Promise((resolve, reject) => {
+            // Initialize comment and upload_data
             var comment = data.comment,
                 upload_data = {
-                    account_id: context.rootState.connections.active_connection || context.rootState.accounts.account.account_id,
                     form_data: data.form_data
                 };
 
+                // Check if the uploaded file in connection is public or not
+            if (context.rootState.connections.active_connection) {
+                upload_data.connection_id = context.rootState.connections.active_connection
+            } else {
+                upload_data.is_public = true;
+                upload_data.connection_id = context.rootState.accounts.account.account_id
+            }
+
+            // Upload files by connection id or if public by account id
             new UploadAPI(context.rootState.accounts.token)
-                .uploadComment(upload_data)
+                .uploadConnection(upload_data)
                 .then((result) => {
                     if (result) comment.uploads = result.data.model;
+
+                    // Save comment
                     return new CommentsAPI(context.rootState.accounts.token)
                         .sendComment(comment)
                 })
