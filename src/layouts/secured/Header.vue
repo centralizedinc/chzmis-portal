@@ -12,14 +12,14 @@
     <a-col :md="{ span: 2, offset: 1}" :xs="0">
       <a-dropdown placement="bottomRight">
         <a-menu slot="overlay" @click="handleAccMenuClick">
-          <a-menu-item key="1">
+          <a-menu-item key="1" @click="showModal">
             <a-icon type="user" />Account
           </a-menu-item>
           <a-menu-item key="2">
             <a-icon type="user" />Settings
           </a-menu-item>
           <a-menu-item key="3">
-            <a-icon type="upowser"/>Logout
+            <a-icon type="upowser" />Logout
           </a-menu-item>
         </a-menu>
         <a-button style="background: transparent; border: none;font-size: 20px;box-shadow: none">
@@ -32,6 +32,134 @@
         </a-button>
       </a-dropdown>
     </a-col>
+    <div>
+      <a-modal v-model="visible" title="My Account" onOk="handleOk">
+        <template slot="footer">
+          <a-button key="back" @click="handleCancel">Return</a-button>
+          <a-button key="submit" type="primary" :loading="loading" @click="handleOk">Submit</a-button>
+        </template>
+        <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
+          <p style="text-align: center">
+            <a-form :form="form" @submit="handleSubmit">
+              <a-form-item class="align-items-middle">
+                <a-upload
+                  listType="picture-card"
+                  class="avatar-profile"
+                  :showUploadList="false"
+                  :beforeUpload="uploadAvatar"
+                  @change="handleChangeAvatar"
+                >
+                  <img v-if="avatar.imageUrl" :src="avatar.imageUrl" :alt="avatar.imageUrl" />
+                  <div v-else>
+                    <a-icon v-if="loading_avatar" type="loading" />
+                    <div class="ant-upload-text" v-else>Upload Avatar</div>
+                  </div>
+                </a-upload>
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="Fullname">
+                <a-input
+                  v-decorator="[
+          'fullname',
+          {
+            rules: [{ required: true, message: 'Please input your fullname', whitespace: true }]
+          }
+        ]"
+                />
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="Address">
+                <a-input
+                  v-decorator="[
+          'address',
+          {
+            rules: [{ required: true, message: 'Please input your address', whitespace: true }]
+          }
+        ]"
+                />
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="E-mail">
+                <a-input
+                  v-decorator="[
+          'email',
+          {
+            rules: [{
+              type: 'email', message: 'The input is not valid E-mail!',
+            }, {
+              required: true, message: 'Please input your E-mail!',
+            }]
+          }
+        ]"
+                />
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="Birthday">
+                <a-date-picker
+                  @change="onChange"
+                  v-decorator="[
+          'birthday',
+          {
+            rules: [{ required: true, message: 'Please select your birthday', whitespace: true }]
+          }
+        ]"
+                />
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="Phone Number">
+                <a-input
+                  v-decorator="[
+          'phone',
+          {
+            rules: [{ required: true, message: 'Please input your phone number!' }],
+          }
+        ]"
+                  style="width: 100%"
+                >
+                  <a-select
+                    slot="addonBefore"
+                    v-decorator="[
+            'prefix',
+            { initialValue: '63' }
+          ]"
+                    style="width: 70px"
+                  >
+                    <a-select-option value="63">+63</a-select-option>
+                    <a-select-option value="87">+87</a-select-option>
+                  </a-select>
+                </a-input>
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="Password">
+                <a-input
+                  v-decorator="[
+          'password',
+          {
+            rules: [{
+              required: true, message: 'Please input your password!',
+            }, {
+              validator: validateToNextPassword,
+            }],
+          }
+        ]"
+                  type="password"
+                />
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="Confirm Password">
+                <a-input
+                  v-decorator="[
+          'confirm',
+          {
+            rules: [{
+              required: true, message: 'Please confirm your password!',
+            }, {
+              validator: compareToFirstPassword,
+            }],
+          }
+        ]"
+                  type="password"
+                  @blur="handleConfirmBlur"
+                />
+              </a-form-item>
+            </a-form>
+          </p>
+        </a-card>
+      </a-modal>
+    </div>
   </a-row>
 </template>
 
@@ -41,18 +169,69 @@ export default {
   data() {
     return {
       headerIcon,
+      loading: false,
+      visible: false,
       user: {
         avatar:
           "https://www.birthdaymessagesstatus.com/wp-content/uploads/2018/08/Stylish-Attitude-Girl-Images-for-FB-Profile-Pic-300x291.jpg",
         full_name: "Cheka"
+      },
+      confirmDirty: false,
+      formItemLayout: {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 8 }
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 16 }
+        }
+      },
+      tailFormItemLayout: {
+        wrapperCol: {
+          xs: {
+            span: 24,
+            offset: 0
+          },
+          sm: {
+            span: 14,
+            offset: 5
+          }
+        }
+      },
+      form: this.$form.createForm(this),
+      loading_avatar: false,
+      avatar: {
+        imageUrl: "",
+        form_data: null
       }
     };
   },
+  beforeCreate() {
+    this.form = this.$form.createForm(this);
+  },
   methods: {
+    onChange(date, dateString) {
+      console.log(date, dateString);
+    },
+    showModal() {
+      this.visible = true;
+    },
+    handleOk(e) {
+      this.loading = true;
+      setTimeout(() => {
+        this.visible = false;
+        this.loading = false;
+      }, 500);
+      this.$message.success("Profile Update Successfull");
+    },
+    handleCancel(e) {
+      this.visible = false;
+    },
     handleAccMenuClick(e) {
       console.log("key :", e);
-      if(e.key === "3"){
-        this.logout()
+      if (e.key === "3") {
+        this.logout();
       }
     },
     onSearch(value) {
@@ -61,6 +240,53 @@ export default {
     logout() {
       this.$store.dispatch("LOGOUT");
       this.$router.push("/");
+    },
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          console.log("Received values of form: ", values);
+        }
+      });
+    },
+    handleConfirmBlur(e) {
+      const value = e.target.value;
+      this.confirmDirty = this.confirmDirty || !!value;
+    },
+    compareToFirstPassword(rule, value, callback) {
+      const form = this.form;
+      if (value && value !== form.getFieldValue("password")) {
+        callback("Two passwords that you enter is inconsistent!");
+      } else {
+        callback();
+      }
+    },
+    validateToNextPassword(rule, value, callback) {
+      const form = this.form;
+      if (value && this.confirmDirty) {
+        form.validateFields(["confirm"], { force: true });
+      }
+      callback();
+    },
+    handleWebsiteChange(value) {
+      let autoCompleteResult;
+      if (!value) {
+        autoCompleteResult = [];
+      } else {
+        autoCompleteResult = [".com", ".org", ".net"].map(
+          domain => `${value}${domain}`
+        );
+      }
+      this.autoCompleteResult = autoCompleteResult;
+    },
+    uploadAvatar(file) {
+      var form_data = new FormData();
+      form_data.append("avatar", file, file.name);
+      this.avatar.form_data = form_data;
+      this.getBase64(file, imageUrl => {
+        this.avatar.imageUrl = imageUrl;
+        this.loading_avatar = false;
+      });
     }
   }
 };
@@ -74,5 +300,27 @@ export default {
   text-shadow: 2px 2px #000000;
   background-color: #fff6e2; */
   padding: 0px 0px 0px 20px !important;
+}
+
+.ant-card-body {
+  padding: 0px;
+  zoom: 1;
+}
+
+.avatar-profile .ant-upload.ant-upload-select-picture-card,
+.avatar-profile img {
+  border-radius: 50%;
+}
+
+.avatar-profile img {
+  width: 110px;
+}
+
+.ant-modal-header {
+  padding: 16px 24px;
+  border-radius: 4px 4px 0 0;
+  background: #40a9ff !important;
+  color: #1890ff !important;
+  border-bottom: 1px solid #1890ff !important;
 }
 </style>
