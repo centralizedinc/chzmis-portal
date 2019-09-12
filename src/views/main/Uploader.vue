@@ -73,12 +73,10 @@ export default {
   },
   methods: {
     attachFile(file) {
-      console.log("file :", file);
       this.file_list = [...this.file_list, file];
       this.getBase64(file, imageUrl => {
         this.file_images = [...this.file_images, { imageUrl, name: file.name }];
       });
-      console.log("this.file_list :", this.file_list);
       var form_data = null;
       const { file_list, file_images } = this;
       if (this.file_list.length) {

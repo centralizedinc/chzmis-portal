@@ -53,13 +53,13 @@
               </a-col>
               <a-col :span="10" v-else style="padding: 15px; padding-left: 10px; padding-top: 5px;">
                 <a-row>
-                  <a-col :span="24" style="text-align: right">
+                  <a-col :span="24" style="text-align: right;">
                     <a href="#" class="underline-on-hover" @click="hide_msgbox=true">
                       Hide
                       <a-icon type="right-circle" />
                     </a>
                   </a-col>
-                  <a-col :span="2">
+                  <a-col :span="2" style="cursor: pointer;">
                     <a-avatar :src="getLoginUser().avatar">{{getLoginUser("initial")}}</a-avatar>
                   </a-col>
                   <a-col :span="21" :offset="1">
@@ -136,13 +136,17 @@
 
           <!-- Private Connections -->
           <a-tab-pane v-for="item in connections" :key="item._id">
-            <span slot="tab">
-              {{item.name}}
+            <div slot="tab">
+              <a-avatar
+                :src="item.avatar ? item.avatar.location: null"
+                size="small"
+              >{{item.name[0].toUpperCase()}}</a-avatar>
+              <span style="margin-left: 5px;">{{item.name}}</span>
               <a-dropdown placement="bottomRight" style="margin-right: 0; margin-left: 8px">
                 <a-icon type="caret-down" />
                 <a-menu slot="overlay">
                   <a-menu-item key="0">
-                    <a href="http://www.alipay.com/">Set as Favorite</a>
+                    <a href="#" @click="setFavorite(item._id)">Set as Favorite</a>
                   </a-menu-item>
                   <a-menu-divider />
                   <a-menu-item key="1">
@@ -154,7 +158,7 @@
                   </a-menu-item>-->
                 </a-menu>
               </a-dropdown>
-            </span>
+            </div>
             <div v-if="loading_submit" class="demo-loading-container">
               <a-spin />
             </div>
@@ -264,13 +268,14 @@
                   <a-col :span="24">
                     <a href="#" class="underline-on-hover">Members({{item.members.length}}):</a>
                   </a-col>
-                  <a-col :span="24">
+                  <a-col :span="24" style="cursor: pointer;">
                     <a-tooltip v-for="(member, i) in item.members" :key="i">
                       <span
                         slot="title"
                       >{{getAuthorName(member.account_id).first}} {{getAuthorName(member.account_id).last}}</span>
                       <a-avatar
-                        :src="getAuthorAvatar(member.account_id)"
+                        @click="showDrawer"
+                        :src="getUsers(member.account_id)"
                       >{{getAuthorName(member.account_id).first ? getAuthorName(member.account_id).first[0].toUpperCase() : "?"}}</a-avatar>
                     </a-tooltip>
                   </a-col>
@@ -290,6 +295,48 @@
         <new-connection></new-connection>
       </a-col>
     </a-row>
+    <div>
+      <!-- <a-button type="primary" @click="showDrawer">Open</a-button> -->
+      <a-drawer
+        title="Profile"
+        :width="320"
+        placement="left"
+        :closable="false"
+        @close="onClose"
+        :visible="visible"
+        :wrapStyle="{height: 'calc(100% - 108px)',overflow: 'auto',paddingBottom: '108px'}"
+      >
+        <a-card
+          style="border: 0px solid rgba(0,0,0,.4); width: 240px;"
+          :headStyle="main_layout_head_style"
+        >
+          <!-- <div slot="title">
+      <a-icon type="minus" style="float: right; margin-right: 5px;" @click="$store.commit('SHOW_PROFILE', false)" />
+          </div>-->
+          <p style="text-align: center">
+            <a-avatar
+              :size="100"
+              style="font-size: 50px;font-weight: bold;"
+              shape="circle"
+              :src="getLoginUser().avatar"
+            >{{getLoginUser("initial")}}</a-avatar>
+            <br />
+            <br />
+            <span class="profile-name">{{getLoginUser("fullname")}}</span>
+            <br />
+            <span style="font-size: 12px">{{subscribers_count}} subscribers</span>
+            <br />
+            <span style="font-size: 12px">{{active_channels_count}} active channels</span>
+            <br />
+            <span style="font-size: 12px">{{connections_count}} connections</span>
+          </p>
+          <!-- <p v-for="(item, index) in items" :key="index" class="profile-items">
+            <a-icon :type="item.icon" />
+            {{item.title}}
+          </p>-->
+        </a-card>
+      </a-drawer>
+    </div>
   </a-card>
 </template>
 
@@ -304,6 +351,12 @@ export default {
   },
   data() {
     return {
+      user: {
+        avatar:
+          "https://www.birthdaymessagesstatus.com/wp-content/uploads/2018/08/Stylish-Attitude-Girl-Images-for-FB-Profile-Pic-300x291.jpg",
+        full_name: "Cheka Khan"
+      },
+      visible: false,
       active_key: -1,
       post_message: "",
       loading_post: false,
@@ -316,8 +369,20 @@ export default {
     };
   },
   computed: {
+    subscribers_count() {
+      return 10000;
+    },
+    active_channels_count() {
+      return 2;
+    },
+    connections_count() {
+      return 20;
+    },
     connections() {
       return this.$store.state.connections.connections;
+    },
+    active_user() {
+      return this.$store.state.active_user;
     }
   },
   created() {
@@ -391,12 +456,11 @@ export default {
         var post = {
           message: this.post_message
         };
-        var form_data_id = this.active_key;
+        var connection_id = this.active_key;
         if (this.active_key === -1) {
-          form_data_id = ""
+          connection_id = "";
           post.is_public = true;
-        }
-        else post.parent_id = this.active_key;
+        } else post.parent_id = this.active_key;
 
         // if attachment is not null
         var form_data = null;
@@ -407,7 +471,10 @@ export default {
           });
         }
         this.$store
-          .dispatch("POST_MESSAGE", { upload_data: {account_id: form_data_id, form_data}, post })
+          .dispatch("POST_MESSAGE", {
+            upload_data: { connection_id, form_data },
+            post
+          })
           .then(result => {
             this.post_message = "";
             this.post_file_list = [];
@@ -430,6 +497,19 @@ export default {
       const reader = new FileReader();
       reader.addEventListener("load", () => callback(reader.result));
       reader.readAsDataURL(img);
+    },
+    showProfile(account_id) {
+      console.log("console active_user :", account_id);
+      this.$store.commit("ACTIVE_PROFILE", account_id);
+    },
+    showDrawer() {
+      this.visible = true;
+    },
+    onClose() {
+      this.visible = false;
+    },
+    setFavorite(parent_id) {
+      this.$store.dispatch("SET_FAVORITE", { type: 0, parent_id });
     }
   }
 };
@@ -533,5 +613,11 @@ export default {
 .modal-preview-image img {
   height: 100%;
   width: 100%;
+}
+
+.profile-name {
+  font-size: 15px;
+  font-weight: bold;
+  text-transform: capitalize;
 }
 </style>
