@@ -90,10 +90,11 @@ export default new Router({
           path: 'search/connection',
           name: 'Connect with Others',
           component: () => import('./components/SearchConnection.vue')
-        } {
+        },
+        {
           path: 'create/channel',
           name: 'Channel ek ek',
-          component: () => import('./components/CreateChannel.vue')
+          component: () => import('./views/landing/CreateChannel.vue')
         }
       ]
     },
