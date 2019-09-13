@@ -200,7 +200,7 @@ export default {
     };
   },
   created() {
-    // console.log("user_info initialized:", this.user_info);
+    console.log("user_info initialized:", this.user_info);
     console.log(
       "user_info STORE:Facebook",
       this.$store.state.third_party_libraries.facebook_details
