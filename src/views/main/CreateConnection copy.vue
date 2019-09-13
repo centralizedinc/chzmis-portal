@@ -14,7 +14,7 @@
       <div class="bg_landing">
         <a-row style="height:80vh" type="flex" justify="start" :gutter="1">
           <!-- card -->
-          <a-col :push="4" :span="8" style="margin-top:5vh">
+          <a-col :span="12" :offset="6" style="margin-top:10vh">
             <div style="width: 110vh">
               <a-card title="Create Connection" :bordered="false" :headStyle="head_style">
                 <div>

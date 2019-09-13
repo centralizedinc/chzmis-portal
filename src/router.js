@@ -66,11 +66,6 @@ export default new Router({
           name: 'Facebook Sign up',
           component: () => import('./views/landing/FacebookSignupSuccess.vue')
         },
-        {
-          path: 'interest',
-          name: 'Choose Interest',
-          component: () => import('./views/landing/ChooseInterest.vue')
-        },
         // {
         //   path: 'registration',
         //   name: 'Registration',
@@ -81,21 +76,7 @@ export default new Router({
         //   name: 'Login',
         //   component: () => import('./views/landing/Login.vue')
         // },
-        {
-          path: 'create/connection',
-          name: 'Create Connections',
-          component: () => import('./views/landing/CreateConnection.vue')
-        },
-        {
-          path: 'search/connection',
-          name: 'Connect with Others',
-          component: () => import('./components/SearchConnection.vue')
-        },
-        {
-          path: 'create/channel',
-          name: 'Channel ek ek',
-          component: () => import('./views/landing/CreateChannel.vue')
-        }
+
       ]
     },
     {
@@ -104,10 +85,31 @@ export default new Router({
       component: SecuredLayout,
       beforeEnter: isAuthenticated,
       children: [{
-        path: '',
-        name: 'Main Page',
-        component: () => import('./views/main/MainPage.vue')
-      }]
+          path: '',
+          name: 'Main Page',
+          component: () => import('./views/main/MainPage.vue')
+        },
+        {
+          path: 'setup/interest',
+          name: 'Choose Interest',
+          component: () => import('./views/main/ChooseInterest.vue')
+        },
+        {
+          path: 'setup/connection',
+          name: 'Create Connections',
+          component: () => import('./views/main/CreateConnection.vue')
+        },
+        {
+          path: 'setup/connection',
+          name: 'Connect with Others',
+          component: () => import('./components/SearchConnection.vue')
+        },
+        {
+          path: 'create/channel',
+          name: 'Channel ek ek',
+          component: () => import('./views/main/CreateChannel.vue')
+        }
+      ]
     },
     {
       path: '/about',
