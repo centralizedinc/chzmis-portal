@@ -9,90 +9,89 @@
         </a-col>
       </a-row>
     </a-layout-header>
-    <div class="card-container bg_landing">
-      <a-row type="flex" align="middle">
-        <a-col
-          :span="12"
-          :offset="7"
-          style="font-weight: normal; padding-top: 100px; padding-bottom: 100px"
-        >
+
+    <div>
+      <div class="bg_landing">
+        <a-row style="height:80vh" type="flex" justify="start" :gutter="1">
           <!-- card -->
-          <div class="custom-size">
-            <a-card title="Create Connection" :bordered="false" :headStyle="head_style">
-              <div>
-                <span>"Connection" is created for an organization or business to promote activities and to discuss anything under the sun. Users/Contacts may ask to join or must be invited to join a specific connection. Members can post their thoughts on the wall and interact with other members through discussion threads.</span>
-                <a-divider></a-divider>
+          <a-col :push="4" :span="8" style="margin-top:5vh">
+            <div style="width: 110vh">
+              <a-card title="Create Connection" :bordered="false" :headStyle="head_style">
                 <div>
-                  <a-button type="primary" block @click="showModal">Create My Connection</a-button>
-                  <a-modal v-model="visible" title="Add New Connection" onOk="handleOk">
-                    <template slot="footer">
-                      <!-- <span style="font-style: italic; padding-right: 100px">
+                  <span>"Connection" is created for an organization or business to promote activities and to discuss anything under the sun. Users/Contacts may ask to join or must be invited to join a specific connection. Members can post their thoughts on the wall and interact with other members through discussion threads.</span>
+                  <a-divider></a-divider>
+                  <div>
+                    <a-button type="primary" block @click="showModal">Create My Connection</a-button>
+                    <a-modal v-model="visible" title="Add New Connection" onOk="handleOk">
+                      <template slot="footer">
+                        <!-- <span style="font-style: italic; padding-right: 100px">
                         <a href="/#/search/connection">or search and connect with others</a>
-                      </span>-->
-                      <search-connection :visible="modal"></search-connection>
-                      <a-button key="back" @click="handleCancel">Cancel</a-button>
-                      <a-button
-                        key="submit"
-                        type="primary"
-                        :loading="loading"
-                        @click="handleOk"
-                      >Create</a-button>
-                    </template>
-
-                    <template>
-                      <!-- own connection -->
-                      <div>
-                        <a-form :layout="formLayout">
-                          <a-form-item label="Create a Name">
-                            <a-input placeholder />
-                          </a-form-item>
-                        </a-form>
-                      </div>
-                      <!-- Add contacts -->
-                      <p>Then add members from your social media contact list (optional)</p>
-                      <a-row type="flex" align="middle" :gutter="12">
-                        <a-col :span="12">
-                          <a-form-item>
-                            <a-button
-                              type="primary"
-                              block
-                              style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
-                            >
-                              <a-icon type="facebook" theme="filled" />
-                            </a-button>
-                          </a-form-item>
-                        </a-col>
-
-                        <a-col :span="12">
-                          <a-form-item>
-                            <a-button
-                              style="font-size: 20px; background-color: #d34836; border-color: #d34836"
-                              type="primary"
-                              block
-                            >
-                              <a-icon type="google-plus" />
-                            </a-button>
-                          </a-form-item>
-                        </a-col>
-
-                        <a-divider>or</a-divider>
+                        </span>-->
+                        <search-connection :visible="modal"></search-connection>
+                        <a-button key="back" @click="handleCancel">Cancel</a-button>
                         <a-button
-                          type="link"
-                          block
-                          @click="show_search"
-                        >Search and Connect with Others</a-button>
-                      </a-row>
+                          key="submit"
+                          type="primary"
+                          :loading="loading"
+                          @click="handleOk"
+                        >Create</a-button>
+                      </template>
 
-                      <!-- modal -->
-                      <search-connection :show_search="modal" @close="modal = false"></search-connection>
-                    </template>
-                  </a-modal>
+                      <template>
+                        <!-- own connection -->
+                        <div>
+                          <a-form :layout="formLayout">
+                            <a-form-item label="Create a Name">
+                              <a-input placeholder />
+                            </a-form-item>
+                          </a-form>
+                        </div>
+                        <!-- Add contacts -->
+                        <p>Then add members from your social media contact list (optional)</p>
+                        <a-row type="flex" align="middle" :gutter="12">
+                          <a-col :span="12">
+                            <a-form-item>
+                              <a-button
+                                type="primary"
+                                block
+                                style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
+                              >
+                                <a-icon type="facebook" theme="filled" />
+                              </a-button>
+                            </a-form-item>
+                          </a-col>
+
+                          <a-col :span="12">
+                            <a-form-item>
+                              <a-button
+                                style="font-size: 20px; background-color: #d34836; border-color: #d34836"
+                                type="primary"
+                                block
+                              >
+                                <a-icon type="google-plus" />
+                              </a-button>
+                            </a-form-item>
+                          </a-col>
+
+                          <a-divider>or</a-divider>
+                          <a-button
+                            type="link"
+                            block
+                            @click="show_search"
+                          >Search and Connect with Others</a-button>
+                        </a-row>
+
+                        <!-- modal -->
+                        <search-connection :show_search="modal" @close="modal = false"></search-connection>
+                      </template>
+                    </a-modal>
+                  </div>
                 </div>
-              </div>
-            </a-card>
-          </div>
-        </a-col>
-      </a-row>
+              </a-card>
+            </div>
+          </a-col>
+        </a-row>
+      </div>
     </div>
   </a-layout>
 </template>
@@ -162,22 +161,4 @@ export default {
 </script>
 
 <style>
-.card-container {
-  /* background: #f5f5f5; */
-  overflow: hidden;
-  padding: 24px;
-  /* text-align: center !important; */
-}
-.header-title {
-  /* color: #ffffff;
-  font-size: 48px;
-  font-weight: bold;
-  text-shadow: 2px 2px #000000;
-  background-color: #fff6e2; */
-  padding: 0px 0px 0px 20px !important;
-}
-.custom-size {
-  width: 500px;
-  height: 300px;
-}
 </style>
