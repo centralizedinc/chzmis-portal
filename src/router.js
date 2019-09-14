@@ -100,12 +100,12 @@ export default new Router({
           component: () => import('./views/main/CreateConnection.vue')
         },
         {
-          path: 'setup/connection',
+          path: 'search/connection',
           name: 'Connect with Others',
           component: () => import('./components/SearchConnection.vue')
         },
         {
-          path: 'create/channel',
+          path: 'setup/channel',
           name: 'Channel ek ek',
           component: () => import('./views/main/CreateChannel.vue')
         }
