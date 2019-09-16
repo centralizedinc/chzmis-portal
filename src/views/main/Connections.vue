@@ -548,9 +548,11 @@ export default {
 }
 
 .connection-card {
-  border: 1px groove #aaa;
+  /* border: 1px groove #aaa; */
   border-radius: 0px 0px 25px 25px;
-  box-shadow: 0px 1px;
+  box-shadow: 0px 0px 10px 2px #88888847;
+
+  /* box-shadow: 0px 1px; */
   max-height: 400px;
 }
 

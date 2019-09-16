@@ -66,11 +66,6 @@ export default new Router({
           name: 'Facebook Sign up',
           component: () => import('./views/landing/FacebookSignupSuccess.vue')
         },
-        {
-          path: 'interest',
-          name: 'Choose Interest',
-          component: () => import('./views/landing/ChooseInterest.vue')
-        },
         // {
         //   path: 'registration',
         //   name: 'Registration',
@@ -81,10 +76,28 @@ export default new Router({
         //   name: 'Login',
         //   component: () => import('./views/landing/Login.vue')
         // },
+
+      ]
+    },
+    {
+      path: '/main',
+      name: 'Secured Layout',
+      component: SecuredLayout,
+      beforeEnter: isAuthenticated,
+      children: [{
+          path: '',
+          name: 'Main Page',
+          component: () => import('./views/main/MainPage.vue')
+        },
         {
-          path: 'create/connection',
+          path: 'setup/interest',
+          name: 'Choose Interest',
+          component: () => import('./views/main/ChooseInterest.vue')
+        },
+        {
+          path: 'setup/connection',
           name: 'Create Connections',
-          component: () => import('./views/landing/CreateConnection.vue')
+          component: () => import('./views/main/CreateConnection.vue')
         },
         {
           path: 'search/connection',
@@ -92,13 +105,14 @@ export default new Router({
           component: () => import('./components/SearchConnection.vue')
         },
         {
-          path: 'create/channel',
+          path: 'setup/channel',
           name: 'Channel ek ek',
-          component: () => import('./views/landing/CreateChannel.vue')
+          component: () => import('./views/main/CreateChannel.vue')
         }
       ]
     },
     {
+<<<<<<< HEAD
       path: '/main',
       name: 'Secured Layout',
       component: SecuredLayout,
@@ -114,6 +128,8 @@ export default new Router({
       }]
     },
     {
+=======
+>>>>>>> 6fa73d7a9153abc196f0cc2181f678e384b3affa
       path: '/about',
       name: 'about',
       // route level code-splitting
