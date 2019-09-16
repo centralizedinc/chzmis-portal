@@ -112,7 +112,6 @@ export default new Router({
       ]
     },
     {
-<<<<<<< HEAD
       path: '/main',
       name: 'Secured Layout',
       component: SecuredLayout,
@@ -128,8 +127,6 @@ export default new Router({
       }]
     },
     {
-=======
->>>>>>> 6fa73d7a9153abc196f0cc2181f678e384b3affa
       path: '/about',
       name: 'about',
       // route level code-splitting
