@@ -107,6 +107,10 @@ export default new Router({
         path: '',
         name: 'Main Page',
         component: () => import('./views/main/MainPage.vue')
+      }, {
+        path: 'setup/profile',
+        name: "ProfileSetup",
+        component: () => import('./views/main/setup/ProfileSetup.vue')
       }]
     },
     {
