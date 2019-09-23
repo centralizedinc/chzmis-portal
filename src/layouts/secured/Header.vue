@@ -6,7 +6,6 @@
       </a>
     </a-col>
     <a-col :md="{ span: 4, offset: 14}" :xs="0">
-      <!-- <a-input placeholder="Search"></a-input> -->
       <a-input-search placeholder="Search" @search="onSearch" enterButton />
     </a-col>
     <a-col :md="{ span: 2, offset: 1}" :xs="0">
@@ -32,7 +31,7 @@
         </a-button>
       </a-dropdown>
     </a-col>
-    <div>
+    <div class="account-modal">
       <a-modal v-model="visible" title="My Account" onOk="handleOk">
         <template slot="footer">
           <a-button key="back" @click="handleCancel">Return</a-button>
@@ -41,7 +40,7 @@
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
           <p style="text-align: center">
-            <a-form :form="form" @submit="handleSubmit">
+            <a-form :form="form" @submit="handleSubmit" class="custom-textarea">
               <a-form-item class="align-items-middle">
                 <a-upload
                   listType="picture-card"
@@ -50,7 +49,7 @@
                   :beforeUpload="uploadAvatar"
                   @change="handleChangeAvatar"
                 >
-                  <img v-if="avatar.imageUrl" :src="avatar.imageUrl" :alt="avatar.imageUrl" />
+                  <img v-if="avatar" :src="avatar" :alt="avatar" />
                   <div v-else>
                     <a-icon v-if="loading_avatar" type="loading" />
                     <div class="ant-upload-text" v-else>Upload Avatar</div>
@@ -60,7 +59,7 @@
               <a-form-item v-bind="formItemLayout" label="Fullname">
                 <a-input
                   v-decorator="[
-          'fullname',
+          'name',
           {
             rules: [{ required: true, message: 'Please input your fullname', whitespace: true }]
           }
@@ -73,20 +72,6 @@
           'address',
           {
             rules: [{ required: true, message: 'Please input your address', whitespace: true }]
-          }
-        ]"
-                />
-              </a-form-item>
-              <a-form-item v-bind="formItemLayout" label="E-mail">
-                <a-input
-                  v-decorator="[
-          'email',
-          {
-            rules: [{
-              type: 'email', message: 'The input is not valid E-mail!',
-            }, {
-              required: true, message: 'Please input your E-mail!',
-            }]
           }
         ]"
                 />
@@ -124,37 +109,6 @@
                     <a-select-option value="87">+87</a-select-option>
                   </a-select>
                 </a-input>
-              </a-form-item>
-              <a-form-item v-bind="formItemLayout" label="Password">
-                <a-input
-                  v-decorator="[
-          'password',
-          {
-            rules: [{
-              required: true, message: 'Please input your password!',
-            }, {
-              validator: validateToNextPassword,
-            }],
-          }
-        ]"
-                  type="password"
-                />
-              </a-form-item>
-              <a-form-item v-bind="formItemLayout" label="Confirm Password">
-                <a-input
-                  v-decorator="[
-          'confirm',
-          {
-            rules: [{
-              required: true, message: 'Please confirm your password!',
-            }, {
-              validator: compareToFirstPassword,
-            }],
-          }
-        ]"
-                  type="password"
-                  @blur="handleConfirmBlur"
-                />
               </a-form-item>
             </a-form>
           </p>
@@ -225,6 +179,8 @@ export default {
   data() {
     return {
       headerIcon,
+      users: [],
+      name: "",
       loading: false,
       visible: false,
       visibleSettings: false,
@@ -258,16 +214,101 @@ export default {
       },
       form: this.$form.createForm(this),
       loading_avatar: false,
-      avatar: {
-        imageUrl: "",
-        form_data: null
-      }
+      // avatar: {
+      //   imageUrl: "",
+      //   form_data: null
+      // }
+      avatar: null
     };
   },
   beforeCreate() {
     this.form = this.$form.createForm(this);
   },
+  created() {
+    this.profile();
+    this.avatar = this.$store.state.accounts.user.avatar;
+  },
+  computed: {
+    user_details() {
+      console.log("user details :", this.$store.state.accounts.user);
+      return this.$store.state.accounts.user;
+    },
+    account_details() {
+      console.log("account details :", this.$store.state.accounts.account);
+      return this.$store.state.accounts.account;
+    }
+  },
+  watch: {
+    user_details(val) {
+      var _form = this.$form,
+        _self = this;
+      if (val)
+        if (this.user_details) {
+          this.users = this.user_details.users;
+          this.form = this.$form.createForm(this, {
+            mapPropsToFields() {
+              return {
+                name: _form.createFormField({
+                  value: _self.user_details.name
+                })
+              };
+            }
+          });
+        } else {
+          this.profile();
+        }
+    }
+  },
   methods: {
+    profile() {
+      this.users = [];
+      this.loading = false;
+      var _form = this.$form;
+      this.form = this.$form.createForm(this, {
+        mapPropsToFields() {
+          return {
+            users: _form.createFormField({
+              value: []
+            })
+          };
+        }
+      });
+    },
+    init() {
+      console.log("accounts details :", this.$store.state.accounts.account);
+      console.log("users details :", this.$store.state.accounts.user);
+    },
+    submit(e) {
+      this.loading = true;
+      e.preventDefault();
+      this.form.validateFields((err, connection) => {
+        if (!err) {
+          var action = "CREATE_CONNECTION",
+            body = { name: connection.name, members: this.members };
+          if (this.selected_connection) {
+            action = "UPDATE_CONNECTION";
+            body = {
+              id: this.selected_connection._id,
+              connection: { name: connection.name, members: this.members }
+            };
+          }
+          this.$store
+            .dispatch(action, { body, form_data: this.avatar })
+            .then(result => {
+              this.reload_connection = true;
+              this.loading = false;
+              this.close();
+            })
+            .catch(err => {
+              console.log("CREATE_CONNECTION err :", err);
+              this.loading = false;
+            });
+        } else {
+          console.log("err :", err);
+          this.loading = false;
+        }
+      });
+    },
     onChange(date, dateString) {
       console.log(date, dateString);
     },
@@ -342,11 +383,11 @@ export default {
       this.autoCompleteResult = autoCompleteResult;
     },
     uploadAvatar(file) {
-      var form_data = new FormData();
-      form_data.append("avatar", file, file.name);
-      this.avatar.form_data = form_data;
-      this.getBase64(file, imageUrl => {
-        this.avatar.imageUrl = imageUrl;
+      var avatar = new FormData();
+      avatar.append("avatar", file, file.name);
+      this.avatar = avatar;
+      this.getBase64(file, avatar => {
+        this.avatar = avatar;
         this.loading_avatar = false;
       });
     }
@@ -378,11 +419,15 @@ export default {
   width: 110px;
 }
 
-.ant-modal-header {
+.account-modal .ant-modal-header {
   padding: 16px 24px;
   border-radius: 4px 4px 0 0;
   background: #40a9ff !important;
   color: #1890ff !important;
   border-bottom: 1px solid #1890ff !important;
+}
+
+.custom-textarea .ant-input {
+  height: 10vh !important;
 }
 </style>
