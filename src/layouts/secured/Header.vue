@@ -12,10 +12,10 @@
     <a-col :md="{ span: 2, offset: 1}" :xs="0">
       <a-dropdown placement="bottomRight">
         <a-menu slot="overlay" @click="handleAccMenuClick">
-          <a-menu-item key="1" @click="showModal">
+          <a-menu-item key="1" @click="showModalAccounts">
             <a-icon type="user" />Account
           </a-menu-item>
-          <a-menu-item key="2">
+          <a-menu-item key="2" @click="showModalSettings">
             <a-icon type="user" />Settings
           </a-menu-item>
           <a-menu-item key="3">
@@ -36,7 +36,8 @@
       <a-modal v-model="visible" title="My Account" onOk="handleOk">
         <template slot="footer">
           <a-button key="back" @click="handleCancel">Return</a-button>
-          <a-button key="submit" type="primary" :loading="loading" @click="handleOk">Submit</a-button>
+          <a-button key="submit
+          " type="primary" :loading="loading" @click="handleOk">Submit</a-button>
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
           <p style="text-align: center">
@@ -160,6 +161,61 @@
         </a-card>
       </a-modal>
     </div>
+    <div>
+      <a-modal v-model="visibleSettings" title="Change Password" onOk="handleOk">
+        <template slot="footer">
+                    <a-button key="Change Password" type="primary" :loading="loading" @click="handleOk">Change Password</a-button>
+        </template>
+        <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
+          <p style="text align-center">
+            <a-form :form="form" @submit="handleSubmit">        
+            
+              <a-form-item v-bind="formItemLayout" label="Current password">
+                <a-input
+                  v-decorator="[
+          'current_password',
+          { 
+            rules: [{ required: true, message: 'Please input your old password!', whitespace: true }]
+          }       
+        ]"
+                 />
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="New Password">
+                <a-input
+                  v-decorator="[
+          'password',
+          {
+            rules: [{
+              required: true, message: 'Please input your new password!',
+            }, {
+              validator: validateToNextPassword,
+            }],
+          }
+        ]"
+                  type="password"
+                />
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="Confirm Password">
+                <a-input
+                  v-decorator="[
+          'confirm',
+          {
+            rules: [{
+              required: true, message: 'Please confirm your password!',
+            }, {
+              validator: compareToFirstPassword,
+            }],
+          }
+        ]"
+                  type="password"
+                  @blur="handleConfirmBlur"
+                />
+              </a-form-item>
+            </a-form>
+          </p>
+        </a-card>
+      </a-modal>
+    </div>
   </a-row>
 </template>
 
@@ -171,6 +227,7 @@ export default {
       headerIcon,
       loading: false,
       visible: false,
+      visibleSettings: false,
       user: {
         avatar:
           "https://www.birthdaymessagesstatus.com/wp-content/uploads/2018/08/Stylish-Attitude-Girl-Images-for-FB-Profile-Pic-300x291.jpg",
@@ -214,19 +271,24 @@ export default {
     onChange(date, dateString) {
       console.log(date, dateString);
     },
-    showModal() {
+    showModalAccounts() {
       this.visible = true;
+    },
+    showModalSettings(){
+      this.visibleSettings = true
     },
     handleOk(e) {
       this.loading = true;
       setTimeout(() => {
         this.visible = false;
+        this.visibleSettings = false;
         this.loading = false;
       }, 500);
       this.$message.success("Profile Update Successfull");
     },
     handleCancel(e) {
       this.visible = false;
+      this.visibleSettings = false
     },
     handleAccMenuClick(e) {
       console.log("key :", e);
