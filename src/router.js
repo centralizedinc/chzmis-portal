@@ -108,7 +108,12 @@ export default new Router({
           path: 'setup/channel',
           name: 'Channel ek ek',
           component: () => import('./views/main/CreateChannel.vue')
-        }
+        },
+        {
+        path: 'setup/profile',
+        name: "ProfileSetup",
+        component: () => import('./views/main/ProfileSetup.vue')
+      },
       ]
     },
     {
@@ -120,11 +125,8 @@ export default new Router({
         path: '',
         name: 'Main Page',
         component: () => import('./views/main/MainPage.vue')
-      }, {
-        path: 'setup/profile',
-        name: "ProfileSetup",
-        component: () => import('./views/main/setup/ProfileSetup.vue')
-      }]
+      }, 
+    ]
     },
     {
       path: '/about',
