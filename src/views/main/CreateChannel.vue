@@ -21,17 +21,15 @@
     <!-- image slider -->
     <a-row>
       <a-col :span="24">
+        <a-divider orientation="left">Movies</a-divider>
+        <!-- images -->
         <div class="container">
           <div class="arrow-left">
             <i class="icon-angle-left"></i>
           </div>
           <div class="item item-1">
             <div class="body-item">
-              <div class="body-item-1">
-                <div class="play">
-                  <i class="icon-play"></i>
-                </div>
-              </div>
+              <div class="body-item-1"></div>
               <div class="title body-item-2">Breaking Bad</div>
               <div class="properties body-item-3">
                 <span class="match">% 98 Match</span>
@@ -42,23 +40,15 @@
               <p
                 class="description body-item-4"
               >Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius alias libero..</p>
-              <div class="body-item-5">
-                <i class="details-icon icon-chevron-down"></i>
-              </div>
-              <div class="icon-set body-item-6">
-                <i class="icon-thumbs-up"></i>
-                <i class="icon-thumbs-down"></i>
-                <i class="icon-plus"></i>
-              </div>
             </div>
           </div>
 
           <div class="item item-2">
             <div class="body-item">
               <div class="body-item-1">
-                <div class="play">
+                <!-- <div class="play">
                   <i class="icon-play"></i>
-                </div>
+                </div>-->
               </div>
               <div class="title body-item-2">Case de Papel</div>
               <div class="properties body-item-3">
@@ -70,23 +60,18 @@
               <p
                 class="description body-item-4"
               >Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius alias libero..</p>
-              <div class="body-item-5">
+              <!-- <div class="body-item-5">
                 <i class="details-icon icon-chevron-down"></i>
-              </div>
-              <div class="icon-set body-item-6">
-                <i class="icon-thumbs-up"></i>
-                <i class="icon-thumbs-down"></i>
-                <i class="icon-plus"></i>
-              </div>
+              </div>-->
             </div>
           </div>
 
           <div class="item item-3">
             <div class="body-item">
               <div class="body-item-1">
-                <div class="play">
+                <!-- <div class="play">
                   <i class="icon-play"></i>
-                </div>
+                </div>-->
               </div>
               <div class="title body-item-2">Black Mirror</div>
               <div class="properties body-item-3">
@@ -97,15 +82,7 @@
               </div>
               <p
                 class="description body-item-4"
-              >Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius alias libero..</p>
-              <div class="body-item-5">
-                <i class="details-icon icon-chevron-down"></i>
-              </div>
-              <div class="icon-set body-item-6">
-                <i class="icon-thumbs-up"></i>
-                <i class="icon-thumbs-down"></i>
-                <i class="icon-plus"></i>
-              </div>
+              >3rd Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius alias libero..</p>
             </div>
           </div>
 
@@ -129,16 +106,16 @@
               <div class="body-item-5">
                 <i class="details-icon icon-chevron-down"></i>
               </div>
-              <div class="icon-set body-item-6">
+              <!-- <div class="icon-set body-item-6">
                 <i class="icon-thumbs-up"></i>
                 <i class="icon-thumbs-down"></i>
                 <i class="icon-plus"></i>
-              </div>
+              </div>-->
             </div>
           </div>
-          <div class="arrow-right">
+          <!-- <div class="arrow-right">
             <i class="icon-angle-right"></i>
-          </div>
+          </div>-->
         </div>
       </a-col>
     </a-row>

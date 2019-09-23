@@ -39,7 +39,7 @@
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
           <p style="text-align: center">
-            <a-form :form="form" @submit="handleSubmit">
+            <a-form :form="form" @submit="handleSubmit" class="custom-textarea">
               <a-form-item class="align-items-middle">
                 <a-upload
                   listType="picture-card"
@@ -171,11 +171,11 @@ export default {
   },
   computed: {
     user_details() {
-      console.log('user details :', this.$store.state.accounts.user);
+      console.log("user details :", this.$store.state.accounts.user);
       return this.$store.state.accounts.user;
     },
     account_details() {
-      console.log('account details :', this.$store.state.accounts.account);
+      console.log("account details :", this.$store.state.accounts.account);
       return this.$store.state.accounts.account;
     }
   },
@@ -216,14 +216,8 @@ export default {
       });
     },
     init() {
-      console.log(
-        "accounts details :",
-        this.$store.state.accounts.account
-      );
-      console.log(
-        "users details :",
-        this.$store.state.accounts.user
-      );
+      console.log("accounts details :", this.$store.state.accounts.account);
+      console.log("users details :", this.$store.state.accounts.user);
     },
     submit(e) {
       this.loading = true;
@@ -367,5 +361,9 @@ export default {
   background: #40a9ff !important;
   color: #1890ff !important;
   border-bottom: 1px solid #1890ff !important;
+}
+
+.custom-textarea .ant-input {
+  height: 10vh !important;
 }
 </style>
