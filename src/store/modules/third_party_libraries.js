@@ -3,7 +3,10 @@ function initialState() {
         signup_method: 'local', // google, facebook
         google_details: {},
         facebook_details: {},
-        window_location:{}
+        window_location:{},
+        user: {},
+        token: "",
+        is_authenticated: false
     }
 }
 
@@ -14,12 +17,18 @@ const mutations = {
         state.window_location = data
     },
     GOOGLE_SIGNUP(state, data){
-        state.google_details = data
+        state.google_details = data;
+        state.user = data.user;
+        state.token = data.token;
         state.signup_method = 'google'
+        state.is_authenticated = true;
     },
     FACEBOOK_SIGNUP(state, data){
-        state.facebook_details = data
+        state.facebook_details = data;
+        state.user = data.user;
+        state.token = data.token;
         state.signup_method = 'facebook'
+        state.is_authenticated = true;
     },
     LOCAL_SIGNUP(state, data){
         state.signup_method = 'local'

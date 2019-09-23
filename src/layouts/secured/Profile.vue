@@ -1,15 +1,12 @@
 <template>
-  <a-card
-    style="border: 1px solid rgba(0,0,0,.4); width: 216px;"
-    :headStyle="main_layout_head_style"
-  >
+  <a-card class="profile-style" :headStyle="main_layout_head_style">
     <!-- <div slot="title">
       <a-icon type="minus" style="float: right; margin-right: 5px;" @click="$store.commit('SHOW_PROFILE', false)" />
-    </div> -->
+    </div>-->
     <p style="text-align: center">
       <a-avatar
         :size="80"
-        style="font-size: 50px;font-weight: bold;"
+        style="font-size: 50px;font-weight: bold;     border: 3px solid #fff;"
         shape="circle"
         :src="getLoginUser().avatar"
       >{{getLoginUser("initial")}}</a-avatar>
@@ -79,10 +76,11 @@ export default {
     },
     active_user() {
       // return this.$store.state.active_user;
-      console.log('active_user account :', account);
-      if(this.$store.state.users.active_user) {return this.getUsers(account)
-      }else {
-          this.getLoginUser()
+      console.log("active_user account :", account);
+      if (this.$store.state.users.active_user) {
+        return this.getUsers(account);
+      } else {
+        this.getLoginUser();
       }
     }
   }
@@ -90,6 +88,19 @@ export default {
 </script>
 
 <style>
+.profile-style {
+  /* border: 1px solid rgba(0,0,0,.4); width: 216px; */
+  width: 216px;
+  border-radius: 25px !important;
+  box-shadow: 0px 0px 10px 2px #88888847;
+  background-image: linear-gradient(
+    to bottom,
+    #0450a0 0%,
+    #fff7e2 45%,
+    #fff 50%
+  ) !important;
+  border: none !important;
+}
 .profile-items {
   font-weight: bold;
   text-align: left;

@@ -10,7 +10,7 @@
       <a-input-search placeholder="Search and Connect with Others" @search="onSearch" enterButton />
       <div>
         <a-list itemLayout="horizontal" :dataSource="data">
-          <a-list-item slot="renderItem" slot-scope="item, index">
+          <a-list-item slot="renderItem" slot-scope="item">
             <a-list-item-meta
               description="Ant Design, a design language for background applications, is refined by Ant UED Team"
             >
@@ -52,7 +52,7 @@ export default {
       default: false
     },
     components: {
-      createConnection: () => import("../views/landing/CreateConnection")
+      createConnection: () => import("../views/main/CreateConnection")
     },
     data() {
       return {

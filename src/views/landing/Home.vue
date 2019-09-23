@@ -200,7 +200,7 @@ export default {
     };
   },
   created() {
-    // console.log("user_info initialized:", this.user_info);
+    console.log("user_info initialized:", this.user_info);
     console.log(
       "user_info STORE:Facebook",
       this.$store.state.third_party_libraries.facebook_details
@@ -210,7 +210,7 @@ export default {
       this.$store.state.third_party_libraries.google_details
     );
 
-  //   this.init();
+    //   this.init();
   },
   methods: {
     setModal1Visible(modal1Visible) {
@@ -252,15 +252,15 @@ export default {
     facebookLogin() {
       // this.$router.push("/main");
       var googleWindow = window.open(
-      process.env.VUE_APP_API_BASE_URL + "/auth/facebook",
-      "Facebook Sign In",
-      "width=500,height=500"
+        process.env.VUE_APP_API_BASE_URL + "/auth/facebook",
+        "Facebook Sign In",
+        "width=500,height=500"
       );
     },
     googleLogin() {
       // this.$router.push("/main");
       var googleWindow = window.open(
-      process.env.VUE_APP_API_BASE_URL + "/auth/google",
+        process.env.VUE_APP_API_BASE_URL + "/auth/google",
         "Google Sign In",
         "width=500,height=500"
       );
@@ -307,11 +307,9 @@ export default {
         form.validateFields(["confirm"], { force: true });
       }
       callback();
-    },
-    
-    
-    // 
+    }
 
+    //
 
     //  mapProps() {
     //   var data = {};
@@ -337,7 +335,6 @@ export default {
     //     }
     //   });
     // }
-
   }
 };
 </script>
