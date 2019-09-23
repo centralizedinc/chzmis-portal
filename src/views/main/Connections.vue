@@ -329,6 +329,7 @@
             <span style="font-size: 12px">{{active_channels_count}} active channels</span>
             <br />
             <span style="font-size: 12px">{{connections_count}} connections</span>
+            <br/>
           </p>
           <!-- <p v-for="(item, index) in items" :key="index" class="profile-items">
             <a-icon :type="item.icon" />

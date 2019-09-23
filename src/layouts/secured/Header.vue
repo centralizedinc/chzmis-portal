@@ -6,7 +6,6 @@
       </a>
     </a-col>
     <a-col :md="{ span: 4, offset: 14}" :xs="0">
-      <!-- <a-input placeholder="Search"></a-input> -->
       <a-input-search placeholder="Search" @search="onSearch" enterButton />
     </a-col>
     <a-col :md="{ span: 2, offset: 1}" :xs="0">
@@ -59,7 +58,7 @@
               <a-form-item v-bind="formItemLayout" label="Fullname">
                 <a-input
                   v-decorator="[
-          'fullname',
+          'name.first',
           {
             rules: [{ required: true, message: 'Please input your fullname', whitespace: true }]
           }
@@ -72,20 +71,6 @@
           'address',
           {
             rules: [{ required: true, message: 'Please input your address', whitespace: true }]
-          }
-        ]"
-                />
-              </a-form-item>
-              <a-form-item v-bind="formItemLayout" label="E-mail">
-                <a-input
-                  v-decorator="[
-          'email',
-          {
-            rules: [{
-              type: 'email', message: 'The input is not valid E-mail!',
-            }, {
-              required: true, message: 'Please input your E-mail!',
-            }]
           }
         ]"
                 />
@@ -124,37 +109,6 @@
                   </a-select>
                 </a-input>
               </a-form-item>
-              <a-form-item v-bind="formItemLayout" label="Password">
-                <a-input
-                  v-decorator="[
-          'password',
-          {
-            rules: [{
-              required: true, message: 'Please input your password!',
-            }, {
-              validator: validateToNextPassword,
-            }],
-          }
-        ]"
-                  type="password"
-                />
-              </a-form-item>
-              <a-form-item v-bind="formItemLayout" label="Confirm Password">
-                <a-input
-                  v-decorator="[
-          'confirm',
-          {
-            rules: [{
-              required: true, message: 'Please confirm your password!',
-            }, {
-              validator: compareToFirstPassword,
-            }],
-          }
-        ]"
-                  type="password"
-                  @blur="handleConfirmBlur"
-                />
-              </a-form-item>
             </a-form>
           </p>
         </a-card>
@@ -169,6 +123,8 @@ export default {
   data() {
     return {
       headerIcon,
+      users: [],
+      name: "",
       loading: false,
       visible: false,
       user: {
@@ -210,7 +166,96 @@ export default {
   beforeCreate() {
     this.form = this.$form.createForm(this);
   },
+  created() {
+    this.profile();
+  },
+  computed: {
+    user_details() {
+      console.log('user details :', this.$store.state.accounts.user);
+      return this.$store.state.accounts.user;
+    },
+    account_details() {
+      console.log('account details :', this.$store.state.accounts.account);
+      return this.$store.state.accounts.account;
+    }
+  },
+  watch: {
+    user_details(val) {
+      var _form = this.$form,
+        _self = this;
+      if (val)
+        if (this.user_details) {
+          this.users = this.user_details.users;
+          this.form = this.$form.createForm(this, {
+            mapPropsToFields() {
+              return {
+                name: _form.createFormField({
+                  value: _self.user_details.name
+                })
+              };
+            }
+          });
+        } else {
+          this.profile();
+        }
+    }
+  },
   methods: {
+    profile() {
+      this.users = [];
+      this.loading = false;
+      var _form = this.$form;
+      this.form = this.$form.createForm(this, {
+        mapPropsToFields() {
+          return {
+            users: _form.createFormField({
+              value: []
+            })
+          };
+        }
+      });
+    },
+    init() {
+      console.log(
+        "accounts details :",
+        this.$store.state.accounts.account
+      );
+      console.log(
+        "users details :",
+        this.$store.state.accounts.user
+      );
+    },
+    submit(e) {
+      this.loading = true;
+      e.preventDefault();
+      this.form.validateFields((err, connection) => {
+        if (!err) {
+          var action = "CREATE_CONNECTION",
+            body = { name: connection.name, members: this.members };
+          if (this.selected_connection) {
+            action = "UPDATE_CONNECTION";
+            body = {
+              id: this.selected_connection._id,
+              connection: { name: connection.name, members: this.members }
+            };
+          }
+          this.$store
+            .dispatch(action, { body, form_data: this.avatar.form_data })
+            .then(result => {
+              this.reload_connection = true;
+              this.loading = false;
+              this.close();
+            })
+            .catch(err => {
+              console.log("CREATE_CONNECTION err :", err);
+              this.loading = false;
+            });
+        } else {
+          console.log("err :", err);
+          this.loading = false;
+        }
+      });
+    },
     onChange(date, dateString) {
       console.log(date, dateString);
     },
