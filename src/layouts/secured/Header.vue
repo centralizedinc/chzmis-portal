@@ -31,8 +31,8 @@
         </a-button>
       </a-dropdown>
     </a-col>
-    <div class="account-modal">
-      <a-modal v-model="visible" title="My Account" onOk="handleOk">
+    <div>
+      <a-modal class="account-modal" v-model="visible" title="My Account" onOk="handleOk">
         <template slot="footer">
           <a-button key="back" @click="handleCancel">Return</a-button>
           <a-button key="submit" type="primary" :loading="loading" @click="handleOk">Submit</a-button>
