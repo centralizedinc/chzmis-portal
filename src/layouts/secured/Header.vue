@@ -31,7 +31,7 @@
         </a-button>
       </a-dropdown>
     </a-col>
-    <div>
+    <div class="account-modal">
       <a-modal v-model="visible" title="My Account" onOk="handleOk">
         <template slot="footer">
           <a-button key="back" @click="handleCancel">Return</a-button>
@@ -48,7 +48,7 @@
                   :beforeUpload="uploadAvatar"
                   @change="handleChangeAvatar"
                 >
-                  <img v-if="avatar.imageUrl" :src="avatar.imageUrl" :alt="avatar.imageUrl" />
+                  <img v-if="avatar" :src="avatar" :alt="avatar" />
                   <div v-else>
                     <a-icon v-if="loading_avatar" type="loading" />
                     <div class="ant-upload-text" v-else>Upload Avatar</div>
@@ -58,7 +58,7 @@
               <a-form-item v-bind="formItemLayout" label="Fullname">
                 <a-input
                   v-decorator="[
-          'name.first',
+          'name',
           {
             rules: [{ required: true, message: 'Please input your fullname', whitespace: true }]
           }
@@ -157,10 +157,11 @@ export default {
       },
       form: this.$form.createForm(this),
       loading_avatar: false,
-      avatar: {
-        imageUrl: "",
-        form_data: null
-      }
+      // avatar: {
+      //   imageUrl: "",
+      //   form_data: null
+      // }
+      avatar: null
     };
   },
   beforeCreate() {
@@ -168,6 +169,7 @@ export default {
   },
   created() {
     this.profile();
+    this.avatar = this.$store.state.accounts.user.avatar;
   },
   computed: {
     user_details() {
@@ -234,7 +236,7 @@ export default {
             };
           }
           this.$store
-            .dispatch(action, { body, form_data: this.avatar.form_data })
+            .dispatch(action, { body, form_data: this.avatar })
             .then(result => {
               this.reload_connection = true;
               this.loading = false;
@@ -319,11 +321,11 @@ export default {
       this.autoCompleteResult = autoCompleteResult;
     },
     uploadAvatar(file) {
-      var form_data = new FormData();
-      form_data.append("avatar", file, file.name);
-      this.avatar.form_data = form_data;
-      this.getBase64(file, imageUrl => {
-        this.avatar.imageUrl = imageUrl;
+      var avatar = new FormData();
+      avatar.append("avatar", file, file.name);
+      this.avatar = avatar;
+      this.getBase64(file, avatar => {
+        this.avatar = avatar;
         this.loading_avatar = false;
       });
     }
@@ -355,7 +357,7 @@ export default {
   width: 110px;
 }
 
-.ant-modal-header {
+.account-modal .ant-modal-header {
   padding: 16px 24px;
   border-radius: 4px 4px 0 0;
   background: #40a9ff !important;
