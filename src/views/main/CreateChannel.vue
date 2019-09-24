@@ -204,6 +204,9 @@ export default {
     },
     onClose() {
       this.visible = false;
+    },
+    createOwn() {
+      this.$router.push("own-channel");
     }
   }
 };
