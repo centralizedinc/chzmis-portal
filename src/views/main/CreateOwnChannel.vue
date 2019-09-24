@@ -58,11 +58,11 @@
       <br />
       <a-row type="flex" align="middle" :gutter="8">
         <a-col :span="6">
-          <a-button block type="dashed" @click="continueLater">Continue Later</a-button>
+          <a-button block type="dashed">Continue Later</a-button>
         </a-col>
         <a-col :span="18">
           <a-button block type="primary" @click="done">Done</a-button>
-          <account-ready :acct_ready="modal" @close="modal = false"></account-ready>
+          <account-ready :acct_ready="modal"></account-ready>
         </a-col>
       </a-row>
     </a-card>
@@ -77,7 +77,8 @@ export default {
   data() {
     return {
       visible: false,
-      modal: false
+      modal: false,
+      form: this.$form.createForm(this)
     };
   },
   computed: {
@@ -97,6 +98,17 @@ export default {
     },
     done() {
       this.modal = true;
+    },
+    handleChange(info) {
+      const status = info.file.status;
+      if (status !== "uploading") {
+        console.log(info.file, info.fileList);
+      }
+      if (status === "done") {
+        this.$message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === "error") {
+        this.$message.error(`${info.file.name} file upload failed.`);
+      }
     }
   }
 };
