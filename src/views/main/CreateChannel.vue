@@ -204,7 +204,7 @@ export default {
 
 <style scoped>
 .cardStyle {
-  border-radius: 25px !important;
+  /* border-radius: 25px !important; */
   box-shadow: 0px 0px 10px 2px #88888847;
 }
 /* body,
