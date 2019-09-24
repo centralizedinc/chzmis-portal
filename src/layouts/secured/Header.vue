@@ -116,7 +116,7 @@
       </a-modal>
     </div>
     <div>
-      <a-modal v-model="visibleSettings" title="Change Password" onOk="handleOk">
+      <a-modal class="password-modal" v-model="visibleSettings" title="Change Password" onOk="handleOk">
         <template slot="footer">
                     <a-button key="Change Password" type="primary" :loading="loading" @click="handleOk">Change Password</a-button>
         </template>
@@ -420,6 +420,14 @@ export default {
 }
 
 .account-modal .ant-modal-header {
+  padding: 16px 24px;
+  border-radius: 4px 4px 0 0;
+  background: #40a9ff !important;
+  color: #1890ff !important;
+  border-bottom: 1px solid #1890ff !important;
+}
+
+.password-modal .ant-modal-header {
   padding: 16px 24px;
   border-radius: 4px 4px 0 0;
   background: #40a9ff !important;
