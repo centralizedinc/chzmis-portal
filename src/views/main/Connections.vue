@@ -1,6 +1,7 @@
 <template>
   <div>
-    <a-affix :offsetTop="50">
+    <!-- Connection Tabs -->
+    <a-affix :offsetTop="40">
       <a-card :bodyStyle="{ padding: '1vh' }">
         <a-tabs
           class="connection-tabs"
@@ -42,6 +43,101 @@
         </a-tabs>
       </a-card>
     </a-affix>
+    <!-- Connection Details -->
+    <a-affix v-if="active_key !== -1" :offsetTop="show_tabs ? 95:40">
+      <a-card>
+        <div slot="title">
+          <span>{{getConnectionById(active_key).name}}</span>
+          <div style="float: right;">
+            <a-dropdown placement="bottomCenter" :trigger="['click']">
+              <a-tooltip>
+                <span slot="title">Settings</span>
+                <a-icon type="setting" style="cursor: pointer;" />
+              </a-tooltip>
+              <a-menu slot="overlay">
+                <a-menu-item
+                  key="0"
+                  v-if="checkFavorites()"
+                  @click="removeFromFavorites()"
+                >Remove from Favorites</a-menu-item>
+                <a-menu-item key="1" v-else @click="addToFavorites()">Add to Favorites</a-menu-item>
+                <a-menu-divider />
+                <a-menu-item key="2" @click="updateConnection()">Update</a-menu-item>
+                <a-menu-divider />
+                <a-menu-item key="3" @click="closeConnection()">Close</a-menu-item>
+              </a-menu>
+            </a-dropdown>
+          </div>
+        </div>
+      </a-card>
+    </a-affix>
+    <!-- Message Box -->
+    <a-card>
+      <a-row>
+        <a-col :span="1">
+          <a-avatar :src="getLoginUser().avatar">{{getLoginUser("initial")}}</a-avatar>
+        </a-col>
+        <a-col :span="22" :offset="1">
+          <a-textarea
+            v-model="post_message"
+            @keypress.enter="sendMessage"
+            placeholder="Post a message"
+            :rows="3"
+          />
+          <a-row type="flex" justify="space-between" style="padding: 10px;">
+            <a-col :span="3">
+              <a-upload :multiple="true" :showUploadList="false" :beforeUpload="attachFile">
+                <a-button type="default" :loading="loading_submit" size="small">Photo / Video</a-button>
+              </a-upload>
+            </a-col>
+            <a-col :span="4">
+              <a-button
+                @click="sendMessage"
+                :loading="loading_submit"
+                block
+                type="primary"
+                size="small"
+              >SEND</a-button>
+            </a-col>
+          </a-row>
+        </a-col>
+        <a-col :span="24">
+          <template v-for="(img, index) in post_file_images">
+            <a-tooltip :key="index">
+              <span slot="title">{{img.name}}</span>
+              <div class="preview-uploads-card">
+                <a-icon
+                  class="preview-uploads-card-close"
+                  type="close-circle"
+                  @click="removeFileList(index)"
+                ></a-icon>
+                <img :src="img.imageUrl" width="50" />
+                <div
+                  :key="`preview${index}`"
+                  class="preview-uploads-card-view"
+                  @click="preview_file_list=img"
+                >
+                  <span style="line-height: 4;">View</span>
+                </div>
+              </div>
+            </a-tooltip>
+          </template>
+          <a-modal
+            :width="300"
+            :visible="preview_file_list.imageUrl && preview_file_list.imageUrl !== ''"
+            title="Preview Image"
+            :footer="null"
+            class="modal-preview-image"
+            @cancel="preview_file_list={}"
+          >
+            <a-tooltip>
+              <span slot="title">{{preview_file_list.name}}</span>
+              <img :src="preview_file_list.imageUrl" :alt="preview_file_list.name" />
+            </a-tooltip>
+          </a-modal>
+        </a-col>
+      </a-row>
+    </a-card>
     <post-section ref="post" class="messages-content" />
     <new-connection />
   </div>
@@ -58,22 +154,26 @@ export default {
   },
   data() {
     return {
-      user: {
-        avatar:
-          "https://www.birthdaymessagesstatus.com/wp-content/uploads/2018/08/Stylish-Attitude-Girl-Images-for-FB-Profile-Pic-300x291.jpg",
-        full_name: "Cheka Khan"
-      },
-      visible: false,
       active_key: -1,
+      post_message: "",
+      loading_submit: false,
       loading: true,
-      fullscreen: false
+      fullscreen: false,
+      show_tabs: false,
+      scrollY_value: 0,
+      post_file_list: [],
+      post_file_images: [],
+      preview_file_list: {}
     };
   },
   watch: {
-    active_key(val) {
-      this.$store.commit("SET_ACTIVE_CONNECTION", val);
+    active_key(key) {
+      this.$store.commit("SET_ACTIVE_CONNECTION", key);
       console.log("this.$refs.post.loadPost() :", this.$refs.post.loadPost());
       this.$refs.post.loadPost();
+    },
+    active_connection(key) {
+      this.active_key = key;
     }
   },
   computed: {
@@ -99,9 +199,13 @@ export default {
       });
 
       return connections;
+    },
+    active_connection() {
+      return this.$store.state.connections.active_connection;
     }
   },
   created() {
+    window.addEventListener("scroll", this.handleScroll);
     this.loading = true;
     this.$store
       .dispatch("GET_CONNECTIONS")
@@ -116,9 +220,99 @@ export default {
         this.loading = false;
       });
   },
+  destroyed() {
+    window.removeEventListener("scroll", this.handleScroll);
+  },
   methods: {
     newConnection() {
       this.$store.dispatch("OPEN_NEW_CONNECTION");
+    },
+    handleScroll(e) {
+      this.show_tabs = this.scrollY_value > window.scrollY;
+      this.scrollY_value = window.scrollY;
+    },
+    updateConnection() {
+      const connection = this.connections.find(v => v._id === this.active_key);
+      this.$store.dispatch("OPEN_CREATE_CONNECTION", connection);
+    },
+    addToFavorites() {
+      this.$store.dispatch("ADD_TO_FAVORITES", {
+        type: 0,
+        parent_id: this.active_key
+      });
+    },
+    removeFromFavorites() {
+      this.$store.dispatch("REMOVE_FROM_FAVORITES", {
+        parent_id: this.active_key
+      });
+    },
+    closeConnection() {
+      const index = this.connections.findIndex(x => x._id === this.active_key);
+      const active_key =
+        this.active_key === this.active_key
+          ? index !== -1
+            ? this.connections[index + 1]
+              ? this.connections[index + 1]._id
+              : this.connections[index - 1]
+              ? this.connections[index - 1]._id
+              : -1
+            : -1
+          : this.active_key;
+      this.$store.commit("ADD_RECENTS", {
+        type: 0,
+        parent_id: this.active_key
+      });
+      this.$store.commit("OPEN_CONNECTION", {
+        parent_id: this.active_key,
+        show: false
+      });
+      this.active_key = active_key;
+    },
+    sendMessage() {
+      this.loading_submit = true;
+      if (this.post_message || this.post_file_list.length) {
+        // if attachment is not null
+        var form_data = null;
+        if (this.post_file_list.length) {
+          form_data = new FormData();
+          this.post_file_list.forEach(file => {
+            form_data.append("files", file, file.name);
+          });
+        }
+        this.$store
+          .dispatch("POST_MESSAGE", {
+            form_data,
+            message: this.post_message
+          })
+          .then(result => {
+            this.post_message = "";
+            this.post_file_list = [];
+            this.post_file_images = [];
+            this.loading_submit = false;
+          })
+          .catch(err => {
+            console.error(err);
+            this.loading_submit = false;
+          });
+      }
+    },
+    attachFile(file) {
+      this.post_file_list = [...this.post_file_list, file];
+      this.getBase64(file, imageUrl => {
+        this.post_file_images = [
+          ...this.post_file_images,
+          { imageUrl, name: file.name }
+        ];
+      });
+    },
+    removeFileList(i) {
+      this.post_file_list.splice(i, 1);
+      this.post_file_images.splice(i, 1);
+    },
+    getBase64(img, callback) {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => callback(reader.result));
+      reader.readAsDataURL(img);
     }
   }
 };

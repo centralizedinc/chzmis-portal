@@ -1,10 +1,5 @@
 <template>
   <div>
-    <a-card>
-      <div slot="title">
-        {{getConnectionById(active_connection).name}}
-      </div>
-    </a-card>
     <div
       v-infinite-scroll="handleLoadingPost"
       :infinite-scroll-disabled="active_connection_posts.busy"

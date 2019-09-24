@@ -21,6 +21,17 @@ const mutations = {
     SET_CONNECTION_POSTS(state, data) {
         state.connection_posts.push(data)
     },
+    ADD_POSTED_MESSAGE(state, data) {
+        const { key, details } = data ? data : {};
+        if (key && details) {
+            const connection_index = state.connection_posts.findIndex(v => v.key === key);
+            state.connection_posts[connection_index].post = [...state.connection_posts[connection_index].post, details];
+            // sort
+            state.connection_posts[connection_index].post.sort(
+                (a, b) => new Date(b.date_created) - new Date(a.date_created)
+            );
+        }
+    },
     ADD_CONNECTION_POST(state, data) {
         const connection_index = state.connection_posts.findIndex(v => v.key === data.key);
         console.log('data.post.length :', data.post.length);
@@ -33,7 +44,7 @@ const mutations = {
     },
     REMOVE_CONNECTION_POST(state, key) {
         const index = state.connection_posts.findIndex(v => v.key === key);
-        state.connection_posts.splice(index, 1);
+        if (index !== -1) state.connection_posts.splice(index, 1);
     },
     SET_CHANNEL_POSTS(state, data) {
         state.channel_posts = data
@@ -57,38 +68,52 @@ const mutations = {
 const actions = {
     POST_MESSAGE(context, data) {
         return new Promise((resolve, reject) => {
-            // Initialize msg_data
-            var msg_data = {}
+            const { form_data, message } = data;
+            if (message || form_data) {
+                // Initialize msg_data
+                const active_connection = context.rootState.connections.active_connection;
+                const is_public = active_connection === -1;
+                var msg_data = {
+                    message,
+                    is_public,
+                    parent_id: !is_public ? active_connection : ''
+                },
+                    upload_data = {
+                        form_data,
+                        is_public,
+                        connection_id: !is_public ? active_connection :
+                            context.rootState.accounts.account.account_id
+                    }
 
-            // check if the uploaded files is public or not
-            if (!data.upload_data.connection_id) {
-                data.upload_data.connection_id = context.rootState.accounts.account.account_id;
-                data.upload_data.is_public = true;
-            }
+                // Upload files
+                new UploadAPI(context.rootState.accounts.token)
+                    .uploadConnection(upload_data)
+                    .then((result) => {
+                        console.log('result.data.model :', result.data.model);
+                        if (result) msg_data.uploads = result.data.model;
 
-            // Upload files
-            new UploadAPI(context.rootState.accounts.token)
-                .uploadConnection(data.upload_data)
-                .then((result) => {
-                    if (result) data.post.uploads = result.data.model;
+                        // Save Post Message
+                        return new PostAPI(context.rootState.accounts.token)
+                            .postMessage(msg_data)
+                    })
+                    .then((result) => {
+                        //     msg_data = result.data.model;
 
-                    // Save Post Message
-                    return new PostAPI(context.rootState.accounts.token)
-                        .postMessage(data.post)
-                })
-                .then((result) => {
-                    msg_data = result.data.model;
-
-                    // Get the latest posts
-                    if (data.post.is_public) return context.dispatch("GET_PUBLIC_POSTS", { refresh: true });
-                    else return context.dispatch("GET_CONNECTION_POSTS", { refresh: true });
-                })
-                .then((result) => {
-                    resolve(msg_data)
-                })
-                .catch((err) => {
-                    reject(err)
-                });
+                        //     // Get the latest posts
+                        //     if (data.post.is_public) return context.dispatch("GET_PUBLIC_POSTS", { refresh: true });
+                        //     else return context.dispatch("GET_CONNECTION_POSTS", { refresh: true });
+                        // })
+                        // .then((result) => {
+                        context.commit("ADD_POSTED_MESSAGE", {
+                            key: active_connection,
+                            details: result.data.model
+                        })
+                        resolve(result.data.model)
+                    })
+                    .catch((err) => {
+                        reject(err)
+                    });
+            } else resolve()
         })
     },
     GET_PUBLIC_POSTS(context, data) {
