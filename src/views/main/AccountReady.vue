@@ -4,7 +4,10 @@
       <a-col :span="24">
         <h1 style="text-align: center" :user="user">{{user}},</h1>
         <h1 style="text-align: center">your account is ready!</h1>
-        <h3 style="text-align: center">Head on to your timeline to start the Chzmis! Happy Chzmisan!</h3>
+        <h3 style="text-align: center">
+          Head on to your timeline to start the Chzmis!
+          <br />Happy Chzmisan!
+        </h3>
       </a-col>
     </a-row>
     <template slot="footer">
