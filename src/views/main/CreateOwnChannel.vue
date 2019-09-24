@@ -38,7 +38,7 @@
                 <p class="ant-upload-drag-icon">
                   <a-icon type="upload" />
                 </p>
-                <p class="ant-upload-text">Drag and drop a file you want to upload</p>
+                <p class="ant-upload-text">Drag and drop a video you want to upload</p>
                 <p class="ant-upload-hint">
                   By submitting your videos to Chzmis, you acknowledge that you agree to the Terms of Service and Community Guidelines.
                   <br />Please be sure not to violate others' copyright or privacy rights.
