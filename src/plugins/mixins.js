@@ -34,6 +34,10 @@ export default {
                         }
                     return user;
                 },
+                checkFavorites(parent_id) {
+                    const index = this.getLoginAccount().favorites.findIndex(x => x.parent_id === parent_id);
+                    return index > -1
+                },
                 getUsers(account_id, option) {
                     if (Array.isArray(account_id)) {
                         var users = this.deepCopy(this.$store.state.users.users).find(x => account_id.includes(x.account_id));
@@ -45,11 +49,18 @@ export default {
                     } else {
                         var user = this.deepCopy(this.$store.state.users.users).find(x => x.account_id === account_id);
                         if (option === "fullname")
-                            return user.name ? `${user.name.first} ${user.name.last}` : '';
+                            return user && user.name ? `${user.name.first} ${user.name.last}` : 'User';
                         else if (option === "initial")
-                            return user.name ? user.name.first[0].toUpperCase() : '';
+                            return user && user.name ? user.name.first[0].toUpperCase() : '?';
                         return user || {};
                     }
+                },
+                getConnectionById(id) {
+                    const connections = this.$store.state.connections.connections;
+                    if (connections && connections.length) {
+                        const con = connections.find(v => v._id === id);
+                        return con || {};
+                    } else return {};
                 },
                 deepCopy(obj) {
                     return JSON.parse(JSON.stringify(obj));

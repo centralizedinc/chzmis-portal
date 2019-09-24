@@ -1,11 +1,9 @@
 <template>
   <a-card
-    style="border: 1px solid rgba(0,0,0,.4); width: 216px;"
+    style="width: 90%;" class="border-layout"
     :headStyle="main_layout_head_style"
+    :bodyStyle="{padding: '10px'}"
   >
-    <!-- <div slot="title">
-      <a-icon type="minus" style="float: right; margin-right: 5px;" @click="$store.commit('SHOW_PROFILE', false)" />
-    </div> -->
     <p style="text-align: center">
       <a-avatar
         :size="80"
@@ -92,8 +90,8 @@ export default {
 }
 
 .profile-name {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 </style>

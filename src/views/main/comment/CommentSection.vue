@@ -98,7 +98,6 @@ export default {
   data() {
     return {
       moment,
-      is_public: false,
       loading: false
     };
   },
@@ -108,10 +107,6 @@ export default {
     },
     show_comments: {
       type: Boolean
-    },
-    public: {
-      type: Boolean,
-      default: false
     }
   },
   computed: {
@@ -133,10 +128,12 @@ export default {
         post = this.$store.state.posts.public_post.find(
           x => x._id === this.post
         );
-        this.is_public = true;
-      } else this.is_public = false;
+      }
       if (!post) return 0;
       else return post.show_comment;
+    },
+    is_public() {
+      return this.$store.state.connections.active_connection === -1;
     }
   },
   methods: {
@@ -179,7 +176,7 @@ export default {
       setTimeout(() => {
         this.$store.commit("SHOW_COMMENTS", {
           post_id: this.post,
-          is_public: this.public,
+          is_public: this.is_public,
           load_comment: this.load_comments + 5
         });
         this.loading = false;

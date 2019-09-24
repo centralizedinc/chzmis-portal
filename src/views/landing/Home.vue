@@ -43,10 +43,11 @@
                       <a-input
                         @keypress.enter="login"
                         v-decorator="['password',{ rules: [{ required: true, message: 'Please input your Password!' }] }]"
-                        type="password"
+                        :type="show_password ? 'text' : 'password'"
                         placeholder="Password"
                       >
                         <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
+                        <a-icon slot="suffix" :type="show_password ? 'eye-invisible' : 'eye'" @click="show_password=!show_password" />
                       </a-input>
                       <a-form-item style="padding-top: 10px">
                         <a-button type="primary" :loading="loading" block @click="login">Login</a-button>
@@ -196,24 +197,8 @@ export default {
       form: this.$form.createForm(this),
       modal1Visible: false,
       modal2Visible: false,
-<<<<<<< HEAD
-      values: {
-        email: "",
-        password: "",
-        google_id: "",
-        facebook_id: ""
-      },
-      confirmDirty: false,
-      form: this.$form.createForm(this),
-      rules: {
-        required: v => {
-          return { required: true, message: `${v} is required!` };
-        }
-      },
-      form_data: {}
-=======
-      loading: false
->>>>>>> eb60d6f8e6bd6fc027192349d5778193983707b5
+      loading: false,
+      show_password: false
     };
   },
   created() {

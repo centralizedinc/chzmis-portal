@@ -170,7 +170,6 @@ export default {
       search_user: "",
       loading: false,
       members: [],
-      reload_connection: false,
       form: this.$form.createForm(this),
       loading_avatar: false,
       avatar: {
@@ -235,24 +234,25 @@ export default {
       var _form = this.$form,
         _self = this;
       if (val)
-        if (this.selected_connection) {
-          this.avatar.imageUrl = this.selected_connection.avatar.location;
-          this.members = this.selected_connection.members;
-          this.form = this.$form.createForm(this, {
-            mapPropsToFields() {
-              return {
-                name: _form.createFormField({
-                  value: _self.selected_connection.name
-                }),
-                members_index: _form.createFormField({
-                  value: _self.members.map(x => x.account_id)
-                })
-              };
-            }
-          });
-        } else {
-          this.reset();
-        }
+        console.log("this.selected_connection :", this.selected_connection);
+      if (this.selected_connection) {
+        this.avatar.imageUrl = this.selected_connection.avatar ? this.selected_connection.avatar.location : null;
+        this.members = this.selected_connection.members;
+        this.form = this.$form.createForm(this, {
+          mapPropsToFields() {
+            return {
+              name: _form.createFormField({
+                value: _self.selected_connection.name
+              }),
+              members_index: _form.createFormField({
+                value: _self.members.map(x => x.account_id)
+              })
+            };
+          }
+        });
+      } else {
+        this.reset();
+      }
     }
   },
   methods: {
@@ -263,7 +263,6 @@ export default {
       this.avatar.form_data = null;
       this.search_user = "";
       this.loading = false;
-      this.reload_connection = false;
       var _form = this.$form;
       this.form = this.$form.createForm(this, {
         mapPropsToFields() {
@@ -307,10 +306,6 @@ export default {
       // );
     },
     close() {
-      if (this.reload_connection) {
-        this.$store.dispatch("GET_CONNECTIONS", { refresh: true });
-        this.reload_connection = false;
-      }
       this.reset();
       this.$store.commit("SET_SELECTED_CONNECTION", null);
       this.$store.commit("SHOW_NEW_CONNECTION", false);
@@ -323,7 +318,6 @@ export default {
         .then(result => {
           this.$store.commit("CONNECT", { connection });
           this.loading = false;
-          this.reload_connection = true;
         })
         .catch(err => {
           this.loading = false;
@@ -342,15 +336,23 @@ export default {
             body = { name: connection.name, members: this.members };
           if (this.selected_connection) {
             action = "UPDATE_CONNECTION";
+            console.log(
+              "this.selected_connection._id :",
+              this.selected_connection._id
+            );
             body = {
               id: this.selected_connection._id,
-              connection: { name: connection.name, members: this.members }
+              connection: {
+                name: connection.name,
+                members: this.members,
+                avatar: this.selected_connection.avatar
+              }
             };
           }
+          console.log("this.members :", this.members);
           this.$store
             .dispatch(action, { body, form_data: this.avatar.form_data })
             .then(result => {
-              this.reload_connection = true;
               this.loading = false;
               this.close();
             })
