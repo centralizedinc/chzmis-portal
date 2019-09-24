@@ -1,6 +1,6 @@
 <template>
   <div>
-    <setup-profile v-show="this.show_profile" :form="form"/>
+    <setup-profile v-show="this.show_profile"/>
     <connections style="max-height: 400px; margin-top: 20px;" v-show="this.show_connections_channels"/>
     <channels style="margin-top: 20px;" v-show="this.show_connections_channels"/>
   </div>
@@ -16,18 +16,6 @@ export default {
     return {
       show_profile: null,
       show_connections_channels: null,
-
-      form: {
-        category: "",
-        email: "",
-        avatar: "",
-        name: {
-          first: "",
-          middle: "",
-          last: ""
-        },
-        bday: ""
-      }
     }
   },
   components: {
