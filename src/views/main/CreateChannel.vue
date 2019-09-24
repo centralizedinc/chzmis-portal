@@ -162,6 +162,15 @@
           </div>
         </div>
       </a-col>
+      <a-divider></a-divider>
+      <a-row type="flex" align="middle" :gutter="8">
+        <a-col :span="6">
+          <a-button block type="dashed" @click="continueLater">Continue Later</a-button>
+        </a-col>
+        <a-col :span="18">
+          <a-button block type="primary" @click="next">Next</a-button>
+        </a-col>
+      </a-row>
     </a-row>
   </a-card>
 </template>
@@ -170,7 +179,8 @@
 export default {
   data() {
     return {
-      size: "small"
+      size: "small",
+      visible: false
     };
   },
   computed: {
@@ -182,8 +192,11 @@ export default {
     }
   },
   methods: {
-    onChange(a, b, c) {
-      console.log(a, b, c);
+    showDrawer() {
+      this.visible = true;
+    },
+    onClose() {
+      this.visible = false;
     }
   }
 };
