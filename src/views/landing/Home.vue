@@ -49,7 +49,7 @@
                       <a-form-item style="padding-top: 10px">
                         <a-button type="primary" :loading="loading" block @click="login">Login</a-button>
                         <div>
-                          <a @click="() => setModal1Visible(true)">Forget password?</a>
+                          <a @click="() => setModal1Visible(true)">Forgot password?</a>
                           <br>
                           <a
                             @click="() => modal2Visible = true"
@@ -93,7 +93,7 @@
                       </a-form-item>
                     </a-form-item>
                   </a-form>
-                   <!-- Forget Password -->
+                   <!-- Forgot Password -->
                   <a-modal
                     title="Forgot your password?"
                     centered
