@@ -1,152 +1,141 @@
 <template>
   <div>
-    <a-card>
-      <div slot="title">
-        {{getConnectionById(active_connection).name}}
-      </div>
-    </a-card>
     <div
+      class="post-container"
       v-infinite-scroll="handleLoadingPost"
-      :infinite-scroll-disabled="active_connection_posts.busy"
+      :infinite-scroll-disabled="busy && !reload_new_post"
       :infinite-scroll-distance="5"
     >
-      <a-card v-for="(item, index) in active_connection_posts.post" :key="index" 
-        :bodyStyle="{ padding: '3vh' }"
-        style="margin-bottom: 1vh">
-        <a-comment style="margin-bottom: 5px;">
-          <template slot="actions">
-            <span>
-              <a-tooltip title="Like">
-                <a-icon
-                  type="like"
-                  :theme="isLike(item.likes) ? 'filled' : 'outlined'"
-                  @click="like(item, 0)"
-                />
-              </a-tooltip>
-              <span style="padding-left: '8px';cursor: 'auto'">{{item.likes.length}}</span>
-            </span>
-            <span>
-              <a-tooltip title="Dislike">
-                <a-icon
-                  type="dislike"
-                  :theme="isDislike(item.dislikes) ? 'filled' : 'outlined'"
-                  @click="dislike(item, 0)"
-                />
-              </a-tooltip>
-              <span style="padding-left: '8px';cursor: 'auto'">{{item.dislikes.length}}</span>
-            </span>
-            <span>Comment</span>
-            <span @click="showComments(item._id)" v-if="item.show_comment<=0">
-              <a-icon type="double-right" />Show Comments
-            </span>
-            <span @click="hideComments(item._id)" v-else>
-              <a-icon type="double-left" />Hide Comments
-            </span>
-          </template>
+      <a-comment v-for="(item, index) in posts" :key="index" style="margin-bottom: 5px;">
+        <template slot="actions">
+          <span>
+            <a-tooltip title="Like">
+              <a-icon
+                type="like"
+                :theme="isLike(item.likes) ? 'filled' : 'outlined'"
+                @click="like(item, 0)"
+              />
+            </a-tooltip>
+            <span style="padding-left: '8px';cursor: 'auto'">{{item.likes.length}}</span>
+          </span>
+          <span>
+            <a-tooltip title="Dislike">
+              <a-icon
+                type="dislike"
+                :theme="isDislike(item.dislikes) ? 'filled' : 'outlined'"
+                @click="dislike(item, 0)"
+              />
+            </a-tooltip>
+            <span style="padding-left: '8px';cursor: 'auto'">{{item.dislikes.length}}</span>
+          </span>
+          <span>Comment</span>
+          <span @click="showComments(item._id)" v-if="item.show_comment<=0">
+            <a-icon type="double-right" />Show Comments
+          </span>
+          <span @click="hideComments(item._id)" v-else>
+            <a-icon type="double-left" />Hide Comments
+          </span>
+        </template>
 
-          <a slot="author">{{getAuthorName(item.author).first}} {{getAuthorName(item.author).last}}</a>
+        <a slot="author">{{getAuthorName(item.author).first}} {{getAuthorName(item.author).last}}</a>
 
-          <a-avatar
-            slot="avatar"
-            :src="getUsers(item.author).avatar"
-          >{{getUsers(item.author, "initial")}}</a-avatar>
+        <a-avatar
+          slot="avatar"
+          :src="getUsers(item.author).avatar"
+        >{{getUsers(item.author, "initial")}}</a-avatar>
 
-          <div slot="content">
-            <p>{{item.message}}</p>
-            <a-row
-              v-if="item.uploads.length"
-              type="flex"
-              align="middle"
-              justify="space-around"
-              class="upload-items"
-            >
-              <a-col
-                v-for="index in (item.uploads.length <= 4 ? item.uploads.length : 3)"
-                :key="index"
-                :span="5"
-              >
-                <img
-                  :src="item.uploads[index - 1].location"
-                  :alt="item.uploads[index - 1].location"
-                  width="100"
-                  @click="viewMoreAttachment(true, item.author, item.uploads, index-1)"
-                />
-              </a-col>
-              <a-col :span="5" v-if="item.uploads.length > 4" class="post-more-attachments">
-                <img
-                  :src="item.uploads[3].location"
-                  :alt="item.uploads[3].location"
-                  width="100"
-                  @click="viewMoreAttachment(true, item.author, item.uploads, 3)"
-                />
-                <div
-                  class="more-bg"
-                  @click="viewMoreAttachment(true, item.author, item.uploads, 3)"
-                ></div>
-                <span
-                  class="more-label"
-                  @click="viewMoreAttachment(true, item.author, item.uploads, 3)"
-                >{{`+${item.uploads.length - 3}`}}</span>
-              </a-col>
-            </a-row>
-          </div>
-
-          <a-tooltip
-            v-if="item.date_created"
-            slot="datetime"
-            :title="formatDate(item.date_created)"
+        <div slot="content">
+          <p>{{item.message}}</p>
+          <a-row
+            v-if="item.uploads.length"
+            type="flex"
+            align="middle"
+            justify="space-around"
+            class="upload-items"
           >
-            <span>{{moment(item.date_created).fromNow()}}</span>
-          </a-tooltip>
-          <!-- <a href="#" style="text-decoration: underline">Show Comments</a> -->
-          <!-- <comment-section
-            :show_comments="show_comments"
-            :post="item._id"
-            @preview="more_attachments=$event"
-          ></comment-section>-->
-
-          <div @click="setActiveComment(item._id)">
-            <template v-for="(img, index) in getPreviewImages(item._id)">
-              <a-tooltip :key="index">
-                <span slot="title">{{img.name}}</span>
-                <div class="preview-uploads-card">
-                  <a-icon
-                    class="preview-uploads-card-close"
-                    type="close-circle"
-                    @click="removeFileList(item._id, index)"
-                  ></a-icon>
-                  <img :src="img.imageUrl" width="50" />
-                  <div
-                    :key="`preview${index}`"
-                    class="preview-uploads-card-view"
-                    @click="preview_file_list=img"
-                  >
-                    <span style="line-height: 4;">View</span>
-                  </div>
-                </div>
-              </a-tooltip>
-            </template>
-            <a-input placeholder="Write a reply" @keydown.enter="sendReply($event, item._id)">
-              <a-upload
-                slot="addonAfter"
-                :multiple="true"
-                :showUploadList="false"
-                :beforeUpload="attachFile"
-                class="comment-upload-icon"
-              >
-                <a-icon type="upload" />
-              </a-upload>
-            </a-input>
-          </div>
-        </a-comment>
-      </a-card>
-      <a-card :bodyStyle="{ padding: '1vh' }">
-        <a-skeleton style="padding: 20px" :loading="loading" active avatar :paragraph="{rows: 3}" />
-        <div v-if="!loading && active_connection_posts.busy" class="done-loading-post">
-          Done loading. Try to
-          <a href="#" @click="loadPost(true)">refresh</a> for new updates.
+            <a-col
+              v-for="index in (item.uploads.length <= 4 ? item.uploads.length : 3)"
+              :key="index"
+              :span="5"
+            >
+              <img
+                :src="item.uploads[index - 1].location"
+                :alt="item.uploads[index - 1].location"
+                width="100"
+                @click="viewMoreAttachment(true, item.author, item.uploads, index-1)"
+              />
+            </a-col>
+            <a-col :span="5" v-if="item.uploads.length > 4" class="post-more-attachments">
+              <img
+                :src="item.uploads[3].location"
+                :alt="item.uploads[3].location"
+                width="100"
+                @click="viewMoreAttachment(true, item.author, item.uploads, 3)"
+              />
+              <div class="more-bg" @click="viewMoreAttachment(true, item.author, item.uploads, 3)"></div>
+              <span
+                class="more-label"
+                @click="viewMoreAttachment(true, item.author, item.uploads, 3)"
+              >{{`+${item.uploads.length - 3}`}}</span>
+            </a-col>
+          </a-row>
         </div>
-      </a-card>
+
+        <a-tooltip
+          v-if="item.date_created"
+          slot="datetime"
+          :title="formatDate(item.date_created)"
+        >
+          <span>{{moment(item.date_created).fromNow()}}</span>
+        </a-tooltip>
+        <!-- <a href="#" style="text-decoration: underline">Show Comments</a> -->
+        <comment-section
+          :show_comments="show_comments"
+          :post="item._id"
+          @preview="more_attachments=$event"
+        ></comment-section>
+
+        <div @click="setActiveComment(item._id)">
+          <template v-for="(img, index) in getPreviewImages(item._id)">
+            <a-tooltip :key="index">
+              <span slot="title">{{img.name}}</span>
+              <div class="preview-uploads-card">
+                <a-icon
+                  class="preview-uploads-card-close"
+                  type="close-circle"
+                  @click="removeFileList(item._id, index)"
+                ></a-icon>
+                <img :src="img.imageUrl" width="50" />
+                <div
+                  :key="`preview${index}`"
+                  class="preview-uploads-card-view"
+                  @click="preview_file_list=img"
+                >
+                  <span style="line-height: 4;">View</span>
+                </div>
+              </div>
+            </a-tooltip>
+          </template>
+          <a-input placeholder="Write a reply" @keydown.enter="sendReply($event, item._id)">
+            <a-upload
+              slot="addonAfter"
+              :multiple="true"
+              :showUploadList="false"
+              :beforeUpload="attachFile"
+              class="comment-upload-icon"
+            >
+              <a-icon type="upload" />
+            </a-upload>
+          </a-input>
+        </div>
+      </a-comment>
+      <div v-if="!loading && (busy || !posts.length)" class="done-loading-post">
+        Done loading. Try to
+        <a href="#" @click="reloadPost">refresh</a> for new updates.
+      </div>
+      <div v-if="loading_reply || (loading && !busy)" class="demo-loading-container">
+        <a-spin />
+      </div>
     </div>
     <a-modal
       :width="300"
@@ -209,7 +198,11 @@ export default {
   data() {
     return {
       moment,
+      reply_message: "",
+      busy: false,
       loading: false,
+      load_count: 5,
+      show_comments: false,
       more_attachments: {
         show: false,
         author: "",
@@ -224,17 +217,25 @@ export default {
     };
   },
   computed: {
-    active_connection() {
-      return this.$store.state.connections.active_connection;
+    is_public() {
+      console.log('this.$store.state.connections.active_connection :', this.$store.state.connections.active_connection);
+      return this.$store.state.connections.active_connection === -1;
     },
-    active_connection_posts() {
-      const connection_posts = this.deepCopy(
-        this.$store.state.posts.connection_posts
+    post_data() {
+      var posts = [];
+      console.log('PostSection post_data: ', this.is_public);
+      if (this.is_public)
+        posts = this.deepCopy(this.$store.state.posts.public_post);
+      else posts = this.deepCopy(this.$store.state.posts.connection_posts);
+      return posts;
+    },
+    posts() {
+      this.post_data.sort(
+        (a, b) => new Date(b.date_created) - new Date(a.date_created)
       );
-      const connection = connection_posts.find(
-        c => c.key === this.active_connection
-      );
-      return connection || { busy: true };
+      var _posts = this.post_data.slice(0, this.load_count);
+      console.log('PostSection _posts :', _posts);
+      return _posts;
     }
   },
   methods: {
@@ -298,22 +299,45 @@ export default {
         });
     },
     handleLoadingPost() {
-      if (!this.active_connection_posts.busy) {
-        this.loadPost(false, true);
+      if (!this.busy) {
+        this.loading = true;
+        setTimeout(() => {
+          this.load_count += 5;
+          if (this.load_count >= this.post_data.length) {
+            this.load_count = this.post_data.length + 10;
+            this.busy = true;
+          }
+          this.loading = false;
+        }, 1000);
       }
     },
-    loadPost(refresh, load_more) {
+    reloadPost() {
+      this.busy = false;
       this.loading = true;
-      this.$store
-        .dispatch("GET_CONNECTION_POSTS", { refresh, load_more })
-        .then(result => {
-          console.log("done loading connection post");
-          this.loading = false;
-        })
-        .catch(err => {
-          console.log("reload connection err :", err);
-          this.loading = false;
-        });
+      this.load_count = 0;
+      console.log('this.is_public :', this.is_public);
+      console.log('2this.$store.state.connections.active_connection :', this.$store.state.connections.active_connection);
+      if (this.is_public) {
+        this.$store
+          .dispatch("GET_PUBLIC_POSTS", { refresh: true })
+          .then(result => {
+            this.loading = false;
+          })
+          .catch(err => {
+            console.log("reload connection err :", err);
+            this.loading = false;
+          });
+      } else {
+        this.$store
+          .dispatch("GET_CONNECTION_POSTS", { refresh: true })
+          .then(result => {
+            this.loading = false;
+          })
+          .catch(err => {
+            console.log("reload connection err :", err);
+            this.loading = false;
+          });
+      }
     },
     showComments(post_id) {
       this.show_comments = true;
@@ -399,9 +423,6 @@ export default {
       reader.addEventListener("load", () => callback(reader.result));
       reader.readAsDataURL(img);
     }
-  },
-  created() {
-    this.loadPost();
   }
 };
 </script>

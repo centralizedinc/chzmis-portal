@@ -1,11 +1,8 @@
 <template>
   <a-card
     title="Channels"
-    :headStyle="main_layout_head_style"
-    :bodyStyle="{'max-height': '350px', padding: '10px'}"
-    style="border-radius: 0px 0px 25px 25px;"
   >
-    <div slot="title" class="title-head-style">
+    <!-- <div slot="title" class="title-head-style">
       <a-icon type="close" @click="$store.commit('SHOW_PROFILE', false)" />
     </div>
     <a-row type="flex" :gutter="18">
@@ -15,7 +12,6 @@
             <template slot="title">
               <span>New Post</span>
             </template>
-            <!-- <a-avatar :size="50" :src="channel.avatar" style="cursor: pointer"></a-avatar> -->
             <a-icon type="plus-circle" class="channel-item channel-add-item"></a-icon>
           </a-tooltip>
         </p>
@@ -37,9 +33,6 @@
         :span="18"
         style="border-left: 1px solid #eee;border-right: 1px solid #eee;min-height: 200px;"
       >
-        <!-- <div style="width: 320px; height: 240px;">
-          
-        </div>-->
         <a-row type="flex" :gutter="12">
           <a-col :span="24" v-if="selected_video">
             <span class="selected-video-title">{{selected_video.title}}</span>
@@ -81,7 +74,7 @@
           </a-tooltip>
         </p>
       </a-col>
-    </a-row>
+    </a-row> -->
   </a-card>
 </template>
 
@@ -136,10 +129,6 @@ export default {
 </script>
 
 <style>
-.ant-card-head-title {
-  padding: 0px !important;
-}
-
 .channel-add-item {
   font-size: 50px;
   border-radius: 50%;

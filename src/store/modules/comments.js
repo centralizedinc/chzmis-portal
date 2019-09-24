@@ -47,7 +47,8 @@ const actions = {
                 };
 
                 // Check if the uploaded file in connection is public or not
-            if (context.rootState.connections.active_connection) {
+            if (context.rootState.connections.active_connection &&
+                context.rootState.connections.active_connection !== -1) {
                 upload_data.connection_id = context.rootState.connections.active_connection
             } else {
                 upload_data.is_public = true;

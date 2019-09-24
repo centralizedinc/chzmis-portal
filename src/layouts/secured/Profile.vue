@@ -1,5 +1,7 @@
 <template>
-  <a-card class="profile-style" :headStyle="main_layout_head_style">
+  <a-card class="profile-style" 
+    :headStyle="main_layout_head_style"
+    :bodyStyle="{padding: '10px'}">
     <!-- <div slot="title">
       <a-icon type="minus" style="float: right; margin-right: 5px;" @click="$store.commit('SHOW_PROFILE', false)" />
     </div>-->
@@ -90,8 +92,9 @@ export default {
 <style>
 .profile-style {
   /* border: 1px solid rgba(0,0,0,.4); width: 216px; */
-  width: 216px;
-  border-radius: 25px !important;
+  /* width: 216px;
+  border-radius: 25px !important; */
+  margin-right: 3vh !important;
   box-shadow: 0px 0px 10px 2px #88888847;
   background-image: linear-gradient(
     to bottom,
