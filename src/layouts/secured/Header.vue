@@ -11,10 +11,10 @@
     <a-col :md="{ span: 2, offset: 1}" :xs="0">
       <a-dropdown placement="bottomRight">
         <a-menu slot="overlay" @click="handleAccMenuClick">
-          <a-menu-item key="1" @click="showModal">
+          <a-menu-item key="1" @click="showModalAccounts">
             <a-icon type="user" />Account
           </a-menu-item>
-          <a-menu-item key="2">
+          <a-menu-item key="2" @click="showModalSettings">
             <a-icon type="user" />Settings
           </a-menu-item>
           <a-menu-item key="3">
@@ -32,14 +32,15 @@
       </a-dropdown>
     </a-col>
     <div>
-      <a-modal v-model="visible" title="My Account" onOk="handleOk">
+      <a-modal class="account-modal" v-model="visible" title="My Account" onOk="handleOk">
         <template slot="footer">
           <a-button key="back" @click="handleCancel">Return</a-button>
-          <a-button key="submit" type="primary" :loading="loading" @click="handleOk">Submit</a-button>
+          <a-button key="submit
+          " type="primary" :loading="loading" @click="handleOk">Submit</a-button>
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
           <p style="text-align: center">
-            <a-form :form="form" @submit="handleSubmit">
+            <a-form :form="form" @submit="handleSubmit" class="custom-textarea">
               <a-form-item class="align-items-middle">
                 <a-upload
                   listType="picture-card"
@@ -48,7 +49,7 @@
                   :beforeUpload="uploadAvatar"
                   @change="handleChangeAvatar"
                 >
-                  <img v-if="avatar.imageUrl" :src="avatar.imageUrl" :alt="avatar.imageUrl" />
+                  <img v-if="avatar" :src="avatar" :alt="avatar" />
                   <div v-else>
                     <a-icon v-if="loading_avatar" type="loading" />
                     <div class="ant-upload-text" v-else>Upload Avatar</div>
@@ -58,7 +59,7 @@
               <a-form-item v-bind="formItemLayout" label="Fullname">
                 <a-input
                   v-decorator="[
-          'name.first',
+          'name',
           {
             rules: [{ required: true, message: 'Please input your fullname', whitespace: true }]
           }
@@ -114,6 +115,61 @@
         </a-card>
       </a-modal>
     </div>
+    <div>
+      <a-modal v-model="visibleSettings" title="Change Password" onOk="handleOk">
+        <template slot="footer">
+                    <a-button key="Change Password" type="primary" :loading="loading" @click="handleOk">Change Password</a-button>
+        </template>
+        <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
+          <p style="text align-center">
+            <a-form :form="form" @submit="handleSubmit">        
+            
+              <a-form-item v-bind="formItemLayout" label="Current password">
+                <a-input
+                  v-decorator="[
+          'current_password',
+          { 
+            rules: [{ required: true, message: 'Please input your old password!', whitespace: true }]
+          }       
+        ]"
+                 />
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="New Password">
+                <a-input
+                  v-decorator="[
+          'password',
+          {
+            rules: [{
+              required: true, message: 'Please input your new password!',
+            }, {
+              validator: validateToNextPassword,
+            }],
+          }
+        ]"
+                  type="password"
+                />
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="Confirm Password">
+                <a-input
+                  v-decorator="[
+          'confirm',
+          {
+            rules: [{
+              required: true, message: 'Please confirm your password!',
+            }, {
+              validator: compareToFirstPassword,
+            }],
+          }
+        ]"
+                  type="password"
+                  @blur="handleConfirmBlur"
+                />
+              </a-form-item>
+            </a-form>
+          </p>
+        </a-card>
+      </a-modal>
+    </div>
   </a-row>
 </template>
 
@@ -127,6 +183,7 @@ export default {
       name: "",
       loading: false,
       visible: false,
+      visibleSettings: false,
       user: {
         avatar:
           "https://www.birthdaymessagesstatus.com/wp-content/uploads/2018/08/Stylish-Attitude-Girl-Images-for-FB-Profile-Pic-300x291.jpg",
@@ -157,10 +214,11 @@ export default {
       },
       form: this.$form.createForm(this),
       loading_avatar: false,
-      avatar: {
-        imageUrl: "",
-        form_data: null
-      }
+      // avatar: {
+      //   imageUrl: "",
+      //   form_data: null
+      // }
+      avatar: null
     };
   },
   beforeCreate() {
@@ -168,14 +226,15 @@ export default {
   },
   created() {
     this.profile();
+    this.avatar = this.$store.state.accounts.user.avatar;
   },
   computed: {
     user_details() {
-      console.log('user details :', this.$store.state.accounts.user);
+      console.log("user details :", this.$store.state.accounts.user);
       return this.$store.state.accounts.user;
     },
     account_details() {
-      console.log('account details :', this.$store.state.accounts.account);
+      console.log("account details :", this.$store.state.accounts.account);
       return this.$store.state.accounts.account;
     }
   },
@@ -216,14 +275,8 @@ export default {
       });
     },
     init() {
-      console.log(
-        "accounts details :",
-        this.$store.state.accounts.account
-      );
-      console.log(
-        "users details :",
-        this.$store.state.accounts.user
-      );
+      console.log("accounts details :", this.$store.state.accounts.account);
+      console.log("users details :", this.$store.state.accounts.user);
     },
     submit(e) {
       this.loading = true;
@@ -240,7 +293,7 @@ export default {
             };
           }
           this.$store
-            .dispatch(action, { body, form_data: this.avatar.form_data })
+            .dispatch(action, { body, form_data: this.avatar })
             .then(result => {
               this.reload_connection = true;
               this.loading = false;
@@ -259,19 +312,24 @@ export default {
     onChange(date, dateString) {
       console.log(date, dateString);
     },
-    showModal() {
+    showModalAccounts() {
       this.visible = true;
+    },
+    showModalSettings(){
+      this.visibleSettings = true
     },
     handleOk(e) {
       this.loading = true;
       setTimeout(() => {
         this.visible = false;
+        this.visibleSettings = false;
         this.loading = false;
       }, 500);
       this.$message.success("Profile Update Successfull");
     },
     handleCancel(e) {
       this.visible = false;
+      this.visibleSettings = false
     },
     handleAccMenuClick(e) {
       console.log("key :", e);
@@ -325,11 +383,11 @@ export default {
       this.autoCompleteResult = autoCompleteResult;
     },
     uploadAvatar(file) {
-      var form_data = new FormData();
-      form_data.append("avatar", file, file.name);
-      this.avatar.form_data = form_data;
-      this.getBase64(file, imageUrl => {
-        this.avatar.imageUrl = imageUrl;
+      var avatar = new FormData();
+      avatar.append("avatar", file, file.name);
+      this.avatar = avatar;
+      this.getBase64(file, avatar => {
+        this.avatar = avatar;
         this.loading_avatar = false;
       });
     }
@@ -361,11 +419,15 @@ export default {
   width: 110px;
 }
 
-.ant-modal-header {
+.account-modal .ant-modal-header {
   padding: 16px 24px;
   border-radius: 4px 4px 0 0;
   background: #40a9ff !important;
   color: #1890ff !important;
   border-bottom: 1px solid #1890ff !important;
+}
+
+.custom-textarea .ant-input {
+  height: 10vh !important;
 }
 </style>

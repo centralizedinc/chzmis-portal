@@ -15,15 +15,13 @@
               <a-card
                 style="background: transparent !important ; border: none !important ; padding-top: 80px !important"
               >
-                <img alt="logo" src="../../assets/Chzmis.png" slot="cover" />
+                <img alt="logo" src="../../assets/Chzmis.png" slot="cover">
               </a-card>
             </a-col>
-
             <!-- RIGHT -->
             <div class="center">
               <span>Login</span>
             </div>
-
             <a-col :span="12" style="padding-top: 10px">
               <a-row type="flex" align="middle">
                 <a-col :span="24">
@@ -35,7 +33,7 @@
                         v-decorator="['email', { rules: [{ required: true, message: 'Please input your username!' }] }]"
                         placeholder="Username or Email Address"
                       >
-                        <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
+                        <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)"/>
                       </a-input>
                     </a-form-item>
                     <!-- password -->
@@ -46,12 +44,13 @@
                         type="password"
                         placeholder="Password"
                       >
-                        <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
+                        <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)"/>
                       </a-input>
                       <a-form-item style="padding-top: 10px">
                         <a-button type="primary" :loading="loading" block @click="login">Login</a-button>
-
                         <div>
+                          <a @click="() => setModal1Visible(true)">Forget password?</a>
+                          <br>
                           <a
                             @click="() => modal2Visible = true"
                             :disabled="loading"
@@ -71,7 +70,7 @@
                                 block
                                 style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
                               >
-                                <a-icon type="facebook" theme="filled" />
+                                <a-icon type="facebook" theme="filled"/>
                               </a-button>
                             </a-form-item>
                           </a-col>
@@ -86,7 +85,7 @@
                                 type="primary"
                                 block
                               >
-                                <a-icon type="google-plus" />
+                                <a-icon type="google-plus"/>
                               </a-button>
                             </a-form-item>
                           </a-col>
@@ -94,7 +93,38 @@
                       </a-form-item>
                     </a-form-item>
                   </a-form>
-
+                   <!-- Forget Password -->
+                  <a-modal
+                    title="Forgot your password?"
+                    centered
+                    v-model="modal1Visible"
+                    @ok="() => modal1Visible = false"
+                    :visible="modal1Visible"
+                    @cancel="() => setModal1Visible(false)"
+                  >
+                  
+                    <!-- content -->
+                    <a-form>
+                      <a-row type="flex" align="right" :gutter="12">
+                        <!-- email -->
+                        <a-col :span="24">
+                          <a-form-item>
+                            <a-input
+                           
+                              placeholder="Please input your email address"
+                              v-decorator="['email',{rules: [{ required: true, message: 'Email Address is required!' }],}]"
+                            />
+                          </a-form-item>
+                        </a-col>
+                        <!-- password -->
+                        <a-col :span="24">
+                          
+                          
+                          
+                        </a-col>
+                      </a-row>
+                    </a-form>
+                  </a-modal>
                   <!-- Sign up -->
                   <a-modal
                     title="Signup"
@@ -135,15 +165,13 @@
                             />
                           </a-form-item>
                         </a-col>
-
                         <a-button
                           @click="localSignUp"
                           type="primary"
                           block
                           style="font-size: 18px ; background-color: #3b5998; border-co`lor: #3b5998"
-                        >
-                          Signup
-                          <a-icon type="primary" theme="filled" />
+                        >Signup
+                          <a-icon type="primary" theme="filled"/>
                         </a-button>
                       </a-row>
                     </a-form>
@@ -156,10 +184,9 @@
                           block
                           style="font-size: 18px ; background-color: #3b5998; border-color: #3b5998"
                         >
-                          <a-icon type="facebook" theme="filled" />
+                          <a-icon type="facebook" theme="filled"/>
                         </a-button>
                       </a-col>
-
                       <a-col :span="12">
                         <a-button
                           @click="googleSignUp"
@@ -167,7 +194,7 @@
                           type="primary"
                           block
                         >
-                          <a-icon type="google-plus" />
+                          <a-icon type="google-plus"/>
                         </a-button>
                       </a-col>
                     </a-row>

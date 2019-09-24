@@ -120,6 +120,7 @@
 
 // slider
 
+
 // * {
 //   margin: 0;
 //   padding: 0;
@@ -134,7 +135,7 @@
   flex-wrap: no-wrap;
   justify-content: center;
   align-items: center;
-  // height: 100vh;
+  height: 30vh;
   //width: 100vh;
 
   overflow: hidden;
@@ -153,7 +154,7 @@
     opacity: 1;
   }
 
-  .item:hover {}
+  // .item:hover {}
 
   .body-item {
     display: flex;
