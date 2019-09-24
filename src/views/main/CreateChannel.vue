@@ -165,7 +165,7 @@
       <a-divider></a-divider>
       <a-row type="flex" align="middle" :gutter="8">
         <a-col :span="6">
-          <a-button block type="dashed" @click="continueLater">Continue Later</a-button>
+          <a-button block type="dashed">Continue Later</a-button>
         </a-col>
         <a-col :span="12">
           <a-button
@@ -175,7 +175,7 @@
           >Create my own channel</a-button>
         </a-col>
         <a-col :span="6">
-          <a-button block type="primary" @click="next">Next</a-button>
+          <a-button block type="primary">Next</a-button>
         </a-col>
       </a-row>
     </a-row>
