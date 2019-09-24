@@ -26,7 +26,6 @@
           <a-col :span="24">
             <a-form-item>
               <a-input
-                style="height:40px"
                 v-decorator="['connection', {rules: [{ required: true, message: 'Please input the connection name to proceed, otherwise choose continue later' }]}]"
                 placeholder="Connection Name"
               />

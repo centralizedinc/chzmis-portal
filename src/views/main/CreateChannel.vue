@@ -167,7 +167,14 @@
         <a-col :span="6">
           <a-button block type="dashed" @click="continueLater">Continue Later</a-button>
         </a-col>
-        <a-col :span="18">
+        <a-col :span="12">
+          <a-button
+            style="color: #2a6aaa; background-color: #fff6e2"
+            block
+            @click="createOwn"
+          >Create my own channel</a-button>
+        </a-col>
+        <a-col :span="6">
           <a-button block type="primary" @click="next">Next</a-button>
         </a-col>
       </a-row>
