@@ -30,6 +30,9 @@ const mutations = {
         Object.keys(state).forEach(key => {
             state[key] = initialState()[key];
         })
+    },
+    UPDATE_USER(state, data){
+        state.profile = data.profile
     }
 }
 

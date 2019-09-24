@@ -24,4 +24,5 @@ export default class UploadAPI {
         if (is_public) return axios.post(`upload/channel/${channel_id}/public`, form_data)
         else return axios.post(`upload/channel/${channel_id}`, form_data)
     }
+    
 }

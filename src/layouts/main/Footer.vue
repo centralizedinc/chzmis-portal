@@ -1,6 +1,6 @@
 <template>
   <a-row>
-    <a-col>
+    <a-col :span="24">
       <span style="text-align: center">Copyright © 2019 Chzmis</span>
     </a-col>
   </a-row>

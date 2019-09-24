@@ -193,7 +193,7 @@ export default {
   data() {
     return {
       loading: false,
-      avatar: "",
+      avatar: null,
       // previewVisible: false,
       // previewImage: "",
       // fileList: [{}],
@@ -251,7 +251,7 @@ export default {
       this.$store.state.third_party_libraries.google_details
     );
 
-  //   this.init();
+    //   this.init();
   },
   methods: {
     showProfile() {
@@ -290,19 +290,6 @@ export default {
       callback();
     },
 
-    // avatar
-
-    // handleCancel() {
-    //   this.previewVisible = false;
-    // },
-    // handlePreview(file) {
-    //   this.previewImage = file.url || file.thumbUrl;
-    //   this.previewVisible = true;
-    // },
-    // handleChange({ fileList }) {
-    //   this.fileList = fileList;
-    // },
-
     handleChange(info) {
       if (info.file.status === "uploading") {
         this.loading = true;
@@ -317,176 +304,89 @@ export default {
       }
     },
     beforeUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      if (!isJPG) {
-        this.$message.error("You can only upload JPG file!");
+      var avatar = null;
+      if (this.post_file_list.length) {
+        form_data = new FormData();
+        form_data.append("avatar", file, file.name);
       }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.$message.error("Image must smaller than 2MB!");
-      }
-      return isJPG && isLt2M;
-    },
-
-    init() {
-      // signup_method facebook
-      // console.log(
-      //   "this.$store.state.third_party_libraries.signup_method :",
-      //   this.$store.state.third_party_libraries.signup_method
-      // );
-      // this.form_data.method = this.$store.state.third_party_libraries.signup_method;
-      // if (this.$store.state.third_party_libraries.signup_method == "facebook") {
-      //   const facebook_details = this.deepCopy(
-      //     this.$store.state.third_party_libraries.facebook_details
-      //   );
-      //   console.log("facebook_details :", facebook_details);
-      //   this.avatar = facebook_details.photos[0].value;
-      //   this.form = this.$form.createForm(this, {
-      //     mapPropsToFields: () => {
-      //       return {
-      //         email: this.$form.createFormField({
-      //           value: facebook_details.emails[0].value
-      //         }),
-      //         "name.first": this.$form.createFormField({
-      //           value: facebook_details.name.givenName
-      //         }),
-      //         "name.last": this.$form.createFormField({
-      //           value: facebook_details.name.familyName
-      //         })
-      //       };
-      //     }
-      //   });
-      //   this.form_data.facebook_id = facebook_details.id;
-      // } else if (
-      //   this.$store.state.third_party_libraries.signup_method === "google"
-      // ) {
-        // signup_method google
-      //   const google_details = this.deepCopy(
-      //     this.$store.state.third_party_libraries.google_details._json
-      //   );
-      //   this.avatar = google_details.photos[0].value;
-      //   this.form = this.$form.createForm(this, {
-      //     mapPropsToFields: () => {
-      //       console.log(
-      //         "google details :",
-      //         this.$store.state.third_party_libraries.google_details
-      //       );
-      //       return {
-      //         email: this.$form.createFormField({
-      //           value: google_details.email
-      //         }),
-      //         "name.first": this.$form.createFormField({
-      //           value: google_details.given_name
-      //         }),
-      //         "name.last": this.$form.createFormField({
-      //           value: google_details.family_name
-      //         })
-      //       };
-      //     }
-      //   });
-      //   this.form_data.google_id = google_details.sub;
-      // } else if (
-      //   this.$store.state.third_party_libraries.signup_method === "local"
-      // ) {
-      //   // local sign up
-      //   this.form = this.$form.createForm(this);
-      // }
-
-      // this.user_info = JSON.parse(JSON.stringify(this.$store.state.third_party_libraries.facebook_details));
-      // Facebook Details
-
-      // this.email.value = this.$store.state.third_party_libraries.facebook_details._json.email;
-      // this.name.first.value = this.$store.state.third_party_libraries.facebook_details._json.first_name;
-      // this.user_info.name.middle = this.$store.state.third_party_libraries.facebook_details._json.middle_name;
-      // this.user_info.name.last = this.$store.state.third_party_libraries.facebook_details._json.last_name;
-      // this.user_info.avatar = this.$store.state.third_party_libraries.facebook_details._json.picture.data.url;
-      // this.user_info.facebook_id = this.$store.state.third_party_libraries.facebook_details._json.id;
-      // this.user_info.method = this.$store.state.third_party_libraries.facebook_details.provider;
-
-      //Google Details
-
-      // this.user_info.email = this.$store.state.third_party_libraries.google_details._json.email;
-      // this.user_info.name.first = this.$store.state.third_party_libraries.google_details._json.given_name;
-      // this.user_info.name.middle = this.$store.state.third_party_libraries.google_details._json.middle_name;
-      // this.user_info.name.last = this.$store.state.third_party_libraries.google_details._json.family_name;
-      // this.user_info.avatar = this.$store.state.third_party_libraries.google_details._json.picture;
-      // this.user_info.google_id = this.$store.state.third_party_libraries.google_details._json.sub;
-      // this.user_info.method = this.$store.state.third_party_libraries.google_details.provider;
-    },
-    next() {
-      console.log("this.form_data :", this.form_data);
-      this.form.validateFieldsAndScroll((err, data) => {
-        if (!err) {
-          Object.keys(data).forEach(key => {
-            this.form_data[key] = data[key];
-          });
-          // this.mapProps()
-          this.current++;
-        }
-      });
-    },
-    prev() {
-      console.log("this.form_data :", this.form_data);
-      this.mapProps();
-      this.current--;
-    },
-    mapProps() {
-      var data = {};
-      if (this.current === 1) {
-        data = {
-          category: this.$form.createFormField({
-            value: this.form_data.category
-          })
-        };
-      } else if (this.current === 2) {
-        data = {
-          email: this.$form.createFormField({
-            value: this.form_data.email
-          }),
-          "name.first": this.$form.createFormField({
-            value: this.form_data.name.first
-          }),
-          "name.last": this.$form.createFormField({
-            value: this.form_data.name.last
-          }),
-          birthdate: this.$form.createFormField({
-            value: this.form_data.birthdate
-          })
-        };
-      }
-      this.form = this.$form.createForm(this, {
-        mapPropsToFields() {
-          return data;
-        }
-      });
-    },
-
-    submit() {
-      this.loading = true;
-      this.form.validateFieldsAndScroll((err, data) => {
-        if (!err) {
-          Object.keys(data).forEach(key => {
-            this.form_data[key] = data[key];
-          });
-          console.log("Received data of form: ", this.form_data);
-          // this.$store.commit("update", values);
-          this.form_data.avatar = this.avatar;
-          this.$store
-            .dispatch("CREATE_ACCOUNT", this.form_data)
-            .then(result => {
-              console.log("result.data.model :", result.data.model);
-              this.loading = false;
-              this.$router.push("/");
-            })
-            .catch(err => {
-              console.log("err :", err);
-              this.loading = false;
-            });
-          // console.log("console user information:", JSON.stringify(this.values));
-          // // console.log('username :', username);
-        }
-      });
     }
+  },
+
+  init() {
+  },
+  next() {
+    console.log("this.form_data :", this.form_data);
+    this.form.validateFieldsAndScroll((err, data) => {
+      if (!err) {
+        Object.keys(data).forEach(key => {
+          this.form_data[key] = data[key];
+        });
+        // this.mapProps()
+        this.current++;
+      }
+    });
+  },
+  prev() {
+    console.log("this.form_data :", this.form_data);
+    this.mapProps();
+    this.current--;
+  },
+  mapProps() {
+    var data = {};
+    if (this.current === 1) {
+      data = {
+        category: this.$form.createFormField({
+          value: this.form_data.category
+        })
+      };
+    } else if (this.current === 2) {
+      data = {
+        email: this.$form.createFormField({
+          value: this.form_data.email
+        }),
+        "name.first": this.$form.createFormField({
+          value: this.form_data.name.first
+        }),
+        "name.last": this.$form.createFormField({
+          value: this.form_data.name.last
+        }),
+        birthdate: this.$form.createFormField({
+          value: this.form_data.birthdate
+        })
+      };
+    }
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields() {
+        return data;
+      }
+    });
+  },
+
+  submit() {
+    this.loading = true;
+    this.form.validateFieldsAndScroll((err, data) => {
+      if (!err) {
+        Object.keys(data).forEach(key => {
+          this.form_data[key] = data[key];
+        });
+        console.log("Received data of form: ", this.form_data);
+        // this.$store.commit("update", values);
+        this.form_data.avatar = this.avatar;
+        this.$store
+          .dispatch("CREATE_ACCOUNT", {account: this.avatar.form_data})
+          .then(result => {
+            console.log("result.data.model :", result.data.model);
+            this.loading = false;
+            this.$router.push("/");
+          })
+          .catch(err => {
+            console.log("err :", err);
+            this.loading = false;
+          });
+        // console.log("console user information:", JSON.stringify(this.values));
+        // // console.log('username :', username);
+      }
+    });
   }
 };
 </script>

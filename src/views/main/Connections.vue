@@ -58,6 +58,12 @@ export default {
   },
   data() {
     return {
+      user: {
+        avatar:
+          "https://www.birthdaymessagesstatus.com/wp-content/uploads/2018/08/Stylish-Attitude-Girl-Images-for-FB-Profile-Pic-300x291.jpg",
+        full_name: "Cheka Khan"
+      },
+      visible: false,
       active_key: -1,
       loading: true,
       fullscreen: false
@@ -71,6 +77,15 @@ export default {
     }
   },
   computed: {
+    subscribers_count() {
+      return 10000;
+    },
+    active_channels_count() {
+      return 2;
+    },
+    connections_count() {
+      return 20;
+    },
     connections() {
       // Remove closed connections
       const connections = this.deepCopy(

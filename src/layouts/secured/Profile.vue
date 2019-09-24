@@ -1,16 +1,18 @@
 <template>
-  <a-card
-    style="width: 90%;" class="border-layout"
+  <a-card class="profile-style" 
     :headStyle="main_layout_head_style"
-    :bodyStyle="{padding: '10px'}"
-  >
+    :bodyStyle="{padding: '10px'}">
+    <!-- <div slot="title">
+      <a-icon type="minus" style="float: right; margin-right: 5px;" @click="$store.commit('SHOW_PROFILE', false)" />
+    </div>-->
     <p style="text-align: center">
       <a-avatar
         :size="80"
-        style="font-size: 50px;font-weight: bold;"
+        style="font-size: 50px;font-weight: bold;     border: 3px solid #fff;"
         shape="circle"
         :src="getLoginUser().avatar"
       >{{getLoginUser("initial")}}</a-avatar>
+      <br />
       <br />
       <span class="profile-name">{{getLoginUser("fullname")}}</span>
       <br />
@@ -73,12 +75,35 @@ export default {
     },
     connections_count() {
       return 20;
+    },
+    active_user() {
+      // return this.$store.state.active_user;
+      console.log("active_user account :", account);
+      if (this.$store.state.users.active_user) {
+        return this.getUsers(account);
+      } else {
+        this.getLoginUser();
+      }
     }
   }
 };
 </script>
 
 <style>
+.profile-style {
+  /* border: 1px solid rgba(0,0,0,.4); width: 216px; */
+  /* width: 216px;
+  border-radius: 25px !important; */
+  margin-right: 3vh !important;
+  box-shadow: 0px 0px 10px 2px #88888847;
+  background-image: linear-gradient(
+    to bottom,
+    #0450a0 0%,
+    #fff7e2 45%,
+    #fff 50%
+  ) !important;
+  border: none !important;
+}
 .profile-items {
   font-weight: bold;
   text-align: left;
@@ -90,7 +115,7 @@ export default {
 }
 
 .profile-name {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: bold;
   text-transform: capitalize;
 }

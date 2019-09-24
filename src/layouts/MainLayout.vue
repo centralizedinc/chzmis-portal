@@ -1,12 +1,13 @@
 <template>
-  <a-layout style="height: 100%;">
+  <a-layout>
+    <!-- <a-layout style="height: auto"> -->
     <!-- <a-layout-header>
       <header-layout></header-layout>
     </a-layout-header>-->
     <a-layout-content>
       <router-view />
     </a-layout-content>
-    <a-layout-footer style="background: #313131 !important; color: white;     text-align: center;">
+    <a-layout-footer style="background: #313131 !important; color: white; text-align: center;">
       <footer-layout></footer-layout>
     </a-layout-footer>
   </a-layout>

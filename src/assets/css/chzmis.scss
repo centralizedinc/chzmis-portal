@@ -10,7 +10,10 @@
 .bg_landing {
   // background: #000000 !important;
   /* image background*/
-  background-image: url("https://i.postimg.cc/WzTZ82Gx/bg.png") !important;
+  background-image: url("https://i.postimg.cc/WzTZ82Gx/bg.png");
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
   background-color: #ffffff;
   // opacity: 0.8;
 
@@ -57,24 +60,31 @@
   animation-iteration-count: infinite;
   -webkit-animation-iteration-count: infinite;
 }
+
 @-webkit-keyframes bounce {
+
   0%,
   100% {
     -webkit-transform: translateY(0);
   }
+
   50% {
     -webkit-transform: translateY(-5px);
   }
 }
+
 @keyframes bounce {
+
   0%,
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-5px);
   }
 }
+
 .bounce-image:hover {
   -webkit-animation-name: bounce;
   animation-name: bounce;
