@@ -90,10 +90,6 @@
   animation-name: bounce;
 }
 
-.ant-comment-inner {
-  padding-bottom: 0 !important;
-}
-
 .title-head-style {
   width: 100%;
   // text-align: right;
@@ -116,4 +112,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.border-layout {
+  border: 1px solid #ddd;
+  box-shadow: 5px 5px #ccc;
+}
+
+.toolbar i:hover {
+  color: #aaa;
+}
+
+.toolbar i {
+  padding-right: 1.5vh;
+  font-size: 2.3vh;
+  cursor: pointer;
+}
+
+.toolbar {
+  float: right;
 }

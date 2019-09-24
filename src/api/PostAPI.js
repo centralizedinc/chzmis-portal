@@ -10,17 +10,22 @@ export default class PostAPI {
 
     /**
      * @returns {Promise}
+     * @param {Number} limit 
+     * @param {Date} date_created 
      */
-    getPublicPost() {
-        return axios.get('post/public');
+    getPublicPost(limit, date_created) {
+        return axios.get(`post/public?limit=${limit}&date=${date_created}`);
     }
 
     /**
      * @returns {Promise}
-     * @param {String} parent_id
+     * @param {String} parent_id 
+     * @param {Number} limit 
+     * @param {Date} date_created 
      */
-    getPost(parent_id) {
-        return axios.get(`post/parent/${parent_id}`);
+    getPost(parent_id, limit, date_created) {
+        if (parent_id === -1) return axios.get(`post/public?limit=${limit}&date=${date_created}`);
+        else return axios.get(`post/parent/${parent_id}?limit=${limit}&date=${date_created}`);
     }
 
     /**
