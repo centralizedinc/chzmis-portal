@@ -61,7 +61,8 @@
           <a-button block type="dashed" @click="continueLater">Continue Later</a-button>
         </a-col>
         <a-col :span="18">
-          <a-button block type="primary" @click="next">Done</a-button>
+          <a-button block type="primary" @click="done">Done</a-button>
+          <account-ready :acct_ready="modal" @close="modal = false"></account-ready>
         </a-col>
       </a-row>
     </a-card>
@@ -70,9 +71,13 @@
 
 <script>
 export default {
+  components: {
+    accountReady: () => import("../main/AccountReady")
+  },
   data() {
     return {
-      visible: false
+      visible: false,
+      modal: false
     };
   },
   computed: {
@@ -89,6 +94,9 @@ export default {
     },
     onClose() {
       this.visible = false;
+    },
+    done() {
+      this.modal = true;
     }
   }
 };

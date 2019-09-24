@@ -119,6 +119,11 @@ export default new Router({
           name: "ProfileSetup",
           component: () => import('./views/main/ProfileSetup.vue')
         },
+        {
+          path: 'setup/finish',
+          name: "Account Setup Finish",
+          component: () => import('./views/main/AccountReady.vue')
+        },
       ]
     },
     {
