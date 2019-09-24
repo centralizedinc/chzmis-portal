@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-comment v-for="(comment, index) in comments" :key="index">
+    <a-comment v-for="(comment, index) in comments_by_post.comments" :key="index">
       <template slot="actions">
         <span>
           <a-tooltip title="Like">
@@ -79,14 +79,12 @@
         <span>{{moment(comment.date_created).fromNow()}}</span>
       </a-tooltip>
     </a-comment>
-    <div
-      style="text-align: center; padding-bottom: 5px;"
-      v-if="load_comments > 0 && load_comments <= comments.length"
-    >
-      <a href="#" style="text-decoration: underline;" @click="loadMore">Show more comments</a>
-    </div>
-    <div v-if="show_comments || loading" class="demo-loading-container">
-      <a-spin />
+    <a-skeleton :loading="loading" active avatar :paragraph="{rows: 2}" />
+    <div style="text-align: center; padding-bottom: 5px;" v-if="!loading && !comments_by_post.busy">
+      <span
+        class="link-label"
+        @click="loadComments(true)"
+      >Show more comments</span>
     </div>
   </div>
 </template>
@@ -110,15 +108,20 @@ export default {
     }
   },
   computed: {
-    comments() {
-      if (!this.post) return [];
-      const comments = this.deepCopy(this.$store.state.comments.comments);
-      const filtered_comments = comments.filter(x => x.post_id === this.post);
-      filtered_comments.sort(
-        (a, b) => new Date(b.date_created) - new Date(a.date_created)
+    comments_by_post() {
+      const comments_by_post = this.deepCopy(
+        this.$store.state.comments.comments_by_post
       );
-      const _comments = filtered_comments.slice(0, this.load_comments);
-      return _comments;
+      const comments = comments_by_post.find(v => v.key === this.post);
+      return comments || { busy: true };
+      // if (!this.post) return [];
+      // const comments = this.deepCopy(this.$store.state.comments.comments);
+      // const filtered_comments = comments.filter(x => x.post_id === this.post);
+      // filtered_comments.sort(
+      //   (a, b) => new Date(b.date_created) - new Date(a.date_created)
+      // );
+      // const _comments = filtered_comments.slice(0, this.load_comments);
+      // return _comments;
     },
     load_comments() {
       var post = this.$store.state.posts.connection_posts.find(
@@ -189,6 +192,20 @@ export default {
         attachments,
         current_index
       });
+    },
+    loadComments(load_more) {
+      this.loading = true;
+      this.$store
+        .dispatch("GET_COMMENTS_BY_POST", {
+          load_more,
+          post_id: this.post
+        })
+        .then(result => {
+          this.loading = false;
+        })
+        .catch(err => {
+          this.loading = false;
+        });
     }
   }
 };

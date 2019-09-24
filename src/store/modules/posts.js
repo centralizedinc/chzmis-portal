@@ -25,11 +25,20 @@ const mutations = {
         const { key, details } = data ? data : {};
         if (key && details) {
             const connection_index = state.connection_posts.findIndex(v => v.key === key);
-            state.connection_posts[connection_index].post = [...state.connection_posts[connection_index].post, details];
-            // sort
-            state.connection_posts[connection_index].post.sort(
-                (a, b) => new Date(b.date_created) - new Date(a.date_created)
-            );
+            if (connection_index !== -1) {
+                state.connection_posts[connection_index].post = [...state.connection_posts[connection_index].post, details];
+                // sort
+                state.connection_posts[connection_index].post.sort(
+                    (a, b) => new Date(b.date_created) - new Date(a.date_created)
+                );
+            } else {
+                state.connection_posts.push({
+                    busy: true,
+                    key,
+                    post: [details],
+                    last_date: details.date_created
+                })
+            }
         }
     },
     ADD_CONNECTION_POST(state, data) {
@@ -89,7 +98,6 @@ const actions = {
                 new UploadAPI(context.rootState.accounts.token)
                     .uploadConnection(upload_data)
                     .then((result) => {
-                        console.log('result.data.model :', result.data.model);
                         if (result) msg_data.uploads = result.data.model;
 
                         // Save Post Message

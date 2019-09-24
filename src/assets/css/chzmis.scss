@@ -62,7 +62,6 @@
 }
 
 @-webkit-keyframes bounce {
-
   0%,
   100% {
     -webkit-transform: translateY(0);
@@ -74,7 +73,6 @@
 }
 
 @keyframes bounce {
-
   0%,
   100% {
     transform: translateY(0);
@@ -131,4 +129,10 @@
 
 .toolbar {
   float: right;
+}
+
+.link-label {
+  color: #4bacfc;
+  text-decoration: underline;
+  cursor: pointer;
 }
