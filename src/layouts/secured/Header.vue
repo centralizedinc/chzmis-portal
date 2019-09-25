@@ -35,8 +35,13 @@
       <a-modal class="account-modal" v-model="visible" title="My Account" onOk="handleOk">
         <template slot="footer">
           <a-button key="back" @click="handleCancel">Return</a-button>
-          <a-button key="submit
-          " type="primary" :loading="loading" @click="handleOk">Submit</a-button>
+          <a-button
+            key="submit
+          "
+            type="primary"
+            :loading="loading"
+            @click="handleOk"
+          >Submit</a-button>
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
           <p style="text-align: center">
@@ -56,22 +61,32 @@
                   </div>
                 </a-upload>
               </a-form-item>
-              <a-form-item v-bind="formItemLayout" label="Fullname">
+              <a-form-item v-bind="formItemLayout" label="First name">
                 <a-input
                   v-decorator="[
-          'name',
+          'name.first',
           {
-            rules: [{ required: true, message: 'Please input your fullname', whitespace: true }]
+            rules: [{ required: true, message: 'Please input your first name', whitespace: true }]
           }
         ]"
                 />
               </a-form-item>
-              <a-form-item v-bind="formItemLayout" label="Address">
+              <a-form-item v-bind="formItemLayout" label="Middle name">
                 <a-input
                   v-decorator="[
-          'address',
+          'name.middle',
           {
-            rules: [{ required: true, message: 'Please input your address', whitespace: true }]
+            rules: [{ required: true, message: 'Please input your middle name', whitespace: true }]
+          }
+        ]"
+                />
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="Last name">
+                <a-input
+                  v-decorator="[
+          'name.last',
+          {
+            rules: [{ required: true, message: 'Please input your   last name', whitespace: true }]
           }
         ]"
                 />
@@ -116,14 +131,23 @@
       </a-modal>
     </div>
     <div>
-      <a-modal class="password-modal" v-model="visibleSettings" title="Change Password" onOk="handleOk">
+      <a-modal
+        class="password-modal"
+        v-model="visibleSettings"
+        title="Change Password"
+        onOk="handleOk"
+      >
         <template slot="footer">
-                    <a-button key="Change Password" type="primary" :loading="loading" @click="handleOk">Change Password</a-button>
+          <a-button
+            key="Change Password"
+            type="primary"
+            :loading="loading"
+            @click="handleOk"
+          >Change Password</a-button>
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
           <p style="text align-center">
-            <a-form :form="form" @submit="handleSubmit">        
-            
+            <a-form :form="form" @submit="handleSubmit">
               <a-form-item v-bind="formItemLayout" label="Current password">
                 <a-input
                   v-decorator="[
@@ -132,7 +156,7 @@
             rules: [{ required: true, message: 'Please input your old password!', whitespace: true }]
           }       
         ]"
-                 />
+                />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="New Password">
                 <a-input
@@ -180,6 +204,7 @@ export default {
     return {
       headerIcon,
       users: [],
+      account: [],
       name: "",
       loading: false,
       visible: false,
@@ -218,7 +243,16 @@ export default {
       //   imageUrl: "",
       //   form_data: null
       // }
-      avatar: null
+      avatar: null,
+      values: {
+        avatar: "",
+        name: {
+          first: "",
+          middle: "",
+          last: ""
+        },
+        bday: ""
+      }
     };
   },
   beforeCreate() {
@@ -227,6 +261,9 @@ export default {
   created() {
     this.profile();
     this.avatar = this.$store.state.accounts.user.avatar;
+    this.name.first = this.$store.state.accounts.user.name.first;
+    this.name.last = this.$store.state.accounts.user.name.last;
+    // console.log("ACCOUNT DETAILS:", this.$store.state.accounts.account);
   },
   computed: {
     user_details() {
@@ -248,8 +285,30 @@ export default {
           this.form = this.$form.createForm(this, {
             mapPropsToFields() {
               return {
+                'name.first': _form.createFormField({
+                  value: _self.user_details.name.first
+                }),
+                'name.last': _form.createFormField({
+                  value: _self.user_details.name.first
+                })
+              };
+            }
+          });
+        } else {
+          this.profile();
+        }
+    },
+    account_details(val) {
+      var _form = this.$form,
+        _self = this;
+      if (val)
+        if (this.account_details) {
+          this.users = this.account_details.account;
+          this.form = this.$form.createForm(this, {
+            mapPropsToFields() {
+              return {
                 name: _form.createFormField({
-                  value: _self.user_details.name
+                  value: _self.account_details.name
                 })
               };
             }
@@ -262,6 +321,7 @@ export default {
   methods: {
     profile() {
       this.users = [];
+      this.account = [];
       this.loading = false;
       var _form = this.$form;
       this.form = this.$form.createForm(this, {
@@ -315,8 +375,8 @@ export default {
     showModalAccounts() {
       this.visible = true;
     },
-    showModalSettings(){
-      this.visibleSettings = true
+    showModalSettings() {
+      this.visibleSettings = true;
     },
     handleOk(e) {
       this.loading = true;
@@ -329,7 +389,7 @@ export default {
     },
     handleCancel(e) {
       this.visible = false;
-      this.visibleSettings = false
+      this.visibleSettings = false;
     },
     handleAccMenuClick(e) {
       console.log("key :", e);
@@ -436,6 +496,6 @@ export default {
 }
 
 .custom-textarea .ant-input {
-  height: 10vh !important;
+  height: 4vh !important;
 }
 </style>
