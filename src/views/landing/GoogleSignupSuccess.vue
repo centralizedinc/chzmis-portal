@@ -7,7 +7,7 @@ export default {
     console.log('google data :', data);
     this.$store.dispatch("GOOGLE_SIGNUP", JSON.parse(data));
     this.$store.commit("LOGIN", JSON.parse(data));
-    window.opener.location.href = process.env.VUE_APP_HOME_URL + 'main/setup/profile'
+    window.opener.location.href = process.env.VUE_APP_HOME_URL + 'register'
     // window.opener.location.href = process.env.VUE_APP_HOME_URL
     window.opener.location.reload()
     window.close();

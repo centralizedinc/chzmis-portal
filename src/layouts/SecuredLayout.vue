@@ -8,13 +8,13 @@
       </a-affix>
     </a-layout-header>
     <a-layout-content>
-      <a-row style="margin: 8vh; margin-bottom: 15vh;">
+      <a-row type="flex" justify="center" style="margin-top: 3vh; margin-bottom: 15vh;">
         <a-col :sm="0" :md="{span: 4}">
-          <a-affix :offsetTop="100">
+          <a-affix :offsetTop="60">
             <profile />
           </a-affix>
         </a-col>
-        <a-col :xs="24" :md="{span: 20}">
+        <a-col :xs="24" :md="{span: 14}">
           <router-view />
         </a-col>
       </a-row>

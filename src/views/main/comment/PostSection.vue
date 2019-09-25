@@ -1,18 +1,16 @@
 <template>
   <div>
-    <a-card>
-      <div slot="title">
-        {{getConnectionById(active_connection).name}}
-      </div>
-    </a-card>
     <div
       v-infinite-scroll="handleLoadingPost"
       :infinite-scroll-disabled="active_connection_posts.busy"
       :infinite-scroll-distance="5"
     >
-      <a-card v-for="(item, index) in active_connection_posts.post" :key="index" 
+      <a-card
+        v-for="(item, index) in active_connection_posts.post"
+        :key="index"
         :bodyStyle="{ padding: '3vh' }"
-        style="margin-bottom: 1vh">
+        style="margin-bottom: 1vh"
+      >
         <a-comment style="margin-bottom: 5px;">
           <template slot="actions">
             <span>
@@ -36,11 +34,11 @@
               <span style="padding-left: '8px';cursor: 'auto'">{{item.dislikes.length}}</span>
             </span>
             <span>Comment</span>
-            <span @click="showComments(item._id)" v-if="item.show_comment<=0">
-              <a-icon type="double-right" />Show Comments
-            </span>
-            <span @click="hideComments(item._id)" v-else>
+            <span @click="hideComments(item._id)" v-if="displayComments(item._id)">
               <a-icon type="double-left" />Hide Comments
+            </span>
+            <span @click="showComments(index)" v-else>
+              <a-icon type="double-right" />Show Comments
             </span>
           </template>
 
@@ -99,11 +97,7 @@
             <span>{{moment(item.date_created).fromNow()}}</span>
           </a-tooltip>
           <!-- <a href="#" style="text-decoration: underline">Show Comments</a> -->
-          <!-- <comment-section
-            :show_comments="show_comments"
-            :post="item._id"
-            @preview="more_attachments=$event"
-          ></comment-section>-->
+          <comment-section ref="comment" :post="item._id" @preview="more_attachments=$event"></comment-section>
 
           <div @click="setActiveComment(item._id)">
             <template v-for="(img, index) in getPreviewImages(item._id)">
@@ -126,7 +120,11 @@
                 </div>
               </a-tooltip>
             </template>
-            <a-input placeholder="Write a reply" @keydown.enter="sendReply($event, item._id)">
+            <a-input
+              placeholder="Write a reply"
+              ref="messagebox"
+              @keydown.enter="sendReply(item._id, index)"
+            >
               <a-upload
                 slot="addonAfter"
                 :multiple="true"
@@ -238,6 +236,13 @@ export default {
     }
   },
   methods: {
+    displayComments(post_id) {
+      const comments_by_post = this.deepCopy(
+        this.$store.state.comments.comments_by_post
+      );
+      const comments = comments_by_post.find(v => v.key === post_id);
+      return comments && comments.show;
+    },
     isLike(likes) {
       return likes && likes.includes(this.getLoginAccount().account_id);
     },
@@ -272,9 +277,9 @@ export default {
         remove
       });
     },
-    sendReply(event, post_id) {
+    sendReply(post_id, index) {
       this.loading_reply = true;
-      const message = event.target.value;
+      const message = this.$refs.messagebox[index].$refs.input.value;
       var form_data = null;
       const file_index = this.post_file_list.findIndex(x => x.id === post_id);
       if (file_index !== -1 && this.post_file_list[file_index].items.length) {
@@ -286,16 +291,19 @@ export default {
       this.$store
         .dispatch("SEND_COMMENT", { comment: { message, post_id }, form_data })
         .then(result => {
-          event.target.value = "";
+          console.log('this.$refs.messagebox[index] : ', this.$refs.messagebox[index]);
+          this.$refs.messagebox[index].$refs.input.value = "";
           this.post_file_list = [];
           this.post_file_images = [];
           this.preview_file_list = {};
           this.loading_reply = false;
+          this.$refs.comment[index].loadComments(true);
         })
         .catch(err => {
           console.log("err :", err);
           this.loading_reply = false;
         });
+      this.$refs.messagebox[index].$refs.input.value = "";
     },
     handleLoadingPost() {
       if (!this.active_connection_posts.busy) {
@@ -315,23 +323,13 @@ export default {
           this.loading = false;
         });
     },
-    showComments(post_id) {
-      this.show_comments = true;
-      setTimeout(() => {
-        this.$store.commit("SHOW_COMMENTS", {
-          post_id,
-          is_public: this.is_public,
-          load_comment: 5
-        });
-        this.show_comments = false;
-      }, 1000);
+    showComments(index) {
+      console.log("this.$refs :", this.$refs);
+      // if (this.$refs && this.$refs.comment && this.$refs.comment.loadComments) this.$refs.comment.loadComments();
+      this.$refs.comment[index].loadComments();
     },
     hideComments(post_id) {
-      this.$store.commit("SHOW_COMMENTS", {
-        post_id,
-        is_public: this.is_public,
-        load_comment: 0
-      });
+      this.$store.commit("REMOVE_COMMENTS_BY_POST", post_id);
     },
     viewMoreAttachment(show, author, attachments, current_index) {
       this.more_attachments = {

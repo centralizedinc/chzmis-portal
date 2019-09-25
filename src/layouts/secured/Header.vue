@@ -1,12 +1,12 @@
 <template>
-  <a-row type="flex" align="middle" style="height: 50px">
+  <a-row type="flex" align="middle" style="height: 40px">
     <a-col :md="3" :xs="12" class="header-title">
       <a href="/" class="router-link-active" id="logo">
-        <img alt="logo" height="40" :src="headerIcon" />
+        <img alt="logo" height="30" :src="headerIcon" />
       </a>
     </a-col>
     <a-col :md="{ span: 4, offset: 14}" :xs="0">
-      <a-input-search placeholder="Search" @search="onSearch" enterButton />
+      <a-input-search placeholder="Search" @search="onSearch" enterButton size="small"/>
     </a-col>
     <a-col :md="{ span: 2, offset: 1}" :xs="0">
       <a-dropdown placement="bottomRight">
@@ -24,7 +24,6 @@
         <a-button style="background: transparent; border: none;font-size: 20px;box-shadow: none">
           <a-avatar
             shape="circle"
-            :size="36"
             :src="getLoginUser().avatar"
           >{{getLoginUser("initial")}}</a-avatar>
           <a-icon type="down" />
