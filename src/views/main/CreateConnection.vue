@@ -26,7 +26,6 @@
           <a-col :span="24">
             <a-form-item>
               <a-input
-                style="height:40px"
                 v-decorator="['connection', {rules: [{ required: true, message: 'Please input the connection name to proceed, otherwise choose continue later' }]}]"
                 placeholder="Connection Name"
               />
@@ -150,7 +149,7 @@ export default {
 
 <style>
 .cardStyle {
-  border-radius: 25px !important;
+  /* border-radius: 25px !important; */
   box-shadow: 0px 0px 10px 2px #88888847;
 }
 </style>

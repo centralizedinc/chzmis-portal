@@ -5,11 +5,11 @@
       <connections style="max-height: 400px; margin-top: 20px;" v-show="this.show_connections_channels"/>
       <channels style="margin-top: 20px;" v-show="this.show_connections_channels"/>
     </div> -->
-    <a-col :xs="{ span: 18 }">
+    <a-col :xs="{ span: 15 }">
       <connections/>
     </a-col>
-    <a-col :xs="{ span: 6 }">
-      <a-affix :offsetTop="100">
+    <a-col :xs="{ span: 9 }">
+      <a-affix :offsetTop="60">
         <channels style="margin-left: 3vh;"/>
       </a-affix>
     </a-col>

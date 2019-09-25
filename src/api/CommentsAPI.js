@@ -15,6 +15,16 @@ export default class CommentsAPI {
         return axios.post('comments/posts', posts);
     }
 
+    /**
+     * @returns {Promise}
+     * @param {String} post_id
+     * @param {Number} limit
+     * @param {Date} date
+     */
+    getCommentsByPostId(post_id, limit, date) {
+        return axios.get(`comments/postid/${post_id}?limit=${limit}&date=${date}`);
+    }
+
     sendComment(comment){
         return axios.post('comments', comment);
     }

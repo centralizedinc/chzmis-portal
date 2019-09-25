@@ -110,10 +110,20 @@ export default new Router({
           component: () => import('./views/main/CreateChannel.vue')
         },
         {
-        path: 'setup/profile',
-        name: "ProfileSetup",
-        component: () => import('./views/main/ProfileSetup.vue')
-      },
+          path: 'setup/own-channel',
+          name: 'Own Channel',
+          component: () => import('./views/main/CreateOwnChannel.vue')
+        },
+        {
+          path: 'setup/profile',
+          name: "ProfileSetup",
+          component: () => import('./views/main/ProfileSetup.vue')
+        },
+        {
+          path: 'setup/finish',
+          name: "Account Setup Finish",
+          component: () => import('./views/main/AccountReady.vue')
+        },
       ]
     },
     {
@@ -125,8 +135,7 @@ export default new Router({
         path: '',
         name: 'Main Page',
         component: () => import('./views/main/MainPage.vue')
-      }, 
-    ]
+      }, ]
     },
     {
       path: '/register',
