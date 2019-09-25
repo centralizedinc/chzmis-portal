@@ -17,4 +17,9 @@ export default class AccountAPI {
         return axios.post('login', account);
     }
 
+    static confirmedAccount(account_id){        
+        console.log("confirmed account: " + JSON.stringify(account_id))
+        return axios.post('confirmation', accout_id)
+    }
+
 }
