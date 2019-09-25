@@ -19,10 +19,20 @@ const mutations = {
         state.token = data.token;
         state.is_authenticated = true;
     },
+    ADD_TO_FAVORITES(state, data) {
+        state.account.favorites.push(data);
+    },
+    REMOVE_FROM_FAVORITES(state, data) {
+        const index = state.account.favorites.findIndex(x => x.parent_id === data.parent_id);
+        state.account.favorites.splice(index, 1);
+    },
     RESET(state) {
         Object.keys(state).forEach(key => {
             state[key] = initialState()[key];
         })
+    },
+    UPDATE_USER(state, data){
+        state.profile = data.profile
     }
 }
 

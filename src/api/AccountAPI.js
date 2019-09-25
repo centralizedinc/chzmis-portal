@@ -5,7 +5,7 @@ export default class AccountAPI {
     constructor(token) {
         axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URL;
         axios.defaults.headers.common['Content-Type'] = 'application/json';
-        // axios.defaults.headers.common['access_token'] = token;
+        axios.defaults.headers.common['access_token'] = token;
     }
 
     /**
@@ -22,4 +22,24 @@ export default class AccountAPI {
         return axios.post('confirmation', accout_id)
     }
 
+    /**
+     * 
+     * @param {Number} type 
+     * @param {String} parent_id 
+     */
+    addToFavorites(type, parent_id) {
+        console.log("Account API addToFavorites");
+        console.table([{ type, parent_id }]);
+        return axios.post('accounts/favorites/add', { type, parent_id })
+    }
+
+    /**
+     * 
+     * @param {String} parent_id 
+     */
+    removeFromFavorites(parent_id) {
+        console.log("Account API removeFromFavorites");
+        console.table([{ parent_id }]);
+        return axios.post('accounts/favorites/remove', { parent_id })
+    }
 }

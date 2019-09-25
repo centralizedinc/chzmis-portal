@@ -1,24 +1,22 @@
 <template>
   <a-row>
-    <!-- <div>
+    <div>
       <setup-profile v-show="this.show_profile"/>
-      <connections style="max-height: 400px; margin-top: 20px;" v-show="this.show_connections_channels"/>
-      <channels style="margin-top: 20px;" v-show="this.show_connections_channels"/>
-    </div> -->
-    <a-col :xs="{ span: 15 }">
+      <!-- <connections style="max-height: 400px; margin-top: 20px;" v-show="this.show_connections_channels"/>
+      <channels style="margin-top: 20px;" v-show="this.show_connections_channels"/> -->
+    </div>
+    <!-- <a-col :xs="{ span: 18 }">
       <connections/>
     </a-col>
-    <a-col :xs="{ span: 9 }">
-      <a-affix :offsetTop="60">
+    <a-col :xs="{ span: 6 }">
+      <a-affix :offsetTop="100">
         <channels style="margin-left: 3vh;"/>
       </a-affix>
-    </a-col>
+    </a-col> -->
   </a-row>
 </template>
 
 <script>
-import Connections from './Connections';
-import Channels from './Channels';
 import SetupProfile from './ProfileSetup'
 
 export default {
@@ -29,8 +27,6 @@ export default {
     }
   },
   components: {
-    Connections,
-    Channels,
     SetupProfile,
   },
   created() {
@@ -43,7 +39,7 @@ export default {
        
         
       } else if (this.$store.state.accounts.account.status === 1) {
-        return this.show_connections_channels = true 
+        return this.$router.push("/main");
         
       } else {
         console.log("No status");

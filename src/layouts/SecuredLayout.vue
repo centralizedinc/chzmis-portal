@@ -1,28 +1,34 @@
 <template>
   <a-layout>
-    <a-layout-header style="background: transparent; padding: 0px; height: 50px; line-height: 45px;">
+    <a-layout-header
+      style="background: transparent; padding: 0px; height: 50px; line-height: 45px;"
+    >
       <a-affix :offsetTop="0">
         <header-layout class="secured-header-layout"></header-layout>
       </a-affix>
     </a-layout-header>
-    <a-layout style="height: 100%;margin-bottom: 50px;padding: 50px;">
+    <a-layout-content>
+      <a-row type="flex" justify="center" style="margin-top: 3vh; margin-bottom: 15vh;">
+        <a-col :sm="0" :md="{span: 4}">
+          <a-affix :offsetTop="60">
+            <profile />
+          </a-affix>
+        </a-col>
+        <a-col :xs="24" :md="{span: 14}">
+          <router-view />
+        </a-col>
+      </a-row>
+    </a-layout-content>
+    <!-- <a-layout style="height: 100%;margin-bottom: 50px;padding: 50px;">
       <a-layout-sider class="secured-sider-layout">
-        <profile></profile>
+        <profile />
       </a-layout-sider>
       <a-layout-content style="margin: 0 12px;">
-        <router-view />
       </a-layout-content>
-      <!-- <a-layout-sider class="secured-acquaintance-layout">
-        <acquaintance></acquaintance>
-      </a-layout-sider> -->
-    </a-layout>
+    </a-layout> -->
     <a-layout-footer class="secured-taskbar-layout">
       <a-affix :offsetBottom="33">
-        <a-row>
-          <a-col :span="22" :offset="1">
-            <taskbar></taskbar>
-          </a-col>
-        </a-row>
+        <taskbar></taskbar>
       </a-affix>
     </a-layout-footer>
     <a-layout-footer class="secured-layout-footer">

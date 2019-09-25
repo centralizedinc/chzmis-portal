@@ -14,4 +14,12 @@ export default class UsersAPI {
     getUsersDetails() {
         return axios.get('users/details');
     }
+
+    UpdateProfile() {
+        return axios.get('users/:id');
+    }
+
+    getProfilebyId(profile_id, cb) {
+        return axios.get('users/accountid');
+      }
 }

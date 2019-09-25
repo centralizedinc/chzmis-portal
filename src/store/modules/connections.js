@@ -4,7 +4,7 @@ import UploadAPI from '../../api/UploadAPI';
 function initialState() {
     return {
         connections: [],
-        active_connection: "",
+        active_connection: -1,
         show_new_connection: false,
         show_create_connection: false,
         fetching_data: false,
@@ -20,10 +20,27 @@ const mutations = {
         new ConnectionsAPI(token);
     },
     SET_ACTIVE_CONNECTION(state, data) {
+        console.log('SET_ACTIVE_CONNECTION :', data);
         state.active_connection = data;
     },
     SET_CONNECTIONS(state, data) {
-        state.connections = data;
+        state.connections = data.map(v => {
+            v.display = true;
+            return v;
+        });
+    },
+    ADD_CONNECTION(state, data) {
+        data.display = true;
+        state.connections.push(data)
+    },
+    UPDATE_CONNECTION(state, data) {
+        console.log('UPDATE_CONNECTION :', data);
+        const index = state.connections.findIndex(con => con._id === data._id);
+        state.connections[index] = data;
+    },
+    OPEN_CONNECTION(state, data) {
+        const index = state.connections.findIndex(con => con._id === data.parent_id)
+        state.connections[index].display = data.show;
     },
     SHOW_NEW_CONNECTION(state, data) {
         state.show_new_connection = data;
@@ -96,7 +113,7 @@ const actions = {
                     if (data.form_data) {
                         return new UploadAPI(context.rootState.accounts.token)
                             .uploadAvatar({
-                                account_id: context.rootState.accounts.account.account_id,
+                                account_id: connection._id,
                                 form_data: data.form_data
                             })
                     }
@@ -109,8 +126,9 @@ const actions = {
                     }
                 })
                 .then((result) => {
-                    if (result && result.data && result.data.model) resolve(result.data.model)
-                    else resolve(connection)
+                    if (result && result.data && result.data.model) connection = result.data.model;
+                    context.commit("ADD_CONNECTION", connection)
+                    resolve(connection);
                 })
                 .catch((err) => {
                     reject(err)
@@ -118,7 +136,26 @@ const actions = {
         })
     },
     UPDATE_CONNECTION(context, data) {
-        return new ConnectionsAPI(context.rootState.accounts.token).update(data.id, data.connection)
+        return new Promise((resolve, reject) => {
+            console.log('data.form_data :', data.form_data);
+            new UploadAPI(context.rootState.accounts.token)
+                .uploadAvatar({
+                    account_id: data.body.id,
+                    form_data: data.form_data
+                })
+                .then((result) => {
+                    console.log('result :', result);
+                    if (result && result.data && result.data.model) data.body.connection.avatar = result.data.model;
+                    return new ConnectionsAPI(context.rootState.accounts.token)
+                        .update(data.body.id, data.body.connection)
+                })
+                .then((result) => {
+                    context.commit("UPDATE_CONNECTION", result.data.model)
+                    resolve(result.data.model);
+                }).catch((err) => {
+                    reject(err)
+                });
+        })
     }
 }
 
