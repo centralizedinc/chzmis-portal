@@ -46,26 +46,31 @@
     <a-affix v-if="active_key !== -1" :offsetTop="show_tabs ? 95:40">
       <a-card>
         <div slot="title">
-          <span>{{getConnectionById(active_key).name}}</span>
-
-          <a-dropdown style="float: right;" placement="bottomCenter" :trigger="['click']">
-            <a-tooltip>
-              <span slot="title">Settings</span>
-              <a-icon type="setting" style="cursor: pointer;" />
-            </a-tooltip>
-            <a-menu slot="overlay">
-              <a-menu-item
-                key="0"
-                v-if="checkFavorites()"
-                @click="removeFromFavorites()"
-              >Remove from Favorites</a-menu-item>
-              <a-menu-item key="1" v-else @click="addToFavorites()">Add to Favorites</a-menu-item>
-              <a-menu-divider />
-              <a-menu-item key="2" @click="updateConnection()">Update</a-menu-item>
-              <a-menu-divider />
-              <a-menu-item key="3" @click="closeConnection()">Close</a-menu-item>
-            </a-menu>
-          </a-dropdown>
+          <a-row type="flex" justify="center" align="middle">
+            <a-col :span="23">
+              <span class="connection-name">{{getConnectionById(active_key).name}}</span>
+            </a-col>
+            <a-col :span="1">
+              <a-dropdown style="float: right;" placement="bottomCenter" :trigger="['click']">
+                <a-tooltip>
+                  <span slot="title">Settings</span>
+                  <a-icon type="setting" style="cursor: pointer;" />
+                </a-tooltip>
+                <a-menu slot="overlay">
+                  <a-menu-item
+                    key="0"
+                    v-if="checkFavorites()"
+                    @click="removeFromFavorites()"
+                  >Remove from Favorites</a-menu-item>
+                  <a-menu-item key="1" v-else @click="addToFavorites()">Add to Favorites</a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="2" @click="updateConnection()">Update</a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="3" @click="closeConnection()">Close</a-menu-item>
+                </a-menu>
+              </a-dropdown>
+            </a-col>
+          </a-row>
           <!-- <a-row type="flex" justify="center" align="middle">
             <a-col :span="1">
               <a-avatar
@@ -190,7 +195,8 @@ import PostSection from "./comment/PostSection";
 import NewConnection from "./NewConnection";
 import MembersLayout from "@/components/MembersLayout.vue";
 
-const lorem_message = "Consequat nisl vel pretium lectus quam id. Sed blandit libero volutpat sed cras ornare arcu. Tempus urna et pharetra pharetra massa. Integer malesuada nunc vel risus commodo viverra. Tempus iaculis urna id volutpat lacus laoreet non. Laoreet id donec ultrices tincidunt arcu. Morbi enim nunc faucibus a pellentesque sit amet porttitor eget. Velit scelerisque in dictum non consectetur. Pharetra pharetra massa massa ultricies. Id aliquet risus feugiat in ante. Id diam vel quam elementum pulvinar etiam non. Quam viverra orci sagittis eu volutpat odio facilisis. Nec feugiat in fermentum posuere. Pharetra diam sit amet nisl suscipit adipiscing bibendum. Tincidunt augue interdum velit euismod in. Id eu nisl nunc mi. Eget mi proin sed libero enim sed faucibus. Nibh venenatis cras sed felis eget velit aliquet sagittis.";
+const lorem_message =
+  "Consequat nisl vel pretium lectus quam id. Sed blandit libero volutpat sed cras ornare arcu. Tempus urna et pharetra pharetra massa. Integer malesuada nunc vel risus commodo viverra. Tempus iaculis urna id volutpat lacus laoreet non. Laoreet id donec ultrices tincidunt arcu. Morbi enim nunc faucibus a pellentesque sit amet porttitor eget. Velit scelerisque in dictum non consectetur. Pharetra pharetra massa massa ultricies. Id aliquet risus feugiat in ante. Id diam vel quam elementum pulvinar etiam non. Quam viverra orci sagittis eu volutpat odio facilisis. Nec feugiat in fermentum posuere. Pharetra diam sit amet nisl suscipit adipiscing bibendum. Tincidunt augue interdum velit euismod in. Id eu nisl nunc mi. Eget mi proin sed libero enim sed faucibus. Nibh venenatis cras sed felis eget velit aliquet sagittis.";
 
 export default {
   components: {
@@ -457,5 +463,10 @@ export default {
   font-weight: bold;
   background: #333;
   color: white;
+}
+
+.connection-name {
+  font-size: 30px;
+  font-weight: bold;
 }
 </style>
