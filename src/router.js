@@ -138,6 +138,56 @@ export default new Router({
       }, ]
     },
     {
+      path: '/register',
+      name: 'Secured Layout',
+      component: SecuredLayout,
+      beforeEnter: isAuthenticated,
+      children: [{
+          path: '',
+          name: 'Registration Page',
+          component: () => import('./views/main/RegisterPage.vue')
+        },
+        {
+          path: 'setup/interest',
+          name: 'Choose Interest',
+          component: () => import('./views/main/ChooseInterest.vue')
+        },
+        {
+          path: 'setup/connection',
+          name: 'Create Connections',
+          component: () => import('./views/main/CreateConnection.vue')
+        },
+        {
+          path: 'search/connection',
+          name: 'Connect with Others',
+          component: () => import('./components/SearchConnection.vue')
+        },
+        {
+          path: 'setup/channel',
+          name: 'Channel ek ek',
+          component: () => import('./views/main/CreateChannel.vue')
+        },
+        {
+        path: 'setup/profile',
+        name: "ProfileSetup",
+        component: () => import('./views/main/ProfileSetup.vue')
+      },
+      ]
+    },
+    {
+      path: '/register',
+      name: 'Secured Layout',
+      component: SecuredLayout,
+      beforeEnter: isAuthenticated,
+      children: [{
+        path: '',
+        name: 'Registration Page',
+        component: () => import('./views/main/RegisterPage.vue')
+      }, 
+    ]
+    },
+
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting

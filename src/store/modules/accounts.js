@@ -58,6 +58,16 @@ const actions = {
     LOGOUT(context) {
         console.log("Logging out...");
         context.commit("RESET");
+    },
+    CONFIRMED_ACCOUNT(context, account_id){
+return new Promise((resolve, reject)=>{
+    AccountAPI.confirmedAccount(account_id).then((result) =>{
+        console.log("confirmed account store : " + JSON.stringify(result))
+        resolve(result)
+    }).catch((err) =>{
+        reject(err)
+    })
+})
     }
 }
 

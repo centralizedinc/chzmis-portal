@@ -137,12 +137,28 @@
                     <!-- content -->
                     <a-form>
                       <a-row type="flex" align="center" :gutter="12">
+                        <!-- first name -->
+                        <a-col :span="24">
+                            <a-form-item>
+                              <a-input placeholder="First Name"
+                        v-model="user_details.name.first_name"></a-input>
+                            </a-form-item>
+                
+                        </a-col>
+                        <!-- last name -->
+                        <a-col :span="24">
+                            <a-form-item>
+                              <a-input placeholder="Last Name"
+                        v-model="user_details.name.last_name"></a-input>
+                            </a-form-item>
+                
+                        </a-col>
                         <!-- email -->
                         <a-col :span="24">
                           <a-form-item>
                             <a-input
                               placeholder="Email Address"
-                              v-decorator="['email',{rules: [{ required: true, message: 'Email Address is required!' }],}]"
+                              v-model="account_details.email"
                             />
                           </a-form-item>
                         </a-col>
@@ -151,7 +167,7 @@
                           <a-form-item>
                             <a-input
                               placeholder="Create new password"
-                              v-decorator="['password',{rules: [{required: true, message: 'Please input your password!',}, {validator: validateToNextPassword,}],}]"
+                              v-model="password"
                               type="password"
                             />
                           </a-form-item>
@@ -160,8 +176,8 @@
                           <a-form-item>
                             <a-input
                               placeholder="Confirm new password"
-                              v-decorator="['confirm',{rules: [{required: true, message: 'Please confirm your password!',}, {validator: compareToFirstPassword,}],}]"
                               type="password"
+                              v-model="account_details.password"
                               @blur="handleConfirmBlur"
                             />
                           </a-form-item>
@@ -225,6 +241,18 @@ export default {
       modal1Visible: false,
       modal2Visible: false,
       loading: false,
+      password: "",
+      account_details: {
+        email: "",
+        method: "local",
+        password: ""
+      },
+      user_details:{
+        name:{
+          first_name:"",
+          last_name:""
+        }
+      },
       show_password: false
     };
   },
@@ -250,7 +278,16 @@ export default {
       this.$router.push("/signUp");
     },
     localSignUp() {
-      this.$router.push("/newAccount");
+      // this.$router.push("/newAccount");
+      this.$store.dispatch("CREATE_ACCOUNT", {account: this.account_details, user:this.user_details.name}).then((result) =>{
+        console.log("create account data: " + JSON.stringify(result))
+        this.modal2Visible = false
+        this.account_details.email = ""
+        this.account_details.password = ""
+        this.user_details.name.first_name = ""
+        this.user_details.name.last_name = ""
+        this.$router.push("/")
+      })
     },
     login() {
       this.loading = true;
