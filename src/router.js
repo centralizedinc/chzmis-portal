@@ -198,7 +198,7 @@ export default new Router({
     {
       path: '/attachment',
       name: 'Attachment',
-      component: () => import('./views/main/comment/AttachmentLayout.vue')
+      component: () => import('@/components/AttachmentLayout.vue')
     }
   ]
 })

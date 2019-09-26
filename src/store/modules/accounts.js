@@ -31,7 +31,7 @@ const mutations = {
             state[key] = initialState()[key];
         })
     },
-    UPDATE_USER(state, data){
+    UPDATE_USER(state, data) {
         state.profile = data.profile
     }
 }
@@ -59,15 +59,15 @@ const actions = {
         console.log("Logging out...");
         context.commit("RESET");
     },
-    CONFIRMED_ACCOUNT(context, account_id){
-return new Promise((resolve, reject)=>{
-    AccountAPI.confirmedAccount(account_id).then((result) =>{
-        console.log("confirmed account store : " + JSON.stringify(result))
-        resolve(result)
-    }).catch((err) =>{
-        reject(err)
-    })
-})
+    CONFIRMED_ACCOUNT(context, account_id) {
+        return new Promise((resolve, reject) => {
+            AccountAPI.confirmedAccount(account_id).then((result) => {
+                console.log("confirmed account store : " + JSON.stringify(result))
+                resolve(result)
+            }).catch((err) => {
+                reject(err)
+            })
+        })
     }
 }
 

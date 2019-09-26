@@ -199,7 +199,7 @@
 <script>
 import moment from "moment";
 import CommentSection from "./CommentSection";
-import AttachmentLayout from "./AttachmentLayout";
+import AttachmentLayout from "@/components/AttachmentLayout";
 
 export default {
   props: {
@@ -396,11 +396,6 @@ export default {
       const file_index = this.post_file_images.findIndex(x => x.id === id);
       return file_index === -1 ? [] : this.post_file_images[file_index].items;
     },
-    getBase64(img, callback) {
-      const reader = new FileReader();
-      reader.addEventListener("load", () => callback(reader.result));
-      reader.readAsDataURL(img);
-    },
     getImages(uploads) {
       if (!uploads || !uploads.length) return [];
       const images = uploads.map(v => v.location);
@@ -580,6 +575,5 @@ export default {
 .attachments-content {
     width: 100%;
     height: 60vh !important;
-    /* border: 1px solid #000; */
 }
 </style>

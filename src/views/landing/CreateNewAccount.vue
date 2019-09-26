@@ -184,11 +184,6 @@
   </div>
 </template>
 <script>
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
 export default {
   data() {
     return {
@@ -297,7 +292,7 @@ export default {
       }
       if (info.file.status === "done") {
         // Get this url from response in real world.
-        getBase64(info.file.originFileObj, imageUrl => {
+        this.getBase64(info.file.originFileObj, imageUrl => {
           this.avatar = imageUrl;
           this.loading = false;
         });
