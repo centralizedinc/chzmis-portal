@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Connection Tabs -->
-    <a-affix :offsetTop="40">
+    <a-affix :offsetTop="40" style="margin-bottom: 2vh">
       <a-card :bodyStyle="{ padding: '1vh' }">
         <a-tabs
           class="connection-tabs"
@@ -28,7 +28,7 @@
               <span slot="title">New Connection</span>
               <a-icon type="plus" @click="newConnection" style="cursor: pointer" />
             </a-tooltip>
-            <a-tooltip>
+            <!-- <a-tooltip>
               <span slot="title">{{fullscreen?'Exit Fullscreen':'Fullscreen'}}</span>
               <a-icon
                 :type="fullscreen ? 'fullscreen-exit' : 'fullscreen'"
@@ -38,7 +38,7 @@
             <a-tooltip>
               <span slot="title">Hide</span>
               <a-icon type="minus" @click="$store.commit('SHOW_PROFILE', false)" />
-            </a-tooltip>
+            </a-tooltip> -->
           </div>
         </a-tabs>
       </a-card>
@@ -169,7 +169,6 @@ export default {
   watch: {
     active_key(key) {
       this.$store.commit("SET_ACTIVE_CONNECTION", key);
-      console.log("this.$refs.post.loadPost() :", this.$refs.post.loadPost());
       this.$refs.post.loadPost();
     },
     active_connection(key) {
@@ -205,14 +204,14 @@ export default {
     }
   },
   created() {
+    this.active_key = -1;
+    this.$store.commit("SET_ACTIVE_CONNECTION", -1);
     window.addEventListener("scroll", this.handleScroll);
     this.loading = true;
     this.$store
       .dispatch("GET_CONNECTIONS")
       .then(result => {
-        this.active_key = -1;
         console.log("done loading connections");
-        // this.loadPublicPost();
         this.loading = false;
       })
       .catch(err => {
@@ -276,6 +275,7 @@ export default {
         if (this.post_file_list.length) {
           form_data = new FormData();
           this.post_file_list.forEach(file => {
+            console.log('file :', file);
             form_data.append("files", file, file.name);
           });
         }
@@ -297,6 +297,7 @@ export default {
       }
     },
     attachFile(file) {
+      console.log('attachFile :', file);
       this.post_file_list = [...this.post_file_list, file];
       this.getBase64(file, imageUrl => {
         this.post_file_images = [
@@ -334,7 +335,7 @@ export default {
 }
 
 .messages-content {
-  margin-top: 2vh;
+  margin-top: 1vh;
 }
 
 .messages-content .ant-comment-inner {

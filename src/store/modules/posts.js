@@ -98,7 +98,10 @@ const actions = {
                 new UploadAPI(context.rootState.accounts.token)
                     .uploadConnection(upload_data)
                     .then((result) => {
-                        if (result) msg_data.uploads = result.data.model;
+                        if (result) {
+                            console.log('result.data.model :', result.data.model);
+                            msg_data.uploads = result.data.model;
+                        }
 
                         // Save Post Message
                         return new PostAPI(context.rootState.accounts.token)

@@ -51,7 +51,13 @@
 
           <div slot="content">
             <p>{{item.message}}</p>
-            <a-row
+            <attachment-layout
+              class="attachments-content"
+              :images="getImages(item.uploads)"
+              :orientation="index%2"
+              @view="viewMoreAttachment(true, item.author, item.uploads, $event)"
+            />
+            <!-- <a-row
               v-if="item.uploads.length"
               type="flex"
               align="middle"
@@ -86,7 +92,7 @@
                   @click="viewMoreAttachment(true, item.author, item.uploads, 3)"
                 >{{`+${item.uploads.length - 3}`}}</span>
               </a-col>
-            </a-row>
+            </a-row>-->
           </div>
 
           <a-tooltip
@@ -193,6 +199,7 @@
 <script>
 import moment from "moment";
 import CommentSection from "./CommentSection";
+import AttachmentLayout from "./AttachmentLayout";
 
 export default {
   props: {
@@ -202,7 +209,8 @@ export default {
     }
   },
   components: {
-    CommentSection
+    CommentSection,
+    AttachmentLayout
   },
   data() {
     return {
@@ -291,7 +299,6 @@ export default {
       this.$store
         .dispatch("SEND_COMMENT", { comment: { message, post_id }, form_data })
         .then(result => {
-          console.log('this.$refs.messagebox[index] : ', this.$refs.messagebox[index]);
           this.$refs.messagebox[index].$refs.input.value = "";
           this.post_file_list = [];
           this.post_file_images = [];
@@ -324,8 +331,6 @@ export default {
         });
     },
     showComments(index) {
-      console.log("this.$refs :", this.$refs);
-      // if (this.$refs && this.$refs.comment && this.$refs.comment.loadComments) this.$refs.comment.loadComments();
       this.$refs.comment[index].loadComments();
     },
     hideComments(post_id) {
@@ -338,7 +343,6 @@ export default {
         attachments,
         current_index
       };
-      this.$refs.carousel.goTo(current_index, false);
     },
     setActiveComment(id) {
       // Setting active comment for uploading files
@@ -396,6 +400,11 @@ export default {
       const reader = new FileReader();
       reader.addEventListener("load", () => callback(reader.result));
       reader.readAsDataURL(img);
+    },
+    getImages(uploads) {
+      if (!uploads || !uploads.length) return [];
+      const images = uploads.map(v => v.location);
+      return images || [];
     }
   },
   created() {
@@ -566,5 +575,11 @@ export default {
 .modal-preview-image img {
   height: 100%;
   width: 100%;
+}
+
+.attachments-content {
+    width: 100%;
+    height: 60vh !important;
+    /* border: 1px solid #000; */
 }
 </style>
