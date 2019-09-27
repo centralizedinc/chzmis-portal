@@ -462,11 +462,6 @@ export default {
     updateConnection(connection) {
       this.$store.dispatch("OPEN_CREATE_CONNECTION", connection);
     },
-    getBase64(img, callback) {
-      const reader = new FileReader();
-      reader.addEventListener("load", () => callback(reader.result));
-      reader.readAsDataURL(img);
-    },
     addToFavorites(parent_id) {
       this.$store.dispatch("ADD_TO_FAVORITES", { type: 0, parent_id });
     },

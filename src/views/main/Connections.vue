@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Connection Tabs -->
-    <a-affix :offsetTop="40">
+    <a-affix :offsetTop="40" style="margin-bottom: 2vh">
       <a-card :bodyStyle="{ padding: '1vh' }">
         <a-tabs
           class="connection-tabs"
@@ -9,7 +9,7 @@
           :defaultActiveKey="-1"
           tabPosition="top"
         >
-          <a-tab-pane :key="-1" tab="Public" />
+          <a-tab-pane :key="-1" tab="Chzmis" />
 
           <a-tab-pane v-for="item in connections" :key="item._id">
             <div slot="tab">
@@ -17,7 +17,6 @@
                 <a-avatar
                   shape="square"
                   :src="item.avatar ? item.avatar.location: null"
-                  size="small"
                 >{{item.name[0].toUpperCase()}}</a-avatar>
               </a-badge>
             </div>
@@ -28,7 +27,7 @@
               <span slot="title">New Connection</span>
               <a-icon type="plus" @click="newConnection" style="cursor: pointer" />
             </a-tooltip>
-            <a-tooltip>
+            <!-- <a-tooltip>
               <span slot="title">{{fullscreen?'Exit Fullscreen':'Fullscreen'}}</span>
               <a-icon
                 :type="fullscreen ? 'fullscreen-exit' : 'fullscreen'"
@@ -38,69 +37,117 @@
             <a-tooltip>
               <span slot="title">Hide</span>
               <a-icon type="minus" @click="$store.commit('SHOW_PROFILE', false)" />
-            </a-tooltip>
+            </a-tooltip>-->
           </div>
         </a-tabs>
       </a-card>
     </a-affix>
-    <!-- Connection Details -->
+    <!-- Connection Details & Message Box -->
     <a-affix v-if="active_key !== -1" :offsetTop="show_tabs ? 95:40">
       <a-card>
         <div slot="title">
-          <span>{{getConnectionById(active_key).name}}</span>
-          <div style="float: right;">
-            <a-dropdown placement="bottomCenter" :trigger="['click']">
-              <a-tooltip>
-                <span slot="title">Settings</span>
-                <a-icon type="setting" style="cursor: pointer;" />
-              </a-tooltip>
-              <a-menu slot="overlay">
-                <a-menu-item
-                  key="0"
-                  v-if="checkFavorites()"
-                  @click="removeFromFavorites()"
-                >Remove from Favorites</a-menu-item>
-                <a-menu-item key="1" v-else @click="addToFavorites()">Add to Favorites</a-menu-item>
-                <a-menu-divider />
-                <a-menu-item key="2" @click="updateConnection()">Update</a-menu-item>
-                <a-menu-divider />
-                <a-menu-item key="3" @click="closeConnection()">Close</a-menu-item>
-              </a-menu>
-            </a-dropdown>
-          </div>
+          <a-row type="flex" justify="center" align="middle">
+            <a-col :span="23">
+              <span class="connection-name">{{getConnectionById(active_key).name}}</span>
+            </a-col>
+            <a-col :span="1">
+              <a-dropdown style="float: right;" placement="bottomCenter" :trigger="['click']">
+                <a-tooltip>
+                  <span slot="title">Settings</span>
+                  <a-icon type="setting" style="cursor: pointer;" />
+                </a-tooltip>
+                <a-menu slot="overlay">
+                  <a-menu-item
+                    key="0"
+                    v-if="checkFavorites()"
+                    @click="removeFromFavorites()"
+                  >Remove from Favorites</a-menu-item>
+                  <a-menu-item key="1" v-else @click="addToFavorites()">Add to Favorites</a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="2" @click="updateConnection()">Update</a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="3" @click="closeConnection()">Close</a-menu-item>
+                </a-menu>
+              </a-dropdown>
+            </a-col>
+          </a-row>
+          <!-- <a-row type="flex" justify="center" align="middle">
+            <a-col :span="1">
+              <a-avatar
+                :src="getConnectionById(active_key).avatar"
+              >{{getConnectionById(active_key, "initial")}}</a-avatar>
+            </a-col>
+            <a-col :span="11">
+              <span>{{getConnectionById(active_key).name}}</span>
+            </a-col>
+            <a-col :span="11">
+              <members-layout />
+            </a-col>
+            <a-col :span="1">
+              <a-dropdown placement="bottomCenter" :trigger="['click']">
+                <a-tooltip>
+                  <span slot="title">Settings</span>
+                  <a-icon type="setting" style="cursor: pointer;" />
+                </a-tooltip>
+                <a-menu slot="overlay">
+                  <a-menu-item
+                    key="0"
+                    v-if="checkFavorites()"
+                    @click="removeFromFavorites()"
+                  >Remove from Favorites</a-menu-item>
+                  <a-menu-item key="1" v-else @click="addToFavorites()">Add to Favorites</a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="2" @click="updateConnection()">Update</a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="3" @click="closeConnection()">Close</a-menu-item>
+                </a-menu>
+              </a-dropdown>
+            </a-col>
+          </a-row>-->
         </div>
       </a-card>
     </a-affix>
-    <!-- Message Box -->
     <a-card>
-      <a-row>
-        <a-col :span="1">
-          <a-avatar :src="getLoginUser().avatar">{{getLoginUser("initial")}}</a-avatar>
+      <a-row v-if="active_key !== -1" style="margin-bottom: 2vh;">
+        <a-col :span="17">
+          {{textEllipse(lorem_message, see_more_desc, 230)}}
+          <span
+            v-if="!see_more_desc && lorem_message.length > 100"
+            class="link-label"
+            @click="see_more_desc=true"
+          >See More</span>
         </a-col>
-        <a-col :span="22" :offset="1">
+        <a-col style="padding-left: 1vh" :span="7">
+          <members-layout />
+        </a-col>
+      </a-row>
+
+      <!-- Message Box -->
+      <a-row type="flex" justify="center" align="middle">
+        <a-col :span="20" style="padding-right: 2vh">
           <a-textarea
             v-model="post_message"
             @keypress.enter="sendMessage"
             placeholder="Post a message"
             :rows="3"
           />
-          <a-row type="flex" justify="space-between" style="padding: 10px;">
-            <a-col :span="3">
-              <a-upload :multiple="true" :showUploadList="false" :beforeUpload="attachFile">
-                <a-button type="default" :loading="loading_submit" size="small">Photo / Video</a-button>
-              </a-upload>
-            </a-col>
-            <a-col :span="4">
-              <a-button
-                @click="sendMessage"
-                :loading="loading_submit"
-                block
-                type="primary"
-                size="small"
-              >SEND</a-button>
-            </a-col>
-          </a-row>
         </a-col>
+        <a-col :span="4">
+          <a-button
+            @click="sendMessage"
+            :loading="loading_submit"
+            block
+            size="small"
+            type="primary"
+            style="margin-bottom: 1vh"
+          >SEND</a-button>
+
+          <a-upload :multiple="true" :showUploadList="false" :beforeUpload="attachFile">
+            <a-button type="default" :loading="loading_submit" size="small">Photo / Video</a-button>
+          </a-upload>
+        </a-col>
+      </a-row>
+      <a-row>
         <a-col :span="24">
           <template v-for="(img, index) in post_file_images">
             <a-tooltip :key="index">
@@ -146,11 +193,16 @@
 <script>
 import PostSection from "./comment/PostSection";
 import NewConnection from "./NewConnection";
+import MembersLayout from "@/components/MembersLayout.vue";
+
+const lorem_message =
+  "Consequat nisl vel pretium lectus quam id. Sed blandit libero volutpat sed cras ornare arcu. Tempus urna et pharetra pharetra massa. Integer malesuada nunc vel risus commodo viverra. Tempus iaculis urna id volutpat lacus laoreet non. Laoreet id donec ultrices tincidunt arcu. Morbi enim nunc faucibus a pellentesque sit amet porttitor eget. Velit scelerisque in dictum non consectetur. Pharetra pharetra massa massa ultricies. Id aliquet risus feugiat in ante. Id diam vel quam elementum pulvinar etiam non. Quam viverra orci sagittis eu volutpat odio facilisis. Nec feugiat in fermentum posuere. Pharetra diam sit amet nisl suscipit adipiscing bibendum. Tincidunt augue interdum velit euismod in. Id eu nisl nunc mi. Eget mi proin sed libero enim sed faucibus. Nibh venenatis cras sed felis eget velit aliquet sagittis.";
 
 export default {
   components: {
     PostSection,
-    NewConnection
+    NewConnection,
+    MembersLayout
   },
   data() {
     return {
@@ -163,13 +215,14 @@ export default {
       scrollY_value: 0,
       post_file_list: [],
       post_file_images: [],
-      preview_file_list: {}
+      preview_file_list: {},
+      lorem_message,
+      see_more_desc: false
     };
   },
   watch: {
     active_key(key) {
       this.$store.commit("SET_ACTIVE_CONNECTION", key);
-      console.log("this.$refs.post.loadPost() :", this.$refs.post.loadPost());
       this.$refs.post.loadPost();
     },
     active_connection(key) {
@@ -205,14 +258,15 @@ export default {
     }
   },
   created() {
+    this.active_key = "5d7072d0ef9f5812e534ed13";
+    this.$store.commit("SET_ACTIVE_CONNECTION", -1);
     window.addEventListener("scroll", this.handleScroll);
     this.loading = true;
+    this.$store.dispatch("CHECK_CLASS");
     this.$store
       .dispatch("GET_CONNECTIONS")
       .then(result => {
-        this.active_key = -1;
         console.log("done loading connections");
-        // this.loadPublicPost();
         this.loading = false;
       })
       .catch(err => {
@@ -308,11 +362,6 @@ export default {
     removeFileList(i) {
       this.post_file_list.splice(i, 1);
       this.post_file_images.splice(i, 1);
-    },
-    getBase64(img, callback) {
-      const reader = new FileReader();
-      reader.addEventListener("load", () => callback(reader.result));
-      reader.readAsDataURL(img);
     }
   }
 };
@@ -334,7 +383,7 @@ export default {
 }
 
 .messages-content {
-  margin-top: 2vh;
+  margin-top: 1vh;
 }
 
 .messages-content .ant-comment-inner {
@@ -414,5 +463,10 @@ export default {
   font-weight: bold;
   background: #333;
   color: white;
+}
+
+.connection-name {
+  font-size: 30px;
+  font-weight: bold;
 }
 </style>

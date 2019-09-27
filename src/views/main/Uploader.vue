@@ -90,11 +90,6 @@ export default {
     removeFileList(i) {
       this.file_list.splice(i, 1);
       this.file_images.splice(i, 1);
-    },
-    getBase64(img, callback) {
-      const reader = new FileReader();
-      reader.addEventListener("load", () => callback(reader.result));
-      reader.readAsDataURL(img);
     }
   }
 };

@@ -6,7 +6,7 @@
       </a>
     </a-col>
     <a-col :md="{ span: 4, offset: 14}" :xs="0">
-      <a-input-search placeholder="Search" @search="onSearch" enterButton size="small"/>
+      <a-input-search placeholder="Search" @search="onSearch" enterButton size="small" />
     </a-col>
     <a-col :md="{ span: 2, offset: 1}" :xs="0">
       <a-dropdown placement="bottomRight">
@@ -22,10 +22,7 @@
           </a-menu-item>
         </a-menu>
         <a-button style="background: transparent; border: none;font-size: 20px;box-shadow: none">
-          <a-avatar
-            shape="circle"
-            :src="getLoginUser().avatar"
-          >{{getLoginUser("initial")}}</a-avatar>
+          <a-avatar shape="circle" :src="getLoginUser().avatar">{{getLoginUser("initial")}}</a-avatar>
           <a-icon type="down" />
         </a-button>
       </a-dropdown>
@@ -39,7 +36,7 @@
           "
             type="primary"
             :loading="loading"
-            @click="handleOk"
+            @click="next"
           >Submit</a-button>
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
@@ -62,53 +59,55 @@
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="First name">
                 <a-input
+                  placeholder="First name"
                   v-decorator="[
-          'name.first',
-          {
-            rules: [{ required: true, message: 'Please input your first name', whitespace: true }]
-          }
-        ]"
+                        'name.first',
+                        {
+                          rules: [rules.required('First Name')]
+                        }
+                      ]"
                 />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="Middle name">
                 <a-input
+                  placeholder="Middle name"
                   v-decorator="[
-          'name.middle',
-          {
-            rules: [{ required: true, message: 'Please input your middle name', whitespace: true }]
-          }
-        ]"
+                        'name.middle',
+                        {
+                          rules: [rules.required('Middle Name')]
+                        }
+                      ]"
                 />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="Last name">
                 <a-input
+                  placeholder="Last Name"
                   v-decorator="[
-          'name.last',
-          {
-            rules: [{ required: true, message: 'Please input your   last name', whitespace: true }]
-          }
-        ]"
+                        'name.last',
+                        {
+                          rules: [rules.required('Last Name')]
+                        }
+                      ]"
                 />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="Birthday">
-                <a-date-picker
+                <a-date-picker style="width: 100%"
                   @change="onChange"
-                  v-decorator="[
-          'birthday',
-          {
-            rules: [{ required: true, message: 'Please select your birthday', whitespace: true }]
-          }
-        ]"
+                  placeholder="Birthdate"
+                  v-decorator="['birthdate', {
+                      rules: [rules.required('Date of Birth')]
+                    }]"
                 />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="Phone Number">
                 <a-input
+                  placeholder="Phone number"
                   v-decorator="[
-          'phone',
-          {
-            rules: [{ required: true, message: 'Please input your phone number!' }],
-          }
-        ]"
+                        'phone',
+                        {
+                          rules: [rules.required('Phone Number')]
+                        }
+                      ]"
                   style="width: 100%"
                 >
                   <a-select
@@ -244,6 +243,12 @@ export default {
       //   form_data: null
       // }
       avatar: null,
+      rules: {
+        required: v => {
+          return { required: true, message: `${v} is required!` };
+        }
+      },
+      form_data: {},
       values: {
         avatar: "",
         name: {
@@ -285,11 +290,17 @@ export default {
           this.form = this.$form.createForm(this, {
             mapPropsToFields() {
               return {
-                'name.first': _form.createFormField({
+                "name.first": _form.createFormField({
                   value: _self.user_details.name.first
                 }),
-                'name.last': _form.createFormField({
-                  value: _self.user_details.name.first
+                "name.middle": _form.createFormField({
+                  value: _self.user_details.name.middle
+                }),
+                "name.last": this.$form.createFormField({
+                  value: this.form_data.name.last
+                }),
+                birthdate: this.$form.createFormField({
+                  value: this.form_data.birthdate
                 })
               };
             }
@@ -335,7 +346,29 @@ export default {
       });
     },
     handleChangeAvatar(){
+    },
+    mapProps() {
+      var data = {};
+      data = {
+        "name.first": this.$form.createFormField({
+          value: this.form_data.name.first
+        }),
+        "name.middle": _form.createFormField({
+          value: _self.user_details.name.middle
+        }),
+        "name.last": this.$form.createFormField({
+          value: this.form_data.name.last
+        }),
+        birthdate: this.$form.createFormField({
+          value: this.form_data.birthdate
+        })
+      };
 
+      this.form = this.$form.createForm(this, {
+        mapPropsToFields() {
+          return data;
+        }
+      });
     },
     init() {
       console.log("accounts details :", this.$store.state.accounts.account);
@@ -369,6 +402,33 @@ export default {
         } else {
           console.log("err :", err);
           this.loading = false;
+        }
+      });
+    },
+    next() {
+      this.form.validateFieldsAndScroll((err, data) => {
+        if (!err) {
+          Object.keys(data).forEach(key => {
+            this.form_data[key] = data[key];
+          });
+          console.log("Received data of form: ", this.form_data);
+          // this.$store.commit("update", values);
+          this.form_data.avatar = this.avatar;
+          this.form_data.status = 2;
+          this.$store
+            .dispatch("CREATE_ACCOUNT", {
+              account: this.form_data.status,
+              user: this.form_data
+            })
+            .then(result => {
+              console.log("result.data.model :", result.data.model);
+              this.loading = false;
+              this.$router.push("main/setup/connection");
+            })
+            .catch(err => {
+              console.log("err :", err);
+              this.loading = false;
+            });
         }
       });
     },

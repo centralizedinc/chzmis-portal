@@ -14,7 +14,7 @@
             <profile />
           </a-affix>
         </a-col>
-        <a-col :xs="24" :md="{span: 14}">
+        <a-col :xs="24" :md="{span: 18}">
           <router-view />
         </a-col>
       </a-row>

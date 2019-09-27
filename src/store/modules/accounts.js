@@ -31,7 +31,7 @@ const mutations = {
             state[key] = initialState()[key];
         })
     },
-    UPDATE_USER(state, data){
+    UPDATE_USER(state, data) {
         state.profile = data.profile
     }
 }
