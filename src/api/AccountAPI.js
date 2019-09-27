@@ -35,11 +35,16 @@ export default class AccountAPI {
 
     /**
      * 
-     * @param {String} email 
+     * @param {String} data
      */
-    checkEmail(email){
-        console.log("check email api: " + email)
-        return axios.get('accounts/verify/email', {email: email})
+    changePassword(data){
+        console.log("change password api: " + JSON.stringify(data))
+        return axios.post('accounts/password', data)
+    }
+
+    forgetPasswordEmail(email){
+        console.log("email forget password: " + JSON.stringify(email))
+        return axios.post('accounts/forrgetPassword', email)
     }
 
     /**

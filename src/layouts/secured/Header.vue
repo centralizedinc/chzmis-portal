@@ -453,16 +453,17 @@ export default {
     },
     changePassword(){
       this.loading = true;
-      var current_password = this.form.getFieldValue('current_password')
-      var new_password = this.form.getFieldValue('new_password')
-      var confirm_password = this.form.getFieldValue('confirm_password')
-      
+      var password = {
+       current_password: this.form.getFieldValue('current_password'),
+       new_password: this.form.getFieldValue('password'),
+       confirm_password: this.form.getFieldValue('confirm')
+      }
       console.log("check field current password: " + this.form.getFieldValue('current_password'))
-      console.log("users active user data: " + JSON.stringify(this.$store.state.accounts.user))
-      console.log("account data: " + JSON.stringify(this.$store.state.accounts.account.email))
-      var email = this.$store.state.accounts.account.email
-      console.log("email checked: " + email)
-      this.$store.dispatch("CHECK_EMAIL", email).then((result)=>{
+      console.log("users active user data: " + JSON.stringify(password))
+      console.log("account data: " + JSON.stringify(this.$store.state.accounts.account.account_id))
+      var id = this.$store.state.accounts.account.account_id
+      console.log("email checked: " + id)
+      this.$store.dispatch("CHANGE_PASSWORD", {id, password}).then((result)=>{
         console.log("confirmed account result: " + JSON.stringify(result))
       })
 
