@@ -59,15 +59,32 @@ const actions = {
         console.log("Logging out...");
         context.commit("RESET");
     },
-    CONFIRMED_ACCOUNT(context, account_id) {
-        return new Promise((resolve, reject) => {
-            AccountAPI.confirmedAccount(account_id).then((result) => {
-                console.log("confirmed account store : " + JSON.stringify(result))
+    CHANGE_PASSWORD(context, data){
+        console.log("check data:0 id: " + JSON.stringify(data))
+        return new Promise((resolve, reject)=>{
+            console.log("check data:1 id: " + JSON.stringify(data))
+            new AccountAPI(context.rootState.accounts.token).changePassword(data).then((result)=>{
+                console.log("check email: " + JSON.stringify(result))
                 resolve(result)
-            }).catch((err) => {
+            }).catch((err)=>{
                 reject(err)
             })
         })
+    },
+    FORGET_PASSWORD(context, email){
+        return new Promise((resolve, reject)=>{
+            new AccountAPI(context.rootState.accounts.token)
+        })
+    },
+    CONFIRMED_ACCOUNT(context, account_id){
+return new Promise((resolve, reject)=>{
+    new AccountAPI().confirmedAccount(account_id).then((result) =>{
+        console.log("confirmed account store : " + JSON.stringify(result))
+        resolve(result)
+    }).catch((err) =>{
+        reject(err)
+    })
+})
     }
 }
 

@@ -133,14 +133,14 @@
         class="password-modal"
         v-model="visibleSettings"
         title="Change Password"
-        onOk="handleOk"
+        onOk="changePassword"
       >
         <template slot="footer">
           <a-button
             key="Change Password"
             type="primary"
             :loading="loading"
-            @click="handleOk"
+            @click="changePassword"
           >Change Password</a-button>
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
@@ -154,6 +154,7 @@
             rules: [{ required: true, message: 'Please input your old password!', whitespace: true }]
           }       
         ]"
+        type="password"
                 />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="New Password">
@@ -344,6 +345,8 @@ export default {
         }
       });
     },
+    handleChangeAvatar(){
+    },
     mapProps() {
       var data = {};
       data = {
@@ -446,6 +449,30 @@ export default {
         this.loading = false;
       }, 500);
       this.$message.success("Profile Update Successfull");
+      // this.$router.push('/')
+    },
+    changePassword(){
+      this.loading = true;
+      var password = {
+       current_password: this.form.getFieldValue('current_password'),
+       new_password: this.form.getFieldValue('password'),
+       confirm_password: this.form.getFieldValue('confirm')
+      }
+      console.log("check field current password: " + this.form.getFieldValue('current_password'))
+      console.log("users active user data: " + JSON.stringify(password))
+      console.log("account data: " + JSON.stringify(this.$store.state.accounts.account.account_id))
+      var id = this.$store.state.accounts.account.account_id
+      console.log("email checked: " + id)
+      this.$store.dispatch("CHANGE_PASSWORD", {id, password}).then((result)=>{
+        console.log("confirmed account result: " + JSON.stringify(result))
+      })
+
+      setTimeout(() => {
+        this.visible = false;
+        this.visibleSettings = false;
+        this.loading = false;
+      }, 500);
+      // this.$router.push('/')
     },
     handleCancel(e) {
       this.visible = false;

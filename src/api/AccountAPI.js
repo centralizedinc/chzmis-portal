@@ -35,6 +35,20 @@ export default class AccountAPI {
 
     /**
      * 
+     * @param {String} data
+     */
+    changePassword(data){
+        console.log("change password api: " + JSON.stringify(data))
+        return axios.post('accounts/password', data)
+    }
+
+    forgetPasswordEmail(email){
+        console.log("email forget password: " + JSON.stringify(email))
+        return axios.post('accounts/forrgetPassword', email)
+    }
+
+    /**
+     * 
      * @param {String} parent_id 
      */
     removeFromFavorites(parent_id) {
