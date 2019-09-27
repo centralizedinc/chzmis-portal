@@ -23,7 +23,7 @@ const mutations = {
         state.account.favorites.push(data);
     },
     REMOVE_FROM_FAVORITES(state, data) {
-        const index = state.account.favorites.findIndex(x => x.parent_id === data.parent_id);
+        const index = state.account.favorites.findIndex(x => x.parent_id.toString() === data.parent_id.toString());
         state.account.favorites.splice(index, 1);
     },
     RESET(state) {
