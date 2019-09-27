@@ -134,14 +134,14 @@
         class="password-modal"
         v-model="visibleSettings"
         title="Change Password"
-        onOk="handleOk"
+        onOk="changePassword"
       >
         <template slot="footer">
           <a-button
             key="Change Password"
             type="primary"
             :loading="loading"
-            @click="handleOk"
+            @click="changePassword"
           >Change Password</a-button>
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
@@ -155,6 +155,7 @@
             rules: [{ required: true, message: 'Please input your old password!', whitespace: true }]
           }       
         ]"
+        type="password"
                 />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="New Password">
@@ -333,6 +334,9 @@ export default {
         }
       });
     },
+    handleChangeAvatar(){
+
+    },
     init() {
       console.log("accounts details :", this.$store.state.accounts.account);
       console.log("users details :", this.$store.state.accounts.user);
@@ -385,6 +389,29 @@ export default {
         this.loading = false;
       }, 500);
       this.$message.success("Profile Update Successfull");
+      // this.$router.push('/')
+    },
+    changePassword(){
+      this.loading = true;
+      var current_password = this.form.getFieldValue('current_password')
+      var new_password = this.form.getFieldValue('new_password')
+      var confirm_password = this.form.getFieldValue('confirm_password')
+      
+      console.log("check field current password: " + this.form.getFieldValue('current_password'))
+      console.log("users active user data: " + JSON.stringify(this.$store.state.accounts.user))
+      console.log("account data: " + JSON.stringify(this.$store.state.accounts.account.email))
+      var email = this.$store.state.accounts.account.email
+      console.log("email checked: " + email)
+      this.$store.dispatch("CHECK_EMAIL", email).then((result)=>{
+        console.log("confirmed account result: " + JSON.stringify(result))
+      })
+
+      setTimeout(() => {
+        this.visible = false;
+        this.visibleSettings = false;
+        this.loading = false;
+      }, 500);
+      // this.$router.push('/')
     },
     handleCancel(e) {
       this.visible = false;

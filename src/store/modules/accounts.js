@@ -59,9 +59,21 @@ const actions = {
         console.log("Logging out...");
         context.commit("RESET");
     },
+    CHECK_EMAIL(context, email){
+        console.log("check email have email:0 " + email)
+        return new Promise((resolve, reject)=>{
+            console.log("check email have email:1 " + email)
+            new AccountAPI(context.rootState.accounts.token).checkEmail(email).then((result)=>{
+                console.log("check email: "+JSON.stringify(result))
+                resolve(result)
+            }).catch((err)=>{
+                reject(err)
+            })
+        })
+    },
     CONFIRMED_ACCOUNT(context, account_id){
 return new Promise((resolve, reject)=>{
-    AccountAPI.confirmedAccount(account_id).then((result) =>{
+    new AccountAPI().confirmedAccount(account_id).then((result) =>{
         console.log("confirmed account store : " + JSON.stringify(result))
         resolve(result)
     }).catch((err) =>{

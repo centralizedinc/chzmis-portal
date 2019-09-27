@@ -35,6 +35,15 @@ export default class AccountAPI {
 
     /**
      * 
+     * @param {String} email 
+     */
+    checkEmail(email){
+        console.log("check email api: " + email)
+        return axios.get('accounts/verify/email', {email: email})
+    }
+
+    /**
+     * 
      * @param {String} parent_id 
      */
     removeFromFavorites(parent_id) {
