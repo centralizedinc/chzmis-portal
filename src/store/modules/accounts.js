@@ -72,8 +72,15 @@ const actions = {
         })
     },
     FORGET_PASSWORD(context, email){
+        console.log("entering forget password store: email: " + email)
         return new Promise((resolve, reject)=>{
-            new AccountAPI(context.rootState.accounts.token)
+            new AccountAPI(context.rootState.accounts.token).forgetPasswordEmail(email)
+            .then((result) =>{
+                console.log("forget password store result: " + JSON.stringify(result))
+                resolve(result)
+            }).catch((err) => {
+                reject(err)
+            })
         })
     },
     CONFIRMED_ACCOUNT(context, account_id){

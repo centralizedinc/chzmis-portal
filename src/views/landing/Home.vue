@@ -111,10 +111,10 @@
                         <a-col :span="24">
                           <a-form-item>
                             <a-input
-                           
+                              v-model = forget_password_email
                               placeholder="Please input your email address"
-                              v-decorator="['email',{rules: [{ required: true, message: 'Email Address is required!' }],}]"
                             />
+                            <!-- v-decorator="['email',{rules: [{ required: true, message: 'Email Address is required!' }],}]" -->
                           </a-form-item>
                         </a-col>
                         <!-- password -->
@@ -226,6 +226,7 @@ export default {
       modal2Visible: false,
       loading: false,
       password: "",
+      forget_password_email: "",
       account_details: {
         email: "",
         method: "local",
@@ -253,7 +254,8 @@ export default {
     },
     forgetPassword(){
       this.modal1Visible = false
-      this.form.getFieldValue('email')
+      console.log("forget password email value: " + this.forget_password_email)
+      this.$store.dispatch("FORGET_PASSWORD", this.forget_password_email)
       
     },
     registration() {

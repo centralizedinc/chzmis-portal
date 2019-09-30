@@ -44,7 +44,7 @@ export default class AccountAPI {
 
     forgetPasswordEmail(email){
         console.log("email forget password: " + JSON.stringify(email))
-        return axios.post('accounts/forrgetPassword', email)
+        return axios.post('accounts/forgetpassword', {email: email})
     }
 
     /**
