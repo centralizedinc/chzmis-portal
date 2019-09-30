@@ -208,7 +208,9 @@ export default {
       return 2;
     },
     connections_count() {
-      return 20;
+      // return 20;
+      console.log("connections_count account :", this.$store.state.connections.connections.length);
+      return this.$store.state.connections.connections.length;
     },
     connections() {
       // Remove closed connections
