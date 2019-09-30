@@ -15,8 +15,21 @@ export default class UsersAPI {
         return axios.get('users/details');
     }
 
-    UpdateProfile() {
-        return axios.get('users/:id');
+    UpdateProfile(profile) {
+        return new Promise((resolve, reject) => {
+            console.log("api update profile: " + JSON.stringify(profile))
+            // if(profile){
+                  axios.post("users/update/" + profile._id, profile)
+                    .then(result => {
+                      console.log("############# SAVING RESPONSE: " + JSON.stringify(result.data))
+                      resolve(result.data);
+                    })
+                    .catch(err => {
+                      reject(err);
+                    });
+                // }
+          });
+        // return axios.get('users/' + profile.account_id);
     }
 
     getProfilebyId(profile_id, cb) {

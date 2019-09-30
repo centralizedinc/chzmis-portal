@@ -246,7 +246,9 @@ export default {
     console.log('USER INFO :', this.$store.state.accounts.user);
     console.log('ACCOUNT INFO :', this.$store.state.accounts.account);
     this.avatar = this.$store.state.accounts.user.avatar;
+    // this.id = this.$store.state.accounts.user._id
     this.status = 2;
+    this.form_data._id = this.$store.state.accounts.account._id;
     // this.email = this.$store.state.accounts.user.email;
     // this.form.email= this.$store.state.accounts.user.email;
   },
@@ -301,12 +303,14 @@ export default {
           // this.$store.commit("update", values);
           this.form_data.avatar = this.avatar;
           this.form_data.status = 2;
-          this.$store
-            .dispatch("CREATE_ACCOUNT", { account: this.form_data.status, user: this.form_data})
+          // this.$store.dispatch("UPDATE_PROFILE", { _id: this.form_data._id ,user: this.form_data })
+          return this.$router.push("main/setup/connection")
             .then(result => {
-              console.log("result.data.model :", result.data.model);
-              this.loading = false;
-              this.$router.push("main/setup/connection");
+              // console.log("result.data.model :", result.data.model);
+              // this.loading = false;
+            // return this.$store.dispatch("UPDATE_PROFILE", { _id: this.form_data._id , account:{ status: this.form_data.status}})
+            // return this.$router.push("main/setup/connection");
+            //   console.log('UPDATE PROFILE SUCCESS' );
             })
             .catch(err => {
               console.log("err :", err);

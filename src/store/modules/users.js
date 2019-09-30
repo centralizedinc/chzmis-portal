@@ -62,18 +62,35 @@ const actions = {
         })
     },
 
-    UPDATE_PROFILE(context, updated_account) {
-        return new Promise((resolve, reject) => {
-            new UsersAPI(context.rootState.accounts.token).UpdateProfile(updated_account, (err, data) => {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(data)
-                }
-            })
-        })
+    // UPDATE_PROFILE(context, updated_account) {
+    //     console.log("updated account store: " + (updated_account))
+    //     return new Promise((resolve, reject) => {
+            
+    //         new UsersAPI(context.rootState.accounts.token).UpdateProfile(updated_account, (err, data) => {
+    //             if (err) {
+    //                 reject(err)
+    //             } else {
+    //                 resolve(data)
+    //             }
+    //         })
+    //     })
 
-    }
+    // }
+
+    UPDATE_PROFILE(context, data) {
+        return new Promise((resolve, reject) => {
+            console.log("updated account store: " + JSON.stringify(data))
+                    new UsersAPI(context.rootState.accounts.token).UpdateProfile(data, (err, data) => {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            resolve(data)
+                        }
+                    })
+                })
+        
+            }
+    
 }
 
 export default {

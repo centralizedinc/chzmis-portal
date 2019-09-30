@@ -33,6 +33,8 @@ const mutations = {
     },
     UPDATE_USER(state, data){
         state.profile = data.profile
+        state.user = data.user
+        state.account = data.account
     }
 }
 
@@ -59,6 +61,18 @@ const actions = {
         console.log("Logging out...");
         context.commit("RESET");
     }
+    // UPDATE_ACCOUNT(context, updated_account) {
+    //     return new Promise((resolve, reject) => {
+    //         new UsersAPI(context.rootState.accounts.token).UpdateProfile(updated_account, (err, data) => {
+    //             if (err) {
+    //                 reject(err)
+    //             } else {
+    //                 resolve(data)
+    //             }
+    //         })
+    //     })
+
+    // }
 }
 
 export default {
