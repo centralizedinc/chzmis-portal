@@ -36,7 +36,13 @@
 
       <div slot="content">
         <p>{{comment.message}}</p>
-        <a-row
+        <attachment-layout
+          class="attachments-content"
+          :images="getImages(item.uploads)"
+          :orientation="index%2"
+          @view="viewMoreAttachment(true, item.author, item.uploads, $event)"
+        />
+        <!-- <a-row
           v-if="comment.uploads.length"
           type="flex"
           align="middle"
@@ -68,7 +74,7 @@
               @click="viewMoreAttachment(comment.author, comment.uploads, 3)"
             >{{`+${comment.uploads.length - 3}`}}</span>
           </a-col>
-        </a-row>
+        </a-row> -->
       </div>
 
       <a-tooltip
@@ -91,6 +97,7 @@
 
 <script>
 import moment from "moment";
+import AttachmentLayout from '@/components/AttachmentLayout.vue'
 
 export default {
   data() {
@@ -206,6 +213,11 @@ export default {
         .catch(err => {
           this.loading = false;
         });
+    },
+    getImages(uploads) {
+      if (!uploads || !uploads.length) return [];
+      const images = uploads.map(v => v.location);
+      return images || [];
     }
   }
 };

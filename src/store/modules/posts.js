@@ -108,13 +108,6 @@ const actions = {
                             .postMessage(msg_data)
                     })
                     .then((result) => {
-                        //     msg_data = result.data.model;
-
-                        //     // Get the latest posts
-                        //     if (data.post.is_public) return context.dispatch("GET_PUBLIC_POSTS", { refresh: true });
-                        //     else return context.dispatch("GET_CONNECTION_POSTS", { refresh: true });
-                        // })
-                        // .then((result) => {
                         context.commit("ADD_POSTED_MESSAGE", {
                             key: active_connection,
                             details: result.data.model
@@ -170,9 +163,8 @@ const actions = {
                 var last_date = connection ? connection.last_date || new Date() : new Date();
                 // Load data
                 new PostAPI(context.rootState.accounts.token)
-                    .getPost(key, 10, last_date)
+                    .getPost(key, { limit: 10, last_date, refresh, type: 0 })
                     .then((posts) => {
-                        console.log('posts.data.model :', posts.data.model);
                         if (connection)
                             context.commit('ADD_CONNECTION_POST', {
                                 key,

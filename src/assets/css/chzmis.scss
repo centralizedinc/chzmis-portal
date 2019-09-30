@@ -133,6 +133,9 @@
 
 .link-label {
   color: #4bacfc;
-  text-decoration: underline;
   cursor: pointer;
+}
+
+.link-label:hover {
+  text-decoration: underline;
 }

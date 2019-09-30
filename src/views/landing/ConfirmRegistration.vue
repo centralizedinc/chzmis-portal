@@ -34,6 +34,9 @@ export default {
         visible: true
       }
     },
+    created(){
+      console.log("confirm registration: " + this.$route.query)
+    },
   methods: {
     handleOk(){
       this.link()

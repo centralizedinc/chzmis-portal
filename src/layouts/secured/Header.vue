@@ -31,13 +31,8 @@
       <a-modal class="account-modal" v-model="visible" title="My Account" onOk="handleOk">
         <template slot="footer">
           <a-button key="back" @click="handleCancel">Return</a-button>
-          <a-button
-            key="submit
-          "
-            type="primary"
-            :loading="loading"
-            @click="next"
-          >Submit</a-button>
+          <a-button key="submit
+          " type="primary" :loading="loading" @click="next()">Submit</a-button>
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
           <p style="text-align: center">
@@ -58,70 +53,28 @@
                 </a-upload>
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="First name">
-                <a-input
-                  placeholder="First name"
-                  v-decorator="[
-                        'name.first',
-                        {
-                          rules: [rules.required('First Name')]
-                        }
-                      ]"
-                />
+                <a-input placeholder="First name" v-model="user_profile.name.first" />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="Middle name">
-                <a-input
-                  placeholder="Middle name"
-                  v-decorator="[
-                        'name.middle',
-                        {
-                          rules: [rules.required('Middle Name')]
-                        }
-                      ]"
-                />
+                <a-input placeholder="Middle name" v-model="user_profile.name.middle" />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="Last name">
-                <a-input
-                  placeholder="Last Name"
-                  v-decorator="[
-                        'name.last',
-                        {
-                          rules: [rules.required('Last Name')]
-                        }
-                      ]"
-                />
+                <a-input placeholder="Last Name" v-model="user_profile.name.last" />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="Birthday">
-                <a-date-picker style="width: 100%"
+                <a-date-picker
+                  style="width: 100%"
                   @change="onChange"
                   placeholder="Birthdate"
-                  v-decorator="['birthdate', {
-                      rules: [rules.required('Date of Birth')]
-                    }]"
+                  v-model="user_profile.birthdate"
                 />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="Phone Number">
                 <a-input
                   placeholder="Phone number"
-                  v-decorator="[
-                        'phone',
-                        {
-                          rules: [rules.required('Phone Number')]
-                        }
-                      ]"
+                  v-model="user_profile.phone"
                   style="width: 100%"
-                >
-                  <a-select
-                    slot="addonBefore"
-                    v-decorator="[
-            'prefix',
-            { initialValue: '63' }
-          ]"
-                    style="width: 70px"
-                  >
-                    <a-select-option value="63">+63</a-select-option>
-                    <a-select-option value="87">+87</a-select-option>
-                  </a-select>
-                </a-input>
+                ></a-input>
               </a-form-item>
             </a-form>
           </p>
@@ -133,14 +86,14 @@
         class="password-modal"
         v-model="visibleSettings"
         title="Change Password"
-        onOk="handleOk"
+        onOk="changePassword"
       >
         <template slot="footer">
           <a-button
             key="Change Password"
             type="primary"
             :loading="loading"
-            @click="handleOk"
+            @click="changePassword"
           >Change Password</a-button>
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
@@ -154,6 +107,7 @@
             rules: [{ required: true, message: 'Please input your old password!', whitespace: true }]
           }       
         ]"
+                  type="password"
                 />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="New Password">
@@ -255,8 +209,12 @@ export default {
           middle: "",
           last: ""
         },
-        bday: ""
-      }
+        bday: "",
+        phone: ""
+      },
+
+      // new data properties
+      user_profile: {}
     };
   },
   beforeCreate() {
@@ -264,9 +222,10 @@ export default {
   },
   created() {
     this.profile();
+    this.user_profile = this.$store.state.accounts.user;
     this.avatar = this.$store.state.accounts.user.avatar;
-    this.name.first = this.$store.state.accounts.user.name.first;
-    this.name.last = this.$store.state.accounts.user.name.last;
+    // this.name.first = this.$store.state.accounts.user.name.first;
+    // this.name.last = this.$store.state.accounts.user.name.last;
     // console.log("ACCOUNT DETAILS:", this.$store.state.accounts.account);
   },
   computed: {
@@ -344,6 +303,7 @@ export default {
         }
       });
     },
+    handleChangeAvatar() {},
     mapProps() {
       var data = {};
       data = {
@@ -411,16 +371,23 @@ export default {
           console.log("Received data of form: ", this.form_data);
           // this.$store.commit("update", values);
           this.form_data.avatar = this.avatar;
-          this.form_data.status = 2;
+          this.form_data.account_id;
           this.$store
-            .dispatch("CREATE_ACCOUNT", {
-              account: this.form_data.status,
+            .dispatch("UPDATE_PROFILE", {
+              account: this.form_data.account_id,
               user: this.form_data
             })
             .then(result => {
               console.log("result.data.model :", result.data.model);
               this.loading = false;
-              this.$router.push("main/setup/connection");
+              this.$router.push("/");
+              this.loading = true;
+              setTimeout(() => {
+                this.visible = false;
+                this.visibleSettings = false;
+                this.loading = false;
+              }, 500);
+              this.$message.success("Profile Update Successfull");
             })
             .catch(err => {
               console.log("err :", err);
@@ -446,6 +413,51 @@ export default {
         this.loading = false;
       }, 500);
       this.$message.success("Profile Update Successfull");
+      // this.$router.push('/')
+    },
+    changePassword() {
+      this.loading = true;
+      var current_password = this.form.getFieldValue("current_password");
+      var new_password = this.form.getFieldValue("new_password");
+      var confirm_password = this.form.getFieldValue("confirm_password");
+
+      console.log(
+        "check field current password: " +
+          this.form.getFieldValue("current_password")
+      );
+      console.log(
+        "users active user data: " +
+          JSON.stringify(this.$store.state.accounts.user)
+      );
+      console.log(
+        "account data: " +
+          JSON.stringify(this.$store.state.accounts.account.email)
+      );
+      var email = this.$store.state.accounts.account.email;
+      console.log("email checked: " + email);
+      this.$store.dispatch("CHECK_EMAIL", email).then(result => {
+        console.log("confirmed account result: " + JSON.stringify(result));
+      });
+      var password = {
+       current_password: this.form.getFieldValue('current_password'),
+       new_password: this.form.getFieldValue('password'),
+       confirm_password: this.form.getFieldValue('confirm')
+      }
+      console.log("check field current password: " + this.form.getFieldValue('current_password'))
+      console.log("users active user data: " + JSON.stringify(password))
+      console.log("account data: " + JSON.stringify(this.$store.state.accounts.account.account_id))
+      var id = this.$store.state.accounts.account.account_id
+      console.log("email checked: " + id)
+      this.$store.dispatch("CHANGE_PASSWORD", {id, password}).then((result)=>{
+        console.log("confirmed account result: " + JSON.stringify(result))
+      })
+
+      setTimeout(() => {
+        this.visible = false;
+        this.visibleSettings = false;
+        this.loading = false;
+      }, 500);
+      // this.$router.push('/')
     },
     handleCancel(e) {
       this.visible = false;

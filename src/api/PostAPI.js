@@ -21,11 +21,21 @@ export default class PostAPI {
      * @returns {Promise}
      * @param {String} parent_id 
      * @param {Number} limit 
-     * @param {Date} date_created 
+     * @param {Date} last_date
+     * @param {Boolean} refresh
+     * @param {Number} type
      */
-    getPost(parent_id, limit, date_created) {
-        if (parent_id === -1) return axios.get(`post/public?limit=${limit}&date=${date_created}`);
-        else return axios.get(`post/parent/${parent_id}?limit=${limit}&date=${date_created}`);
+    getPost(parent_id, option) {
+        var queries = ''
+        if (option) queries = '?' + Object.keys(option).reduce((q, v, index) => {
+            if(index === 1){
+                return `${q}=${option[q]}&` + `${v}=${option[v]}&`
+            }
+            else return q + `${v}=${option[v]}&`
+        });
+        console.log('queries :', queries);
+        if (parent_id === -1) return axios.get(`post/public${queries}`);
+        else return axios.get(`post/parent/${parent_id}${queries}`)
     }
 
     /**

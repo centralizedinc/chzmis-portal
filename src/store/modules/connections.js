@@ -35,8 +35,13 @@ const mutations = {
     },
     UPDATE_CONNECTION(state, data) {
         console.log('UPDATE_CONNECTION :', data);
-        const index = state.connections.findIndex(con => con._id === data._id);
-        state.connections[index] = data;
+        const index = state.connections.findIndex(con => con._id.toString() === data._id.toString());
+        console.log('UPDATE_CONNECTION index:', index);
+        if (index !== -1) {
+            state.connections.splice(index, 1);
+        }
+        data.display = true;
+        state.connections.push(data);
     },
     OPEN_CONNECTION(state, data) {
         const index = state.connections.findIndex(con => con._id === data.parent_id)

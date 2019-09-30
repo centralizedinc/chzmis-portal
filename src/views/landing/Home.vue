@@ -99,7 +99,7 @@
                     title="Forgot your password?"
                     centered
                     v-model="modal1Visible"
-                    @ok="() => modal1Visible = false"
+                    @ok="() => forgetPassword()"
                     :visible="modal1Visible"
                     @cancel="() => setModal1Visible(false)"
                   >
@@ -137,22 +137,6 @@
                     <!-- content -->
                     <a-form>
                       <a-row type="flex" align="center" :gutter="12">
-                        <!-- first name -->
-                        <a-col :span="24">
-                            <a-form-item>
-                              <a-input placeholder="First Name"
-                        v-model="user_details.name.first_name"></a-input>
-                            </a-form-item>
-                
-                        </a-col>
-                        <!-- last name -->
-                        <a-col :span="24">
-                            <a-form-item>
-                              <a-input placeholder="Last Name"
-                        v-model="user_details.name.last_name"></a-input>
-                            </a-form-item>
-                
-                        </a-col>
                         <!-- email -->
                         <a-col :span="24">
                           <a-form-item>
@@ -247,12 +231,6 @@ export default {
         method: "local",
         password: ""
       },
-      user_details:{
-        name:{
-          first_name:"",
-          last_name:""
-        }
-      },
       show_password: false
     };
   },
@@ -273,19 +251,21 @@ export default {
     setModal1Visible(modal1Visible) {
       this.modal1Visible = modal1Visible;
     },
-
+    forgetPassword(){
+      this.modal1Visible = false
+      this.form.getFieldValue('email')
+      
+    },
     registration() {
       this.$router.push("/signUp");
     },
     localSignUp() {
       // this.$router.push("/newAccount");
-      this.$store.dispatch("CREATE_ACCOUNT", {account: this.account_details, user:this.user_details.name}).then((result) =>{
+      this.$store.dispatch("CREATE_ACCOUNT", {account: this.account_details}).then((result) =>{
         console.log("create account data: " + JSON.stringify(result))
         this.modal2Visible = false
         this.account_details.email = ""
         this.account_details.password = ""
-        this.user_details.name.first_name = ""
-        this.user_details.name.last_name = ""
         this.$router.push("/")
       })
     },
@@ -293,6 +273,7 @@ export default {
       this.loading = true;
       this.form.validateFieldsAndScroll((err, auth) => {
         if (!err) {
+           this.$store.commit('ACTIVE_USER', this.form.getFieldValue('email'))
           console.log("Received values of form: ", auth);
           this.$store
             .dispatch("LOGIN", auth)

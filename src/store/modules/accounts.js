@@ -23,7 +23,7 @@ const mutations = {
         state.account.favorites.push(data);
     },
     REMOVE_FROM_FAVORITES(state, data) {
-        const index = state.account.favorites.findIndex(x => x.parent_id === data.parent_id);
+        const index = state.account.favorites.findIndex(x => x.parent_id.toString() === data.parent_id.toString());
         state.account.favorites.splice(index, 1);
     },
     RESET(state) {
@@ -31,8 +31,10 @@ const mutations = {
             state[key] = initialState()[key];
         })
     },
-    UPDATE_USER(state, data){
+    UPDATE_USER(state, data) {
         state.profile = data.profile
+        state.user = data.user
+        state.account = data.account
     }
 }
 
@@ -59,9 +61,26 @@ const actions = {
         console.log("Logging out...");
         context.commit("RESET");
     },
+    CHANGE_PASSWORD(context, data){
+        console.log("check data:0 id: " + JSON.stringify(data))
+        return new Promise((resolve, reject)=>{
+            console.log("check data:1 id: " + JSON.stringify(data))
+            new AccountAPI(context.rootState.accounts.token).changePassword(data).then((result)=>{
+                console.log("check email: " + JSON.stringify(result))
+                resolve(result)
+            }).catch((err)=>{
+                reject(err)
+            })
+        })
+    },
+    FORGET_PASSWORD(context, email){
+        return new Promise((resolve, reject)=>{
+            new AccountAPI(context.rootState.accounts.token)
+        })
+    },
     CONFIRMED_ACCOUNT(context, account_id){
 return new Promise((resolve, reject)=>{
-    AccountAPI.confirmedAccount(account_id).then((result) =>{
+    new AccountAPI().confirmedAccount(account_id).then((result) =>{
         console.log("confirmed account store : " + JSON.stringify(result))
         resolve(result)
     }).catch((err) =>{
@@ -69,6 +88,18 @@ return new Promise((resolve, reject)=>{
     })
 })
     }
+    // UPDATE_ACCOUNT(context, updated_account) {
+    //     return new Promise((resolve, reject) => {
+    //         new UsersAPI(context.rootState.accounts.token).UpdateProfile(updated_account, (err, data) => {
+    //             if (err) {
+    //                 reject(err)
+    //             } else {
+    //                 resolve(data)
+    //             }
+    //         })
+    //     })
+
+    // }
 }
 
 export default {

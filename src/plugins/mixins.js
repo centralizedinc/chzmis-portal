@@ -55,10 +55,12 @@ export default {
                         return user || {};
                     }
                 },
-                getConnectionById(id) {
+                getConnectionById(id, option) {
                     const connections = this.$store.state.connections.connections;
                     if (connections && connections.length) {
                         const con = connections.find(v => v._id === id);
+                        if (option === "initial")
+                            return con && con.name ? con.name[0].toUpperCase() : '?';
                         return con || {};
                     } else return {};
                 },
@@ -83,8 +85,8 @@ export default {
                     });
                     return dt;
                 },
-                textEllipse(text) {
-                    if (text.length > 100) return text.substring(0, 100) + '...'
+                textEllipse(text, show, limit) {
+                    if (!show && text.length > (limit || 100)) return `${text.substring(0, (limit || 100))}...`
                     else return text
                 },
                 getAuthorName(account_id) {
