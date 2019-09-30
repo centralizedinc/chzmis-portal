@@ -237,7 +237,9 @@ export default {
       return 2;
     },
     connections_count() {
-      return 20;
+      // return 20;
+      console.log("connections_count account :", this.$store.state.connections.connections.length);
+      return this.$store.state.connections.connections.length;
     },
     connections() {
       // Remove closed connections
@@ -258,7 +260,7 @@ export default {
     }
   },
   created() {
-    this.active_key = "5d7072d0ef9f5812e534ed13";
+    // this.active_key = "5d7072d0ef9f5812e534ed13";
     this.$store.commit("SET_ACTIVE_CONNECTION", -1);
     window.addEventListener("scroll", this.handleScroll);
     this.loading = true;

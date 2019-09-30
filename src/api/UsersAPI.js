@@ -15,8 +15,8 @@ export default class UsersAPI {
         return axios.get('users/details');
     }
 
-    UpdateProfile() {
-        return axios.get('users/:id');
+    UpdateProfile(id, account_id) {
+        return axios.get(`users/${id}` , account_id);
     }
 
     getProfilebyId(profile_id, cb) {

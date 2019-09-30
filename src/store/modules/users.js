@@ -4,7 +4,8 @@ function initialState() {
     return {
         users: [],
         profile: [],
-        active_user: ""
+        active_user: "",
+        remove_active_user: ""
     }
 }
 
@@ -23,8 +24,12 @@ const mutations = {
         })
     },
     ACTIVE_PROFILE(state, account_id) {
-        console.log("ACTIVE_PROFILE", account_id);
+        console.log("ACTIVE_PROFILE: ", account_id);
         state.active_user = account_id;
+    },
+    REMOVE_ACTIVE_PROFILE(state, account_id) {
+        console.log("REMOVE_ACTIVE_PROFILE: ", account_id);
+        state.remove_active_user = account_id;
     },
     SET_PROFILE(state, data) {
         console.log("###PROFILE:SET###" + JSON.stringify(data))
