@@ -67,6 +67,12 @@
               placeholder="Please enter the connection name"
             />
           </a-form-item>
+          <a-form-item label="Description">
+            <a-textarea 
+              v-decorator="['description']" 
+              placeholder="Enter any description" 
+              :rows="2" />
+          </a-form-item>
           <a-form-item label="Members">
             <!-- <template v-for="(item, i) in form.getFieldValue('members')"> -->
             <a-form-item :style="{ display: 'inline-block', width: '75%' }">
@@ -221,13 +227,6 @@ export default {
     connections() {
       return this.$store.state.connections.connections;
     }
-    // form_accounts() {
-    //   var members = this.form.getFieldValue("members");
-    //   if (members.length) {
-    //     const accounts = members.map(x => x.account_id);
-    //     return accounts;
-    //   } else return [];
-    // }
   },
   watch: {
     show_create_connection(val) {
@@ -236,13 +235,18 @@ export default {
       if (val)
         console.log("this.selected_connection :", this.selected_connection);
       if (this.selected_connection) {
-        this.avatar.imageUrl = this.selected_connection.avatar ? this.selected_connection.avatar.location : null;
+        this.avatar.imageUrl = this.selected_connection.avatar
+          ? this.selected_connection.avatar.location
+          : null;
         this.members = this.selected_connection.members;
         this.form = this.$form.createForm(this, {
           mapPropsToFields() {
             return {
               name: _form.createFormField({
                 value: _self.selected_connection.name
+              }),
+              description: _form.createFormField({
+                value: _self.selected_connection.description
               }),
               members_index: _form.createFormField({
                 value: _self.members.map(x => x.account_id)
@@ -333,7 +337,11 @@ export default {
       this.form.validateFields((err, connection) => {
         if (!err) {
           var action = "CREATE_CONNECTION",
-            body = { name: connection.name, members: this.members };
+            body = {
+              name: connection.name,
+              description: connection.description,
+              members: this.members
+            };
           if (this.selected_connection) {
             action = "UPDATE_CONNECTION";
             console.log(
@@ -344,6 +352,7 @@ export default {
               id: this.selected_connection._id,
               connection: {
                 name: connection.name,
+                description: connection.description,
                 members: this.members,
                 avatar: this.selected_connection.avatar
               }

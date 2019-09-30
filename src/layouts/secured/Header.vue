@@ -417,6 +417,7 @@ export default {
     },
     changePassword() {
       this.loading = true;
+<<<<<<< HEAD
       var current_password = this.form.getFieldValue("current_password");
       var new_password = this.form.getFieldValue("new_password");
       var confirm_password = this.form.getFieldValue("confirm_password");
@@ -438,6 +439,21 @@ export default {
       this.$store.dispatch("CHECK_EMAIL", email).then(result => {
         console.log("confirmed account result: " + JSON.stringify(result));
       });
+=======
+      var password = {
+       current_password: this.form.getFieldValue('current_password'),
+       new_password: this.form.getFieldValue('password'),
+       confirm_password: this.form.getFieldValue('confirm')
+      }
+      console.log("check field current password: " + this.form.getFieldValue('current_password'))
+      console.log("users active user data: " + JSON.stringify(password))
+      console.log("account data: " + JSON.stringify(this.$store.state.accounts.account.account_id))
+      var id = this.$store.state.accounts.account.account_id
+      console.log("email checked: " + id)
+      this.$store.dispatch("CHANGE_PASSWORD", {id, password}).then((result)=>{
+        console.log("confirmed account result: " + JSON.stringify(result))
+      })
+>>>>>>> 43227ecd431e30f415e614f2b135f3c53e33eb87
 
       setTimeout(() => {
         this.visible = false;

@@ -23,7 +23,7 @@ const mutations = {
         state.account.favorites.push(data);
     },
     REMOVE_FROM_FAVORITES(state, data) {
-        const index = state.account.favorites.findIndex(x => x.parent_id === data.parent_id);
+        const index = state.account.favorites.findIndex(x => x.parent_id.toString() === data.parent_id.toString());
         state.account.favorites.splice(index, 1);
     },
     RESET(state) {
@@ -59,16 +59,21 @@ const actions = {
         console.log("Logging out...");
         context.commit("RESET");
     },
-    CHECK_EMAIL(context, email){
-        console.log("check email have email:0 " + email)
+    CHANGE_PASSWORD(context, data){
+        console.log("check data:0 id: " + JSON.stringify(data))
         return new Promise((resolve, reject)=>{
-            console.log("check email have email:1 " + email)
-            new AccountAPI(context.rootState.accounts.token).checkEmail(email).then((result)=>{
-                console.log("check email: "+JSON.stringify(result))
+            console.log("check data:1 id: " + JSON.stringify(data))
+            new AccountAPI(context.rootState.accounts.token).changePassword(data).then((result)=>{
+                console.log("check email: " + JSON.stringify(result))
                 resolve(result)
             }).catch((err)=>{
                 reject(err)
             })
+        })
+    },
+    FORGET_PASSWORD(context, email){
+        return new Promise((resolve, reject)=>{
+            new AccountAPI(context.rootState.accounts.token)
         })
     },
     CONFIRMED_ACCOUNT(context, account_id){

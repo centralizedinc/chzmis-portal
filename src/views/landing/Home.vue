@@ -99,7 +99,7 @@
                     title="Forgot your password?"
                     centered
                     v-model="modal1Visible"
-                    @ok="() => modal1Visible = false"
+                    @ok="() => forgetPassword()"
                     :visible="modal1Visible"
                     @cancel="() => setModal1Visible(false)"
                   >
@@ -251,7 +251,11 @@ export default {
     setModal1Visible(modal1Visible) {
       this.modal1Visible = modal1Visible;
     },
-
+    forgetPassword(){
+      this.modal1Visible = false
+      this.form.getFieldValue('email')
+      
+    },
     registration() {
       this.$router.push("/signUp");
     },
