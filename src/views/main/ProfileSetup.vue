@@ -183,13 +183,7 @@
 </template>
 
  <script>
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
-
-export default {
+ export default {
   components: {
     // searchConnection: () => import("@/components/SearchConnection")
   },
@@ -328,7 +322,7 @@ export default {
       }
       if (info.file.status === "done") {
         // Get this url from response in real world.
-        getBase64(info.file.originFileObj, avatar => {
+        this.getBase64(info.file.originFileObj, avatar => {
           this.avatar = avatar;
           this.loading = false;
         });

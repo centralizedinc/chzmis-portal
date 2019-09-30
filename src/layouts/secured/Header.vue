@@ -6,7 +6,7 @@
       </a>
     </a-col>
     <a-col :md="{ span: 4, offset: 14}" :xs="0">
-      <a-input-search placeholder="Search" @search="onSearch" enterButton size="small"/>
+      <a-input-search placeholder="Search" @search="onSearch" enterButton size="small" />
     </a-col>
     <a-col :md="{ span: 2, offset: 1}" :xs="0">
       <a-dropdown placement="bottomRight">
@@ -22,10 +22,7 @@
           </a-menu-item>
         </a-menu>
         <a-button style="background: transparent; border: none;font-size: 20px;box-shadow: none">
-          <a-avatar
-            shape="circle"
-            :src="getLoginUser().avatar"
-          >{{getLoginUser("initial")}}</a-avatar>
+          <a-avatar shape="circle" :src="getLoginUser().avatar">{{getLoginUser("initial")}}</a-avatar>
           <a-icon type="down" />
         </a-button>
       </a-dropdown>
@@ -35,7 +32,7 @@
         <template slot="footer">
           <a-button key="back" @click="handleCancel">Return</a-button>
           <a-button key="submit
-          " type="primary" :loading="loading" @click="handleOk">Submit</a-button>
+          " type="primary" :loading="loading" @click="next()">Submit</a-button>
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
           <p style="text-align: center">
@@ -55,59 +52,29 @@
                   </div>
                 </a-upload>
               </a-form-item>
-              <a-form-item v-bind="formItemLayout" label="Fullname">
-                <a-input
-                  v-decorator="[
-          'name',
-          {
-            rules: [{ required: true, message: 'Please input your fullname', whitespace: true }]
-          }
-        ]"
-                />
+              <a-form-item v-bind="formItemLayout" label="First name">
+                <a-input placeholder="First name" v-model="user_profile.name.first" />
               </a-form-item>
-              <a-form-item v-bind="formItemLayout" label="Address">
-                <a-input
-                  v-decorator="[
-          'address',
-          {
-            rules: [{ required: true, message: 'Please input your address', whitespace: true }]
-          }
-        ]"
-                />
+              <a-form-item v-bind="formItemLayout" label="Middle name">
+                <a-input placeholder="Middle name" v-model="user_profile.name.middle" />
+              </a-form-item>
+              <a-form-item v-bind="formItemLayout" label="Last name">
+                <a-input placeholder="Last Name" v-model="user_profile.name.last" />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="Birthday">
                 <a-date-picker
+                  style="width: 100%"
                   @change="onChange"
-                  v-decorator="[
-          'birthday',
-          {
-            rules: [{ required: true, message: 'Please select your birthday', whitespace: true }]
-          }
-        ]"
+                  placeholder="Birthdate"
+                  v-model="user_profile.birthdate"
                 />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="Phone Number">
                 <a-input
-                  v-decorator="[
-          'phone',
-          {
-            rules: [{ required: true, message: 'Please input your phone number!' }],
-          }
-        ]"
+                  placeholder="Phone number"
+                  v-model="user_profile.phone"
                   style="width: 100%"
-                >
-                  <a-select
-                    slot="addonBefore"
-                    v-decorator="[
-            'prefix',
-            { initialValue: '63' }
-          ]"
-                    style="width: 70px"
-                  >
-                    <a-select-option value="63">+63</a-select-option>
-                    <a-select-option value="87">+87</a-select-option>
-                  </a-select>
-                </a-input>
+                ></a-input>
               </a-form-item>
             </a-form>
           </p>
@@ -115,14 +82,23 @@
       </a-modal>
     </div>
     <div>
-      <a-modal class="password-modal" v-model="visibleSettings" title="Change Password" onOk="handleOk">
+      <a-modal
+        class="password-modal"
+        v-model="visibleSettings"
+        title="Change Password"
+        onOk="changePassword"
+      >
         <template slot="footer">
-                    <a-button key="Change Password" type="primary" :loading="loading" @click="handleOk">Change Password</a-button>
+          <a-button
+            key="Change Password"
+            type="primary"
+            :loading="loading"
+            @click="changePassword"
+          >Change Password</a-button>
         </template>
         <a-card style="border: 0px solid rgba(0,0,0,.4);" :headStyle="main_layout_head_style">
           <p style="text align-center">
-            <a-form :form="form" @submit="handleSubmit">        
-            
+            <a-form :form="form" @submit="handleSubmit">
               <a-form-item v-bind="formItemLayout" label="Current password">
                 <a-input
                   v-decorator="[
@@ -131,7 +107,8 @@
             rules: [{ required: true, message: 'Please input your old password!', whitespace: true }]
           }       
         ]"
-                 />
+                  type="password"
+                />
               </a-form-item>
               <a-form-item v-bind="formItemLayout" label="New Password">
                 <a-input
@@ -179,6 +156,7 @@ export default {
     return {
       headerIcon,
       users: [],
+      account: [],
       name: "",
       loading: false,
       visible: false,
@@ -217,7 +195,26 @@ export default {
       //   imageUrl: "",
       //   form_data: null
       // }
-      avatar: null
+      avatar: null,
+      rules: {
+        required: v => {
+          return { required: true, message: `${v} is required!` };
+        }
+      },
+      form_data: {},
+      values: {
+        avatar: "",
+        name: {
+          first: "",
+          middle: "",
+          last: ""
+        },
+        bday: "",
+        phone: ""
+      },
+
+      // new data properties
+      user_profile: {}
     };
   },
   beforeCreate() {
@@ -225,7 +222,11 @@ export default {
   },
   created() {
     this.profile();
+    this.user_profile = this.$store.state.accounts.user;
     this.avatar = this.$store.state.accounts.user.avatar;
+    // this.name.first = this.$store.state.accounts.user.name.first;
+    // this.name.last = this.$store.state.accounts.user.name.last;
+    // console.log("ACCOUNT DETAILS:", this.$store.state.accounts.account);
   },
   computed: {
     user_details() {
@@ -247,8 +248,36 @@ export default {
           this.form = this.$form.createForm(this, {
             mapPropsToFields() {
               return {
+                "name.first": _form.createFormField({
+                  value: _self.user_details.name.first
+                }),
+                "name.middle": _form.createFormField({
+                  value: _self.user_details.name.middle
+                }),
+                "name.last": this.$form.createFormField({
+                  value: this.form_data.name.last
+                }),
+                birthdate: this.$form.createFormField({
+                  value: this.form_data.birthdate
+                })
+              };
+            }
+          });
+        } else {
+          this.profile();
+        }
+    },
+    account_details(val) {
+      var _form = this.$form,
+        _self = this;
+      if (val)
+        if (this.account_details) {
+          this.users = this.account_details.account;
+          this.form = this.$form.createForm(this, {
+            mapPropsToFields() {
+              return {
                 name: _form.createFormField({
-                  value: _self.user_details.name
+                  value: _self.account_details.name
                 })
               };
             }
@@ -261,6 +290,7 @@ export default {
   methods: {
     profile() {
       this.users = [];
+      this.account = [];
       this.loading = false;
       var _form = this.$form;
       this.form = this.$form.createForm(this, {
@@ -270,6 +300,30 @@ export default {
               value: []
             })
           };
+        }
+      });
+    },
+    handleChangeAvatar() {},
+    mapProps() {
+      var data = {};
+      data = {
+        "name.first": this.$form.createFormField({
+          value: this.form_data.name.first
+        }),
+        "name.middle": _form.createFormField({
+          value: _self.user_details.name.middle
+        }),
+        "name.last": this.$form.createFormField({
+          value: this.form_data.name.last
+        }),
+        birthdate: this.$form.createFormField({
+          value: this.form_data.birthdate
+        })
+      };
+
+      this.form = this.$form.createForm(this, {
+        mapPropsToFields() {
+          return data;
         }
       });
     },
@@ -308,14 +362,48 @@ export default {
         }
       });
     },
+    next() {
+      this.form.validateFieldsAndScroll((err, data) => {
+        if (!err) {
+          Object.keys(data).forEach(key => {
+            this.form_data[key] = data[key];
+          });
+          console.log("Received data of form: ", this.form_data);
+          // this.$store.commit("update", values);
+          this.form_data.avatar = this.avatar;
+          this.form_data.account_id;
+          this.$store
+            .dispatch("UPDATE_PROFILE", {
+              account: this.form_data.account_id,
+              user: this.form_data
+            })
+            .then(result => {
+              console.log("result.data.model :", result.data.model);
+              this.loading = false;
+              this.$router.push("/");
+              this.loading = true;
+              setTimeout(() => {
+                this.visible = false;
+                this.visibleSettings = false;
+                this.loading = false;
+              }, 500);
+              this.$message.success("Profile Update Successfull");
+            })
+            .catch(err => {
+              console.log("err :", err);
+              this.loading = false;
+            });
+        }
+      });
+    },
     onChange(date, dateString) {
       console.log(date, dateString);
     },
     showModalAccounts() {
       this.visible = true;
     },
-    showModalSettings(){
-      this.visibleSettings = true
+    showModalSettings() {
+      this.visibleSettings = true;
     },
     handleOk(e) {
       this.loading = true;
@@ -325,10 +413,55 @@ export default {
         this.loading = false;
       }, 500);
       this.$message.success("Profile Update Successfull");
+      // this.$router.push('/')
+    },
+    changePassword() {
+      this.loading = true;
+      var current_password = this.form.getFieldValue("current_password");
+      var new_password = this.form.getFieldValue("new_password");
+      var confirm_password = this.form.getFieldValue("confirm_password");
+
+      console.log(
+        "check field current password: " +
+          this.form.getFieldValue("current_password")
+      );
+      console.log(
+        "users active user data: " +
+          JSON.stringify(this.$store.state.accounts.user)
+      );
+      console.log(
+        "account data: " +
+          JSON.stringify(this.$store.state.accounts.account.email)
+      );
+      var email = this.$store.state.accounts.account.email;
+      console.log("email checked: " + email);
+      this.$store.dispatch("CHECK_EMAIL", email).then(result => {
+        console.log("confirmed account result: " + JSON.stringify(result));
+      });
+      var password = {
+       current_password: this.form.getFieldValue('current_password'),
+       new_password: this.form.getFieldValue('password'),
+       confirm_password: this.form.getFieldValue('confirm')
+      }
+      console.log("check field current password: " + this.form.getFieldValue('current_password'))
+      console.log("users active user data: " + JSON.stringify(password))
+      console.log("account data: " + JSON.stringify(this.$store.state.accounts.account.account_id))
+      var id = this.$store.state.accounts.account.account_id
+      console.log("email checked: " + id)
+      this.$store.dispatch("CHANGE_PASSWORD", {id, password}).then((result)=>{
+        console.log("confirmed account result: " + JSON.stringify(result))
+      })
+
+      setTimeout(() => {
+        this.visible = false;
+        this.visibleSettings = false;
+        this.loading = false;
+      }, 500);
+      // this.$router.push('/')
     },
     handleCancel(e) {
       this.visible = false;
-      this.visibleSettings = false
+      this.visibleSettings = false;
     },
     handleAccMenuClick(e) {
       console.log("key :", e);
@@ -435,6 +568,6 @@ export default {
 }
 
 .custom-textarea .ant-input {
-  height: 10vh !important;
+  height: 4vh !important;
 }
 </style>

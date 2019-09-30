@@ -17,6 +17,11 @@ export default class AccountAPI {
         return axios.post('login', account);
     }
 
+    static confirmedAccount(account_id){        
+        console.log("confirmed account: " + JSON.stringify(account_id))
+        return axios.post('confirmation', accout_id)
+    }
+
     /**
      * 
      * @param {Number} type 
@@ -26,6 +31,20 @@ export default class AccountAPI {
         console.log("Account API addToFavorites");
         console.table([{ type, parent_id }]);
         return axios.post('accounts/favorites/add', { type, parent_id })
+    }
+
+    /**
+     * 
+     * @param {String} data
+     */
+    changePassword(data){
+        console.log("change password api: " + JSON.stringify(data))
+        return axios.post('accounts/password', data)
+    }
+
+    forgetPasswordEmail(email){
+        console.log("email forget password: " + JSON.stringify(email))
+        return axios.post('accounts/forrgetPassword', email)
     }
 
     /**

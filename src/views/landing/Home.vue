@@ -99,7 +99,7 @@
                     title="Forgot your password?"
                     centered
                     v-model="modal1Visible"
-                    @ok="() => modal1Visible = false"
+                    @ok="() => forgetPassword()"
                     :visible="modal1Visible"
                     @cancel="() => setModal1Visible(false)"
                   >
@@ -142,7 +142,7 @@
                           <a-form-item>
                             <a-input
                               placeholder="Email Address"
-                              v-decorator="['email',{rules: [{ required: true, message: 'Email Address is required!' }],}]"
+                              v-model="account_details.email"
                             />
                           </a-form-item>
                         </a-col>
@@ -151,7 +151,7 @@
                           <a-form-item>
                             <a-input
                               placeholder="Create new password"
-                              v-decorator="['password',{rules: [{required: true, message: 'Please input your password!',}, {validator: validateToNextPassword,}],}]"
+                              v-model="password"
                               type="password"
                             />
                           </a-form-item>
@@ -160,8 +160,8 @@
                           <a-form-item>
                             <a-input
                               placeholder="Confirm new password"
-                              v-decorator="['confirm',{rules: [{required: true, message: 'Please confirm your password!',}, {validator: compareToFirstPassword,}],}]"
                               type="password"
+                              v-model="account_details.password"
                               @blur="handleConfirmBlur"
                             />
                           </a-form-item>
@@ -225,6 +225,12 @@ export default {
       modal1Visible: false,
       modal2Visible: false,
       loading: false,
+      password: "",
+      account_details: {
+        email: "",
+        method: "local",
+        password: ""
+      },
       show_password: false
     };
   },
@@ -245,17 +251,29 @@ export default {
     setModal1Visible(modal1Visible) {
       this.modal1Visible = modal1Visible;
     },
-
+    forgetPassword(){
+      this.modal1Visible = false
+      this.form.getFieldValue('email')
+      
+    },
     registration() {
       this.$router.push("/signUp");
     },
     localSignUp() {
-      this.$router.push("/newAccount");
+      // this.$router.push("/newAccount");
+      this.$store.dispatch("CREATE_ACCOUNT", {account: this.account_details}).then((result) =>{
+        console.log("create account data: " + JSON.stringify(result))
+        this.modal2Visible = false
+        this.account_details.email = ""
+        this.account_details.password = ""
+        this.$router.push("/")
+      })
     },
     login() {
       this.loading = true;
       this.form.validateFieldsAndScroll((err, auth) => {
         if (!err) {
+           this.$store.commit('ACTIVE_USER', this.form.getFieldValue('email'))
           console.log("Received values of form: ", auth);
           this.$store
             .dispatch("LOGIN", auth)

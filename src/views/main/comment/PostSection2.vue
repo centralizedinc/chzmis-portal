@@ -417,11 +417,6 @@ export default {
     getPreviewImages(id) {
       const file_index = this.post_file_images.findIndex(x => x.id === id);
       return file_index === -1 ? [] : this.post_file_images[file_index].items;
-    },
-    getBase64(img, callback) {
-      const reader = new FileReader();
-      reader.addEventListener("load", () => callback(reader.result));
-      reader.readAsDataURL(img);
     }
   }
 };
