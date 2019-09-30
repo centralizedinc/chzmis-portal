@@ -25,6 +25,12 @@ export default new Router({
           beforeEnter: isAuthenticated,
           component: () => import('./views/landing/Home.vue')
         },
+        {
+          path: 'forgetPassword',
+          name: 'forget password',
+          beforeEnter: isAuthenticated,
+          component: () => import('./views/landing/ForgotPassword.vue')
+        },
         // {
         //   path: 'signUp',
         //   name: 'Sign Up',

@@ -17,7 +17,7 @@
           <a-menu-item key="2" @click="showModalSettings">
             <a-icon type="user" />Settings
           </a-menu-item>
-          <a-menu-item key="3">
+          <a-menu-item key="3"> 
             <a-icon type="upowser" />Logout
           </a-menu-item>
         </a-menu>
