@@ -15,7 +15,7 @@
     "debug": "^4.1.1",
     "express": "^4.17.1",
     "js-cookie": "^2.2.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "npm": "^6.11.3",
     "passport-facebook": "^3.0.0",
     "register-service-worker": "^1.6.2",
